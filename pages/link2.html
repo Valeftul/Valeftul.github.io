@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ссылка 2</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header class="header">
+        <h1>Использование CMS в коммерции</h1>
+        <nav class="nav">
+            <ul>
+                <li><a href="../index.html">Главная</a></li>
+                <li><a href="services.html">Видео</a></li>
+                <li><a href="about.html">О нас</a></li>
+                <li><a href="contact.html">Контакты</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <input type="checkbox" id="sidebar-toggle" class="sidebar-toggle">
+        <label for="sidebar-toggle" class="sidebar-icon">☰</label>
+    
+        <aside class="sidebar">
+            <button class="close-btn" onclick="document.getElementById('sidebar-toggle').checked = false;">×</button>
+            <h2>Меню</h2>
+            <ul>
+                <li><a href="link1.html">Основные компоненты CMS</a></li>
+                <li><a href="link2.html">Преимущества использования CMS</a></li>
+                <li><a href="link3.html">Оценка и выбор правильной CMS</a></li>
+                <li><a href="link4.html">Пользовательская CMS против готовых решений</a></li>
+            </ul>
+        </aside>
+        <main class="main-content clearfix">
+            <img src="../src/to_link2.png" class="main-right">
+            <div class="text-content">
+            <h2>Преимущества использования CMS</h2>
+            <p>Использование системы управления контентом (CMS) может значительно улучшить вашу организацию, оптимизируя процессы создания контента, организации и управления. Вот некоторые ключевые преимущества использования CMS:</p></div>
+            <ul class="numbered-list">
+                <li><strong>Организация контента:</strong>
+                    CMS позволяет пользователям легко классифицировать и организовывать цифровой контент, упрощая поиск, обновление и оптимизацию контента в системе.</li>
+                <li><strong>Простота совместной работы:</strong>
+                    с помощью CMS несколько членов команды могут легко совместно работать над контентом. CMS поддерживает роли пользователей, права доступа и элементы управления, которые помогают обеспечить надлежащее управление и процессы утверждения контента.</li>
+                <li><strong>Лучшее управление рабочими процессами:</strong>
+                    настраиваемые рабочие процессы контента в CMS оптимизируют процесс создания, утверждения и публикации контента, делая управление контентом более эффективным и действенным.</li>
+                <li><strong>SEO-оптимизация и SEO-дружественные URL-адреса:</strong>
+                    Многие платформы CMS предлагают встроенные инструменты SEO-оптимизации , помогающие улучшить видимость вашего контента и рейтинг в поисковых системах. Они могут генерировать оптимизированные для SEO URL-адреса, которые также улучшают взаимодействие с пользователем.</li>
+                <li><strong>Согласованный веб-дизайн:</strong>
+                    CMS использует шаблоны и темы для обеспечения единообразного внешнего вида вашего веб-сайта, улучшения взаимодействия с пользователем и создания согласованной идентичности бренда. Это экономит время разработки и помогает поддерживать согласованность между несколькими страницами и разделами.</li>
+                <li><strong>Расширяемость:</strong>
+                    большинство платформ CMS поддерживают подключаемые модули, расширения и внутренние инструменты для расширения функциональности системы в соответствии с вашими уникальными потребностями. Это позволяет вам легко добавлять и постоянно обновлять функции, не требуя обширных технических знаний.</li>
+            </ul>
+            <br>
+            <a href="link1.html"><button class="mdc-button mdc-button--raised">« Назад</button></a>
+            <a href="link1.html"><button class="mdc-button mdc-button--raised">1</button></a>
+            <a href="link2.html"><button class="mdc-button mdc-button--raised">2</button></a>
+            <a href="link3.html"><button class="mdc-button mdc-button--raised">3</button></a>
+            <a href="link4.html"><button class="mdc-button mdc-button--raised">4</button></a>
+            <a href="link3.html"><button class="mdc-button mdc-button--raised">Вперед »</button></a>
+        </main>
+    </div>
+
+    <footer>
+        <p>© 2024 CMS в электронной коммерции. Все права защищены.</p>
+    </footer>
+
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    <script>
+        // Инициализация компонентов Material
+        const drawer = new mdc.drawer.MDCModalDrawer(document.querySelector('.mdc-drawer'));
+    </script>
+</body>
+</html>

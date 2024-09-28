@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ссылка 1</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header class="header">
+        <h1>Использование CMS в коммерции</h1>
+        <nav class="nav">
+            <ul>
+                <li><a href="../index.html">Главная</a></li>
+                <li><a href="services.html">Видео</a></li>
+                <li><a href="about.html">О нас</a></li>
+                <li><a href="contact.html">Контакты</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <input type="checkbox" id="sidebar-toggle" class="sidebar-toggle">
+        <label for="sidebar-toggle" class="sidebar-icon">☰</label>
+    
+        <aside class="sidebar">
+            <button class="close-btn" onclick="document.getElementById('sidebar-toggle').checked = false;">×</button>
+            <h2>Меню</h2>
+            <ul>
+                <li><a href="link1.html">Основные компоненты CMS</a></li>
+                <li><a href="link2.html">Преимущества использования CMS</a></li>
+                <li><a href="link3.html">Оценка и выбор правильной CMS</a></li>
+                <li><a href="link4.html">Пользовательская CMS против готовых решений</a></li>
+            </ul>
+        </aside>
+        <main class="main-content">
+            <div class="text-content">
+            <h2>Основные компоненты CMS</h2>
+            <p>Хотя платформы CMS могут различаться по функциональности и функциям, у них есть общие основные компоненты. Эти компоненты включают в себя:</p></div>
+            <table class="u-full-width">
+                <tbody>
+                    <tr>
+                        <td><b>Приложение для управления контентом (CMA).</b></td>
+                        <td>Приложение для управления контентом (CMA) — это пользовательский интерфейс, 
+                            который позволяет создателям и редакторам контента создавать, изменять и удалять контент с 
+                            веб-сайта без необходимости наличия технических знаний. Это часть CMS, которую чаще всего используют создатели контента и администраторы.</td>
+                    </tr>
+                    <tr>
+                        <td><b>Приложение доставки контента (CDA)</b></td>
+                        <td>Приложение доставки контента (CDA) отвечает за хранение и доставку контента конечным пользователям. Он извлекает содержимое из базы данных, 
+                            объединяет его с соответствующими шаблонами и отображает на веб-сайте. Этот процесс происходит в фоновом режиме и невидим 
+                            для создателей контента и администраторов. </td>
+                    </tr>
+
+                    <tr>
+                        <td><b>Пользовательский интерфейс (UI)</b></td>
+                        <td>UI — это визуальный компонент CMS, с которым пользователи взаимодействуют для управления содержимым веб-сайта.
+                             Хорошо продуманный пользовательский интерфейс обеспечивает плавное и интуитивно понятное управление контентом.</td>
+                    </tr>
+
+                    <tr>
+                        <td><b>База данных</b></td>
+                        <td>база данных хранит и упорядочивает контент и метаданные веб-сайта. Платформы CMS обычно используют базы данных для хранения контента, 
+                            шаблонов, пользовательской информации и конфигураций.</td>
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+            <a href="link1.html"><button class="mdc-button mdc-button--raised">1</button></a>
+            <a href="link2.html"><button class="mdc-button mdc-button--raised">2</button></a>
+            <a href="link3.html"><button class="mdc-button mdc-button--raised">3</button></a>
+            <a href="link4.html"><button class="mdc-button mdc-button--raised">4</button></a>
+            <a href="link2.html"><button class="mdc-button mdc-button--raised">Вперед »</button></a>
+        </main>
+    </div>
+
+    <footer>
+        <p>© 2024 CMS в электронной коммерции. Все права защищены.</p>
+    </footer>
+
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    <script>
+        // Инициализация компонентов Material
+        const drawer = new mdc.drawer.MDCModalDrawer(document.querySelector('.mdc-drawer'));
+    </script>
+</body>
+</html>
