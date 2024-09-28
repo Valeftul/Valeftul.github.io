@@ -1,0 +1,391 @@
+/*
+Работу выполнил Дунченкин Михаил Романович студент 325б группы
+Версия Pychram: 2023.3.4
+Версия Python: 3.12.2
+*/
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.header {
+    background-color: #009af3;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+.nav ul {
+    list-style-type: none; /* убираем маркеры списка */
+    padding: 0; /* убираем отступы */
+    justify-content: center; /* центрируем элементы по горизонтали */
+    display: flex; /* делаем флекс-контейнер */
+    gap: 10px; /* пространство между элементами */
+}
+
+.nav li {
+    display: inline-block; /* обеспечиваем отображение элементов в строку */
+}
+
+.nav a {
+    display: block; /* делаем ссылку блочным элементом */
+    padding: 10px 20px; /* внутренние отступы */
+    background-color: #009af3; /* цвет фона */
+    text-decoration: none; /* убираем подчеркивание текста */
+    border-radius: 4px;
+    color: white; /* цвет текста */
+    transition: background-color 0.3s ease; /* плавный переход цвета */
+    text-align: center; /* центрируем текст в ссылке */
+}
+
+.nav a:hover {
+    background-color: #81cefa; /* цвет фона при наведении */
+    color: #030303; /* изменяем цвет текста при наведении */
+}
+
+.container {
+    display: flex;
+}
+
+.sidebar {
+    width: 240px;
+    background-color: #f4f4f4;
+    padding: 15px;
+    transition: transform 0.3s ease;
+    transform: translateX(0); /* Всегда показываем сайдбар на больших экранах */
+    z-index: 1000; /* Убедитесь, что сайдбар находится над основным контентом */}
+
+.sidebar-toggle {
+    display: none; /* Скрываем чекбокс */
+}
+
+.sidebar-icon {
+    font-size: 30px;
+    padding: 15px;
+    cursor: pointer;
+    display: none; /* Скрываем иконку по умолчанию */
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 30px;
+    cursor: pointer;
+    color: #000;
+}
+.clearfix::after
+.main-content {
+    flex: 1;
+    padding: 15px;
+}
+
+.sidebar h2 {
+    margin-top: 0;
+    margin-left: 20px;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin: 10px 0;
+}
+
+.sidebar ul li a {
+    display: block; /* делаем ссылку блочным элементом */
+    padding: 10px 20px; /* внутренние отступы */
+    background-color: #f4f4f4; /* цвет фона */
+    text-decoration: none; /* убираем подчеркивание текста */
+    color: rgb(88, 87, 87); /* цвет текста */
+    transition: background-color 0.3s ease; /* плавный переход цвета */
+}
+
+.sidebar ul li a:hover {
+    background-color: #d2d2d3; /* цвет фона при наведении */
+    color: #000000; /* изменяем цвет текста при наведении */
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed; /* Фиксируем сайдбар для мобильных устройств */
+        height: 100%;
+        transform: translateX(-100%); /* Скрываем сайдбар по умолчанию для мобильных устройств */
+    }
+
+    .sidebar-toggle:checked + .sidebar-icon + .sidebar {
+        transform: translateX(0); /* Показываем сайдбар при открытии */
+    }
+
+    .sidebar-icon {
+        display: block; /* Показываем иконку на мобильных устройствах */
+    }
+}
+
+@media (min-width: 769px) {
+    .close-btn {
+        display: none; /* Скрываем крестик на больших экранах */
+    }
+}
+
+
+.layout {
+    display: flex;
+}
+
+.mdc-drawer {
+    width: 256px; /* Ширина сайдбара */
+    flex-shrink: 0;
+}
+
+.content {
+    flex: 1;
+    padding: 16px;
+}
+
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Основной стиль кнопок */
+.mdc-button {
+    margin-left: 10px;
+    color: white; /* Белый текст */
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s; /* Плавный переход при наведении */
+    width: fit-content; /* Ширина только под содержимое */
+  }
+  
+.mdc-button:active {
+    background-color: #81cefa;
+    color: #050505;
+  }
+
+:root {
+    --mdc-theme-primary: #009af3; /* Меняет цвет темы у кнопок */
+  }
+
+  /* Стиль для кнопок с поднятым эффектом */
+.mdc-button--raised {
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Тень для поднятого эффекта */
+  }
+
+footer {
+    background-color: #009af3;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .layout {
+        flex-direction: column;
+    }
+
+    .mdc-drawer {
+        width: 100%;
+    }
+}
+
+table.u-full-width {
+    width: 100%;
+    margin-left: 10px;
+    margin-right: 60px;
+    max-width: 850px; 
+    border-collapse: collapse;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+table.u-full-width th, 
+table.u-full-width td {
+    padding: 16px;
+    border: 1px solid #e0e0e0; /* Лёгкий градиентный оттенок для разделения */
+    text-align: left;
+    position: relative; /* Для добавления псевдоэлементов */
+}
+
+table.u-full-width tr:nth-child(odd) {
+    background-color: #f9f9f9; /* Светло-серый фон для нечётных строк */
+}
+
+table.u-full-width tr:hover {
+    background-color: #f1f1f1; /* Цвет при наведении */
+}
+
+table.u-full-width td b {
+    color: #260d47; /* Цвет для выделенного текста */
+}
+
+/* Добавляем разделение между строками */
+table.u-full-width tr:not(:last-child) td {
+    border-bottom: 1px solid #e0e0e0; /* Разделительная линия между строками */
+}
+
+@media (max-width: 768px) {
+    th, td {
+        display: block; /* Каждый элемент на новой строке */
+        width: 100%; /* Ширина каждой ячейки на 100% */
+    }
+    
+    /* Если нужно отображать таблицу в виде списка на маленьких экранах */
+    tr {
+        display: flex;
+        flex-direction: column; /* Упорядочиваем ячейки вертикально */
+        margin-bottom: 10px; /* Отступ между строками */
+    }
+}
+
+/*фото*/
+
+.main-right {
+    width: 25%; /* Устанавливаем ширину изображения */
+    max-width: 500px; /* Ограничиваем максимальную ширину */
+    height: auto; /* Сохраняем пропорции изображения */
+    margin: 30px 0; /* Добавляем отступы сверху и снизу */
+    margin-right: 20px; /* Добавляем отступ справа */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Добавляем тень для эффекта */
+    border-radius: 4px; /* Скругляем углы изображения */
+    background-position: 900px;
+    float: right;
+}
+
+.text-content h2 {
+    margin-left: 10px;
+    margin-bottom: 20px; /* Добавляем отступ снизу заголовка */
+}
+
+.text-content p {
+    margin-left: 10px;
+    max-width: 900px; /* Ограничиваем максимальную ширину абзацев */
+    line-height: 1.6; /* Улучшаем читаемость текста */
+    margin-bottom: 15px; /* Добавляем отступ снизу для абзацев */
+}
+
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.centered-image {
+    margin-left: 10px;
+    width: 100%; /* Устанавливаем ширину изображения в 100% от родительского контейнера */
+    max-width: 500px; /* Ограничиваем максимальную ширину */
+    height: auto; /* Сохраняем пропорции изображения */
+    margin: 30px 30px; /* Добавляем отступы сверху и снизу */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Добавляем тень для эффекта */
+    border-radius: 4px; /* Скругляем углы изображения */
+    display: block; /* Делаем изображение блочным элементом для лучшего выравнивания */
+    clear: both; /* Убираем наложение на другие элементы */
+}
+
+.centered-image_2 {
+    margin-left: 10px;
+    width: 100%; /* Устанавливаем ширину изображения в 100% от родительского контейнера */
+    max-width: 500px; /* Ограничиваем максимальную ширину */
+    height: auto; /* Сохраняем пропорции изображения */
+    margin: 30px 30px; /* Добавляем отступы сверху и снизу */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Добавляем тень для эффекта */
+    border-radius: 4px; /* Скругляем углы изображения */
+    float: right; /* Для выравнивания изображения по правому краю */
+}
+/*Точки для табличных значений*/
+.numbered-list {
+    list-style: none; /* Убираем стандартные точки */
+    padding: 0;
+}
+
+.numbered-list li {
+    position: relative; /* Позволяет 'центрировать' точку */
+    padding-left: 40px; /* Отступ для текста */
+    margin-bottom: 10px; /* Отступ между пунктами */
+    max-width: 800px;
+}
+
+.numbered-list li::before {
+    content: "";
+    width: 10px; /* Ширина точки */
+    height: 10px; /* Высота точки */
+    background-color: rgba(0, 123, 255, 0.5); /* Полупрозрачный цвет точки */
+    border-radius: 50%; /* Скругление для круга */
+    position: absolute; /* Расположение точки */
+    left: 10px; /* Положение точки влево */
+    top: 50%; /* Центрирование по вертикали */
+    transform: translateY(-50%); /* Выравнивание по центру */
+}
+
+/*иконки соц. сетей*/
+.social {display: inline-block;}
+.social a {
+	display: block;
+	width: 48px;
+	height: 48px;
+	margin: 0 10px 10px 0;
+	text-align: center;
+	color: #000;
+	background: #fff;
+	border: 1px solid #ccc;
+	border-radius: 24px;
+	box-shadow: 0 2px 4px rgba(0,0,0,0.15), inset 0 0 50px rgba(0,0,0,0.1);
+}
+.social a:hover {color: #fff;}
+.social svg {
+	margin-top: 7px;
+	width: 32px;
+	height: 32px;
+}
+.telegram a:hover {background: #249bd7;}
+.vk a:hover {background: #4a76a8;}
+
+h3 {
+    font-size: 18px;
+    margin-left: 10px;
+}
+
+.strong_2{
+    font-size: 16px;
+    margin: 10px 10px 10px 10px;
+    margin-top: 10px;
+}
+
+.video-wrapper {
+    position: relative;
+    overflow: hidden;
+    padding-top: 56.25%; /* Соотношение сторон 16:9 */
+    height: 0;
+}
+
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+@media (max-width: 768px) {
+    .text-content {
+        font-size: 0.9rem; /* Уменьшаем размер шрифта на меньших экранах */
+    }
+    
+    h2 {
+        font-size: 1.25rem; /* Уменьшаем размер заголовка */
+    }
+    
+    .numbered-list {
+        padding-left: 15px; /* Уменьшаем отступ для меньших экранов */
+    }
+}
