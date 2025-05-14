@@ -71,20 +71,20 @@
         }
         #output {
             width: 100%;
-            max-width: 1800px;
-            height: 1200px;
+            max-width: 1200px;
+            height: 800px;
             background: var(--output-bg);
             box-shadow: var(--shadow);
             overflow: hidden;
             border-radius: 12px;
-            padding: 5px;
+            padding: 0;
             margin: 10px 0;
             text-align: center;
             -webkit-overflow-scrolling: touch;
         }
         #output svg {
             width: 100%;
-            height: auto;
+            height: 100%;
             max-width: none;
             text-rendering: geometricPrecision;
             display: inline-block;
@@ -282,7 +282,7 @@
             }
             #output {
                 width: 100vw;
-                height: 90vh;
+                height: 70vh;
                 padding: 0;
             }
             select {
@@ -430,11 +430,11 @@
 - <code>механизм ID "Название" -> процесс</code> — механизм (снизу, мелкий пунктир).<br>
 <b>Пример:</b><br>
 <pre>
-процесс A0 "Производство"
-вход I1 "Сырьё" -> A0
-управление C1 "Инструкции" -> A0
-выход A0 -> O1 "Продукт"
-механизм M1 "Станки" -> A0
+процесс A0 "Основной процесс"
+вход I1 "Материалы" -> A0
+управление C1 "Правила" -> A0
+выход A0 -> O1 "Готовый продукт"
+механизм M1 "Рабочие" -> A0
 </pre>`,
                 exampleCode: `процесс A0 "Основной процесс"
 вход I1 "Материалы" -> A0
@@ -556,9 +556,9 @@ mechanism M1 "Workers" -> A0`,
             const splineStyle = document.getElementById('spline-style').value;
             let dot = 'digraph IDEF0 {\n';
             dot += '    rankdir=TB;\n';
-            dot += '    node [shape=box, style=filled, fillcolor=white, width=1.5, height=0.6, class="idef0-box", fontname="Arial", fontsize=12];\n';
+            dot += '    node [shape=box, style=filled, fillcolor=white, width=2, height=0.8, class="idef0-box", fontname="Arial", fontsize=12];\n';
             dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=12, fontcolor=black, minlen=2, weight=1, labelloc=t, labelangle=0];\n';
-            dot += `    graph [splines=${splineStyle}, nodesep=1.2, ranksep=1.5, dpi=72];\n`;
+            dot += `    graph [splines=${splineStyle}, nodesep=1.5, ranksep=2, dpi=72];\n`;
             dot += '    {rank=min; A0}\n';
             dot += '    {rank=max; A1}\n';
 
@@ -595,7 +595,7 @@ mechanism M1 "Workers" -> A0`,
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(t.errors.invalidLabel.replace('{line}', index + 1).replace('{label}', label));
                     nodes.add(id);
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
-                    edges.push(`    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", tailport=e, headport=w, constraint=true];\n`);
+                    edges.push(`    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", tailport=e, headport=w, constraint=true, class="idef0-arrow"];\n`);
                 } else if (controlMatch) {
                     const id = controlMatch[2];
                     const label = controlMatch[3];
@@ -605,7 +605,7 @@ mechanism M1 "Workers" -> A0`,
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(t.errors.invalidLabel.replace('{line}', index + 1).replace('{label}', label));
                     nodes.add(id);
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
-                    edges.push(`    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", class="idef0-control", tailport=n, headport=s, constraint=false];\n`);
+                    edges.push(`    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", tailport=n, headport=s, constraint=false, class="idef0-control"];\n`);
                 } else if (outputMatch) {
                     const source = outputMatch[2];
                     const id = outputMatch[3];
@@ -615,7 +615,7 @@ mechanism M1 "Workers" -> A0`,
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(t.errors.invalidLabel.replace('{line}', index + 1).replace('{label}', label));
                     nodes.add(id);
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
-                    edges.push(`    ${source} -> ${id} [xlabel="${escapeDotLabel(label)}", tailport=e, headport=w, constraint=true];\n`);
+                    edges.push(`    ${source} -> ${id} [xlabel="${escapeDotLabel(label)}", tailport=e, headport=w, constraint=true, class="idef0-arrow"];\n`);
                 } else if (outputProcessMatch) {
                     const source = outputProcessMatch[2];
                     const target = outputProcessMatch[3];
@@ -631,7 +631,7 @@ mechanism M1 "Workers" -> A0`,
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(t.errors.invalidLabel.replace('{line}', index + 1).replace('{label}', label));
                     nodes.add(id);
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
-                    edges.push(`    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", class="idef0-mechanism", tailport=s, headport=n, constraint=false];\n`);
+                    edges.push(`    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", tailport=s, headport=n, constraint=false, class="idef0-mechanism"];\n`);
                 } else {
                     errors.push(t.errors.syntaxError.replace('{line}', index + 1));
                 }
@@ -697,8 +697,10 @@ mechanism M1 "Workers" -> A0`,
                         `;
                         element.prepend(defs);
 
-                        // Корректировка viewBox с большим отступом
-                        element.setAttribute('viewBox', `${bbox.x-50} ${bbox.y-50} ${bbox.width+100} ${bbox.height+100}`);
+                        // Установка viewBox с учётом размеров #output и отступов
+                        const padding = 50;
+                        element.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                        element.setAttribute('viewBox', `${bbox.x - padding} ${bbox.y - padding} ${bbox.width + 2 * padding} ${bbox.height + 2 * padding}`);
                         element.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
                         output.innerHTML = '';
