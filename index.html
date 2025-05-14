@@ -621,7 +621,7 @@ mechanism M1 "Workers" -> A1`,
             dot += '    rankdir=TB;\n';
             dot += '    node [shape=box, style=filled, fillcolor=white, width=1.2, height=0.5, class="idef0-box", fontname="Arial", fontsize=10];\n';
             dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=8, fontcolor=black, minlen=2, weight=1, labelloc=t, labelangle=0];\n';
-            dot += `    graph [splines="${splineStyle}", nodesep=1, ranksep=1.5, dpi=96];\n`;
+            dot += `    graph [splines="${splineStyle}", nodesep=1, ranksep=1.5, dpi=96];\n';
 
             const processes = new Set();
             const errors = [];
@@ -773,8 +773,8 @@ mechanism M1 "Workers" -> A1`,
 
                         const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
                         defs.innerHTML = `
-                            <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-                                <polygon points="0 0, 8 3, 0 6" fill="black" />
+                            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="black" stroke="none" />
                             </marker>
                         `;
                         element.prepend(defs);
@@ -782,12 +782,12 @@ mechanism M1 "Workers" -> A1`,
                         output.innerHTML = '';
                         output.appendChild(element);
 
-                        // Динамический масштаб
+                        // Динамический масштаб для полного отображения на экране
                         const containerWidth = output.clientWidth;
                         const containerHeight = output.clientHeight || 400;
                         const zoomX = containerWidth / svgWidth;
                         const zoomY = containerHeight / svgHeight;
-                        const initialZoom = Math.min(zoomX, zoomY) * 0.9;
+                        const initialZoom = Math.min(zoomX, zoomY) * 0.9; // 90% для небольшого отступа
 
                         if (panZoomInstance) {
                             panZoomInstance.destroy();
@@ -803,6 +803,10 @@ mechanism M1 "Workers" -> A1`,
                             zoomScaleSensitivity: 0.2,
                             initialZoom: initialZoom
                         });
+
+                        // Принудительное центрирование и масштабирование
+                        panZoomInstance.zoom(initialZoom);
+                        panZoomInstance.center();
                     })
                     .catch(error => {
                         errorDiv.style.display = 'block';
