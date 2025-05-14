@@ -75,7 +75,7 @@
             height: 800px;
             background: var(--output-bg);
             box-shadow: var(--shadow);
-            overflow: hidden;
+            overflow: auto;
             border-radius: 12px;
             padding: 0;
             margin: 10px 0;
@@ -84,10 +84,11 @@
         }
         #output svg {
             width: 100%;
-            height: 100%;
+            height: auto;
             max-width: none;
             text-rendering: geometricPrecision;
-            display: inline-block;
+            display: block;
+            margin: 0 auto;
         }
         #error {
             color: #ef4444;
@@ -618,7 +619,7 @@ mechanism M1 "Workers" -> A1`,
             dot += '    rankdir=TB;\n';
             dot += '    node [shape=box, style=filled, fillcolor=white, width=1.2, height=0.5, class="idef0-box", fontname="Arial", fontsize=10];\n';
             dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=8, fontcolor=black, minlen=2, weight=1, labelloc=t, labelangle=0];\n';
-            dot += `    graph [splines="${splineStyle}", nodesep=1, ranksep=1.5, dpi=96];\n`; // Убедились, что синтаксис корректен
+            dot += `    graph [splines="${splineStyle}", nodesep=1, ranksep=1.5, dpi=96];\n`;
 
             const processes = new Set();
             const errors = [];
@@ -747,9 +748,6 @@ mechanism M1 "Workers" -> A1`,
                 const viz = new Viz();
                 viz.renderSVGElement(dot)
                     .then(function(element) {
-                        const outputWidth = output.clientWidth;
-                        const outputHeight = output.clientHeight;
-
                         // Определяем размеры на основе содержимого SVG
                         const bbox = element.getBBox();
                         const padding = 20;
@@ -781,11 +779,12 @@ mechanism M1 "Workers" -> A1`,
                             controlIconsEnabled: true,
                             fit: true,
                             center: true,
-                            minZoom: 0.3,
-                            maxZoom: 5,
+                            minZoom: 0.1,
+                            maxZoom: 10,
                             zoomScaleSensitivity: 0.2,
-                            initialZoom: 0.7,
-                            contain: true
+                            initialZoom: 1,
+                            contain: true,
+                            viewport: { selector: '#output', margin: 10 }
                         });
                     })
                     .catch(error => {
@@ -822,8 +821,8 @@ mechanism M1 "Workers" -> A1`,
             // Получаем реальные размеры графика через getBBox
             const bbox = svg.getBBox();
             const padding = 20;
-            const width = bbox.width + 2 * padding;
-            const height = bbox.height + 2 * padding;
+            const width = Math.max(bbox.width + 2 * padding, 100); // Минимальная ширина
+            const height = Math.max(bbox.height + 2 * padding, 100); // Минимальная высота
 
             // Клонируем SVG для экспорта
             const svgClone = svg.cloneNode(true);
@@ -833,8 +832,6 @@ mechanism M1 "Workers" -> A1`,
 
             const serializer = new XMLSerializer();
             let svgString = serializer.serializeToString(svgClone);
-
-            // Убеждаемся, что SVG корректен
             svgString = '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' + svgString;
 
             if (format === 'svg') {
@@ -860,13 +857,21 @@ mechanism M1 "Workers" -> A1`,
                     const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
                     const quality = format === 'jpg' ? 0.9 : 1.0;
                     const dataUrl = canvas.toDataURL(mimeType, quality);
-                    const link = document.createElement('a');
-                    link.href = dataUrl;
-                    link.download = `idef0_diagram.${format}`;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
+                    if (dataUrl.length > 0) { // Проверка на пустой результат
+                        const link = document.createElement('a');
+                        link.href = dataUrl;
+                        link.download = `idef0_diagram.${format}`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    } else {
+                        alert('Ошибка при создании изображения. Попробуйте другой формат.');
+                    }
                     URL.revokeObjectURL(img.src);
+                };
+                img.onerror = function() {
+                    alert('Ошибка загрузки SVG в canvas. Проверьте консоль для деталей.');
+                    console.error('SVG загрузка провалилась:', svgString);
                 };
                 img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
             }
