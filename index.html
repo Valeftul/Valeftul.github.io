@@ -3,27 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>IDEF0Flow</title>
+    <title>FlowCraft</title>
     <style>
         :root {
-            --bg-color: #f8fafc;
+            --bg-color: #f1f5f9;
             --text-color: #1f2937;
             --border-color: #d1d5db;
-            --button-bg: #10b981;
-            --button-hover: #059669;
-            --button-gradient: linear-gradient(to right, #10b981, #059669);
+            --button-bg: #22c55e;
+            --button-hover: #16a34a;
+            --button-gradient: linear-gradient(to right, #22c55e, #16a34a);
             --editor-bg: #ffffff;
-            --shadow: 0 2px 4px rgba(0,0,0,0.1);
+            --output-bg: linear-gradient(to bottom, #f1f5f9, #e2e8f0);
+            --shadow: 0 3px 6px rgba(0,0,0,0.1);
         }
         [data-theme="dark"] {
             --bg-color: #1e293b;
             --text-color: #e2e8f0;
             --border-color: #475569;
-            --button-bg: #34d399;
-            --button-hover: #10b981;
-            --button-gradient: linear-gradient(to right, #34d399, #10b981);
+            --button-bg: #4ade80;
+            --button-hover: #22c55e;
+            --button-gradient: linear-gradient(to right, #4ade80, #22c55e);
             --editor-bg: #2d3748;
-            --shadow: 0 2px 4px rgba(0,0,0,0.3);
+            --output-bg: linear-gradient(to bottom, #334155, #1e293b);
+            --shadow: 0 3px 6px rgba(0,0,0,0.3);
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -37,7 +39,7 @@
             transition: background-color 0.3s, color 0.3s;
         }
         #editor-container {
-            width: 90vw;
+            width: 95vw;
             max-width: 600px;
             margin: 10px 0;
             border: 1px solid var(--border-color);
@@ -48,53 +50,52 @@
         }
         .editor-controls {
             display: flex;
-            gap: 8px;
-            padding: 8px;
+            gap: 10px;
+            padding: 10px;
             background: var(--editor-bg);
             border-bottom: 1px solid var(--border-color);
             flex-wrap: wrap;
         }
         .CodeMirror {
             height: 200px !important;
-            font-size: 12px !important;
+            font-size: 13px !important;
             background: var(--editor-bg) !important;
             color: var(--text-color) !important;
         }
         #output {
-            border: 2px solid transparent;
-            border-image: linear-gradient(to right, #10b981, #059669) 1;
-            padding: 10px;
-            width: 90vw;
+            width: 95vw;
             max-width: 600px;
-            min-height: 800px;
+            min-height: 1000px;
             height: auto;
-            max-height: 100vh;
-            background: var(--editor-bg);
+            background: var(--output-bg);
             box-shadow: var(--shadow);
-            overflow: auto;
+            overflow: visible;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             border-radius: 12px;
+            padding: 15px;
+            margin: 10px 0;
             -webkit-overflow-scrolling: touch;
         }
         #output svg {
             width: 100%;
             height: auto;
             text-rendering: geometricPrecision;
-            transform-origin: center;
+            transform: scale(0.9);
+            transform-origin: center top;
         }
         #error {
             color: #ef4444;
             font-size: 12px;
             margin: 10px 0;
             display: none;
-            width: 90vw;
+            width: 95vw;
             max-width: 600px;
             text-align: left;
         }
         button {
-            padding: 10px 20px;
+            padding: 12px 24px;
             font-size: 14px;
             background-color: var(--button-bg);
             color: white;
@@ -102,7 +103,7 @@
             border-radius: 8px;
             cursor: pointer;
             margin: 5px;
-            min-width: 90px;
+            min-width: 100px;
             transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
             display: flex;
             align-items: center;
@@ -115,17 +116,18 @@
             transform: scale(1.05);
         }
         button:active {
-            transform: scale(1);
+            transform: scale(0.98);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         .main-button {
             background: var(--button-gradient);
-            padding: 12px 28px;
+            padding: 14px 30px;
             font-size: 16px;
             font-weight: 600;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
         details {
-            width: 90vw;
+            width: 95vw;
             max-width: 600px;
             font-size: 12px;
             margin: 10px 0;
@@ -140,12 +142,12 @@
             color: var(--text-color);
         }
         .controls {
-            width: 90vw;
+            width: 95vw;
             max-width: 600px;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             margin: 10px 0;
         }
         select {
@@ -164,7 +166,7 @@
             outline: none;
         }
         #dot-preview {
-            width: 90vw;
+            width: 95vw;
             max-width: 600px;
             display: none;
             background: var(--editor-bg);
@@ -214,33 +216,36 @@
                 margin: 5px;
             }
             button {
-                padding: 8px 16px;
+                padding: 10px 20px;
                 font-size: 12px;
                 min-width: 80px;
             }
             .main-button {
-                padding: 10px 20px;
+                padding: 12px 24px;
                 font-size: 14px;
             }
             .CodeMirror {
-                font-size: 10px !important;
+                font-size: 11px !important;
             }
             details, #error, #dot-preview {
                 font-size: 10px;
             }
             #output {
-                min-height: 400px;
+                min-height: 600px;
             }
             select {
                 font-size: 10px;
                 padding: 8px;
+            }
+            #title {
+                font-size: 18px !important;
             }
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.css">
 </head>
 <body>
-    <h1 style="font-size: 20px; margin: 12px; color: var(--text-color);" id="title">IDEF0Flow</h1>
+    <h1 style="font-size: 22px; margin: 12px; font-weight: 700; color: var(--text-color); text-shadow: 0 1px 2px rgba(0,0,0,0.1);" id="title">FlowCraft</h1>
     <details>
         <summary id="instructions-summary">Инструкция</summary>
         <div id="instructions"></div>
@@ -344,7 +349,7 @@
         // Переводы
         const translations = {
             ru: {
-                title: 'IDEF0Flow',
+                title: 'FlowCraft',
                 instructionsSummary: 'Инструкция',
                 instructions: `Введите код IDEF0 на русском или английском. Команды:<br>
 - <code>процесс ID "Название"</code> — процесс (A0).<br>
@@ -400,7 +405,7 @@
                 placeholder: 'Введите код IDEF0...'
             },
             en: {
-                title: 'IDEF0Flow',
+                title: 'FlowCraft',
                 instructionsSummary: 'Instructions',
                 instructions: `Enter IDEF0 code in Russian or English. Commands:<br>
 - <code>process ID "Name"</code> — process (A0).<br>
@@ -509,7 +514,7 @@ mechanism M2 "Analysts" -> A1`,
             dot += '    rankdir=TB;\n';
             dot += '    node [shape=box, style=filled, fillcolor=white, width=2.5, height=1, class="idef0-box", fontname="Arial", fontsize=16];\n';
             dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=16, fontcolor=black];\n';
-            dot += `    graph [splines=${splineStyle}, nodesep=1, ranksep=2, dpi=96];\n`;
+            dot += `    graph [splines=${splineStyle}, nodesep=1.5, ranksep=3, dpi=96];\n`;
             dot += '    {rank=min; A0}\n';
             dot += '    {rank=max; A1}\n';
 
@@ -629,7 +634,10 @@ mechanism M2 "Analysts" -> A1`,
                 const viz = new Viz();
                 viz.renderSVGElement(dot)
                     .then(function(element) {
+                        const bbox = element.getBBox();
                         console.log('SVG Generated:\n', element.outerHTML); // Отладка SVG
+                        console.log('Bbox:', { x: bbox.x, y: bbox.y, width: bbox.width, height: bbox.height }); // Отладка размеров
+
                         const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
                         defs.innerHTML = `
                             <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
@@ -638,9 +646,11 @@ mechanism M2 "Analysts" -> A1`,
                         `;
                         element.prepend(defs);
 
-                        const bbox = element.getBBox();
-                        element.setAttribute('viewBox', `${bbox.x-50} ${bbox.y-50} ${bbox.width+100} ${bbox.height+100}`);
+                        // Увеличенный viewBox для полного отображения
+                        element.setAttribute('viewBox', `${bbox.x-100} ${bbox.y-100} ${bbox.width+200} ${bbox.height+200}`);
                         element.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+                        element.setAttribute('width', '100%');
+                        element.setAttribute('height', 'auto');
 
                         output.innerHTML = '';
                         output.appendChild(element);
