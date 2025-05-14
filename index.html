@@ -282,8 +282,14 @@
             }
             #output {
                 width: 100vw;
-                height: 70vh;
+                height: auto;
+                min-height: 50vh;
+                max-height: 70vh;
                 padding: 0;
+            }
+            #output svg {
+                width: 100%;
+                height: auto;
             }
             select {
                 font-size: 12px;
@@ -612,7 +618,7 @@ mechanism M1 "Workers" -> A1`,
             dot += '    rankdir=TB;\n';
             dot += '    node [shape=box, style=filled, fillcolor=white, width=1.2, height=0.5, class="idef0-box", fontname="Arial", fontsize=10];\n';
             dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=8, fontcolor=black, minlen=2, weight=1, labelloc=t, labelangle=0];\n';
-            dot += `    graph [splines=${splineStyle}, nodesep=1, ranksep=1.5, dpi=96];\n`;
+            dot += `    graph [splines=${splineStyle}, nodesep=1, ranksep=1.5, dpi=96];\n';
 
             const processes = new Set();
             const errors = [];
@@ -648,7 +654,7 @@ mechanism M1 "Workers" -> A1`,
                     nodes.add(id);
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
                     const edgeKey = `${id}->${target}`;
-                    if (!edges.has(edgeKey)) edges.set(edgeKey, `    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", tailport=e, headport=w, constraint=true, class="idef0-arrow"];\n`);
+                    if (!edges.has(edgeKey)) edges.set(edgeKey, `    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", tailport=w, headport=w, constraint=true, class="idef0-arrow"];\n`);
                 } else if (controlMatch) {
                     const id = controlMatch[2];
                     const label = controlMatch[3];
@@ -670,7 +676,7 @@ mechanism M1 "Workers" -> A1`,
                     nodes.add(id);
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
                     const edgeKey = `${source}->${id}`;
-                    if (!edges.has(edgeKey)) edges.set(edgeKey, `    ${source} -> ${id} [xlabel="${escapeDotLabel(label)}", tailport=e, headport=w, constraint=true, class="idef0-arrow"];\n`);
+                    if (!edges.has(edgeKey)) edges.set(edgeKey, `    ${source} -> ${id} [xlabel="${escapeDotLabel(label)}", tailport=e, headport=e, constraint=true, class="idef0-arrow"];\n`);
                 } else if (outputProcessMatch) {
                     const source = outputProcessMatch[2];
                     const target = outputProcessMatch[3];
@@ -743,7 +749,16 @@ mechanism M1 "Workers" -> A1`,
                     .then(function(element) {
                         const outputWidth = output.clientWidth;
                         const outputHeight = output.clientHeight;
-                        console.log('Output Size:', { width: outputWidth, height: outputHeight });
+
+                        // Определяем размеры на основе содержимого SVG
+                        const bbox = element.getBBox();
+                        const padding = 20;
+                        const svgWidth = bbox.width + 2 * padding;
+                        const svgHeight = bbox.height + 2 * padding;
+
+                        element.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                        element.setAttribute('viewBox', `0 0 ${svgWidth} ${svgHeight}`);
+                        element.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
                         const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
                         defs.innerHTML = `
@@ -753,15 +768,10 @@ mechanism M1 "Workers" -> A1`,
                         `;
                         element.prepend(defs);
 
-                        // Устанавливаем viewBox на основе размеров #output
-                        element.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-                        element.setAttribute('viewBox', `0 0 ${outputWidth} ${outputHeight}`);
-                        element.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-
                         output.innerHTML = '';
                         output.appendChild(element);
 
-                        // Инициализация svg-pan-zoom с уменьшенным масштабом
+                        // Инициализация svg-pan-zoom с адаптивным масштабом
                         if (panZoomInstance) {
                             panZoomInstance.destroy();
                         }
@@ -774,7 +784,8 @@ mechanism M1 "Workers" -> A1`,
                             minZoom: 0.3,
                             maxZoom: 5,
                             zoomScaleSensitivity: 0.2,
-                            initialZoom: 0.7
+                            initialZoom: 0.7,
+                            contain: true // Адаптация под размер контейнера
                         });
                     })
                     .catch(error => {
@@ -810,7 +821,7 @@ mechanism M1 "Workers" -> A1`,
 
             // Получаем реальные размеры графика через getBBox
             const bbox = svg.getBBox();
-            const padding = 20; // Отступы
+            const padding = 20;
             const width = bbox.width + 2 * padding;
             const height = bbox.height + 2 * padding;
 
