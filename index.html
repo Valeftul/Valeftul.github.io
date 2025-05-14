@@ -47,6 +47,7 @@
             overflow: hidden;
             background: var(--editor-bg);
             box-shadow: var(--shadow);
+            touch-action: manipulation;
         }
         .editor-controls {
             display: flex;
@@ -72,15 +73,16 @@
         #output {
             width: 100%;
             max-width: 1200px;
-            height: 400px; /* Фиксированная высота для стабильности */
+            height: 400px;
             background: var(--output-bg);
             box-shadow: var(--shadow);
-            overflow: hidden;
+            overflow: auto;
             border-radius: 12px;
             padding: 0;
             margin: 10px 0;
             text-align: center;
             -webkit-overflow-scrolling: touch;
+            touch-action: manipulation;
         }
         #output svg {
             width: 100%;
@@ -281,7 +283,7 @@
             }
             #output {
                 width: 100vw;
-                height: 50vh; /* Адаптивная высота для мобильных */
+                height: 50vh;
                 max-height: 70vh;
                 padding: 0;
             }
@@ -305,7 +307,7 @@
             }
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.css" onerror="alert('Не удалось загрузить CodeMirror CSS. Проверьте подключение к интернету.')">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.css" onerror="console.error('Ошибка загрузки CodeMirror CSS'); alert('Не удалось загрузить CodeMirror CSS. Проверьте интернет.')">
 </head>
 <body>
     <h1 style="font-size: 24px; margin: 12px; font-weight: 700; color: var(--text-color);" id="title">IDEF0 Forge</h1>
@@ -381,28 +383,35 @@
         </svg>
     </button>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.js" onerror="alert('Не удалось загрузить CodeMirror. Проверьте подключение к интернету.')"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js" onerror="alert('Не удалось загрузить Viz.js. Проверьте подключение к интернету.')"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js" onerror="alert('Не удалось загрузить Viz.js full render. Проверьте подключение к интернету.')"></script>
-    <script src="https://unpkg.com/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js" onerror="alert('Не удалось загрузить svg-pan-zoom. Проверьте подключение к интернету.')"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvg@3.0.10/lib/umd.js" onerror="alert('Не удалось загрузить Canvg. Проверьте подключение к интернету.')"></script>
+    <!-- Подключение библиотек с резервными источниками -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.js" onerror="console.error('Ошибка загрузки CodeMirror'); alert('Не удалось загрузить CodeMirror. Проверьте интернет.')"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js" onerror="console.error('Ошибка загрузки Viz.js'); alert('Не удалось загрузить Viz.js. Проверьте интернет.')"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js" onerror="console.error('Ошибка загрузки full.render.js'); alert('Не удалось загрузить full.render.js. Проверьте интернет.')"></script>
+    <script src="https://unpkg.com/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js" onerror="console.error('Ошибка загрузки svg-pan-zoom'); alert('Не удалось загрузить svg-pan-zoom. Проверьте интернет.')"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvg@3.0.10/dist/umd.js" onerror="console.error('Ошибка загрузки Canvg с основного CDN'); this.onerror=null; this.src='https://unpkg.com/canvg@3.0.10/dist/umd.js';"></script>
     <script>
-        // Проверка загрузки библиотек
-        if (typeof CodeMirror === 'undefined') {
-            alert('CodeMirror не загружен. Проверьте подключение к интернету или консоль (F12) для ошибок.');
-            throw new Error('CodeMirror not loaded');
+        // Проверка интернет-соединения
+        function checkOnline() {
+            return navigator.onLine;
         }
-        if (typeof Viz === 'undefined') {
-            alert('Viz.js не загружен. Проверьте подключение к интернету или консоль (F12) для ошибок.');
-            throw new Error('Viz.js not loaded');
-        }
-        if (typeof svgPanZoom === 'undefined') {
-            alert('svg-pan-zoom не загружен. Проверьте подключение к интернету или консоль (F12) для ошибок.');
-            throw new Error('svg-pan-zoom not loaded');
-        }
-        if (typeof Canvg === 'undefined') {
-            alert('Canvg не загружен. Проверьте подключение к интернету или консоль (F12) для ошибок.');
-            throw new Error('Canvg not loaded');
+
+        // Проверка доступности библиотек
+        function checkLibraries() {
+            if (!checkOnline()) {
+                alert('Нет интернет-соединения. Проверьте сеть и перезагрузите страницу.');
+                return false;
+            }
+            if (typeof CodeMirror === 'undefined' || typeof Viz === 'undefined' || typeof svgPanZoom === 'undefined' || typeof Canvg === 'undefined') {
+                alert('Одна или несколько библиотек не загружены. Проверьте консоль для деталей или перезагрузите страницу.');
+                console.error('Отсутствует одна из библиотек:', {
+                    CodeMirror: typeof CodeMirror,
+                    Viz: typeof Viz,
+                    svgPanZoom: typeof svgPanZoom,
+                    Canvg: typeof Canvg
+                });
+                return false;
+            }
+            return true;
         }
 
         // Автоопределение языка и темы
@@ -412,36 +421,41 @@
         document.getElementById('language').value = userLang;
 
         // Инициализация CodeMirror
-        const editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
-            lineNumbers: true,
-            mode: 'text/plain',
-            theme: 'default',
-            viewportMargin: Infinity
-        });
-        editor.setSize('100%', '200px');
+        let editor;
+        if (checkLibraries()) {
+            editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+                lineNumbers: true,
+                mode: 'text/plain',
+                theme: 'default',
+                viewportMargin: Infinity
+            });
+            editor.setSize('100%', '200px');
+        }
 
         // Подсветка синтаксиса IDEF0
-        CodeMirror.defineMode('idef0', function() {
-            return {
-                token: function(stream) {
-                    if (stream.match(/^(процесс|вход|управление|выход|механизм|process|input|control|output|mechanism)\b/)) {
-                        return 'keyword';
+        if (typeof CodeMirror !== 'undefined') {
+            CodeMirror.defineMode('idef0', function() {
+                return {
+                    token: function(stream) {
+                        if (stream.match(/^(процесс|вход|управление|выход|механизм|process|input|control|output|mechanism)\b/)) {
+                            return 'keyword';
+                        }
+                        if (stream.match(/[A-Za-z0-9]+/)) {
+                            return 'variable';
+                        }
+                        if (stream.match(/"[^"]*"/)) {
+                            return 'string';
+                        }
+                        if (stream.match(/->/)) {
+                            return 'operator';
+                        }
+                        stream.next();
+                        return null;
                     }
-                    if (stream.match(/[A-Za-z0-9]+/)) {
-                        return 'variable';
-                    }
-                    if (stream.match(/"[^"]*"/)) {
-                        return 'string';
-                    }
-                    if (stream.match(/->/)) {
-                        return 'operator';
-                    }
-                    stream.next();
-                    return null;
-                }
-            };
-        });
-        editor.setOption('mode', 'idef0');
+                };
+            });
+            editor.setOption('mode', 'idef0');
+        }
 
         // Переводы
         const translations = {
@@ -593,8 +607,8 @@ mechanism M1 "Workers" -> A1`,
             exampleSelect.options[0].text = t.exampleOptions[0];
             exampleSelect.options[1].text = t.exampleOptions[1];
             exampleSelect.options[2].text = t.exampleOptions[2];
-            loadExample(); // Загружаем пример при смене языка
-            editor.getInputField().placeholder = t.placeholder;
+            loadExample();
+            if (editor) editor.getInputField().placeholder = t.placeholder;
             document.documentElement.lang = lang;
         }
 
@@ -603,14 +617,16 @@ mechanism M1 "Workers" -> A1`,
             const lang = document.getElementById('language').value;
             const t = translations[lang];
             const example = document.getElementById('example-select').value;
-            if (example === 'A0') {
-                editor.setValue(t.exampleCodeA0);
-            } else if (example === 'A0A1') {
-                editor.setValue(t.exampleCodeA0A1);
-            } else if (example === 'A1') {
-                editor.setValue(t.exampleCodeA1);
+            if (editor) {
+                if (example === 'A0') {
+                    editor.setValue(t.exampleCodeA0);
+                } else if (example === 'A0A1') {
+                    editor.setValue(t.exampleCodeA0A1);
+                } else if (example === 'A1') {
+                    editor.setValue(t.exampleCodeA1);
+                }
+                renderDiagram();
             }
-            renderDiagram();
         }
 
         // Функция для переключения темы
@@ -636,8 +652,8 @@ mechanism M1 "Workers" -> A1`,
             let dot = 'digraph IDEF0 {\n';
             dot += '    rankdir=TB;\n';
             dot += '    node [shape=box, style=filled, fillcolor=white, width=1.2, height=0.5, class="idef0-box", fontname="Arial", fontsize=10];\n';
-            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=8, fontcolor=black, minlen=2, weight=1, labelloc=t, labelangle=0, markerend="url(#arrowhead)"];\n';
-            dot += `    graph [splines="${splineStyle}", nodesep=1, ranksep=1.5, dpi=96];\n`;
+            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=8, fontcolor=black, minlen=2, weight=1, labelloc=t, labelangle=0];\n';
+            dot += `    graph [splines="${splineStyle}", nodesep=1, ranksep=1.5, dpi=96];\n';
 
             const processes = new Set();
             const errors = [];
@@ -734,6 +750,8 @@ mechanism M1 "Workers" -> A1`,
         let panZoomInstance = null;
 
         function renderDiagram() {
+            if (!checkLibraries() || !editor) return;
+
             const lang = document.getElementById('language').value;
             const t = translations[lang];
             const code = editor.getValue().trim();
@@ -798,13 +816,12 @@ mechanism M1 "Workers" -> A1`,
                         output.innerHTML = '';
                         output.appendChild(element);
 
-                        // Динамический масштаб для полного отображения на экране
-                        setTimeout(function() {
+                        setTimeout(() => {
                             const containerWidth = output.clientWidth;
-                            const containerHeight = output.clientHeight || 400;
+                            const containerHeight = output.clientHeight;
                             const zoomX = containerWidth / svgWidth;
                             const zoomY = containerHeight / svgHeight;
-                            const initialZoom = Math.min(zoomX, zoomY) * 0.9; // 90% для небольшого отступа
+                            const initialZoom = Math.min(zoomX, zoomY) * 0.9;
 
                             if (panZoomInstance) {
                                 panZoomInstance.destroy();
@@ -821,15 +838,15 @@ mechanism M1 "Workers" -> A1`,
                                 initialZoom: initialZoom
                             });
 
-                            // Принудительное центрирование и масштабирование
                             panZoomInstance.zoom(initialZoom);
                             panZoomInstance.center();
-                        }, 100); // Задержка для корректного рендеринга
+                        }, 100);
                     })
                     .catch(error => {
                         errorDiv.style.display = 'block';
                         errorDiv.innerHTML = t.errors.renderError.replace('{message}', error.message).replace('{dot}', dot);
                         output.innerHTML = '';
+                        console.error('Ошибка рендеринга:', error);
                         if (panZoomInstance) {
                             panZoomInstance.destroy();
                             panZoomInstance = null;
@@ -839,6 +856,7 @@ mechanism M1 "Workers" -> A1`,
                 errorDiv.style.display = 'block';
                 errorDiv.innerHTML = t.errors.generalError.replace('{message}', error.message);
                 output.innerHTML = '';
+                console.error('Общая ошибка:', error);
                 if (panZoomInstance) {
                     panZoomInstance.destroy();
                     panZoomInstance = null;
@@ -847,6 +865,8 @@ mechanism M1 "Workers" -> A1`,
         }
 
         async function exportDiagram() {
+            if (!checkLibraries()) return;
+
             const lang = document.getElementById('language').value;
             const t = translations[lang];
             const format = document.getElementById('export-format').value;
@@ -881,18 +901,21 @@ mechanism M1 "Workers" -> A1`,
                 document.body.removeChild(link);
                 URL.revokeObjectURL(url);
             } else {
+                if (typeof Canvg === 'undefined') {
+                    alert('Библиотека Canvg не загружена. Перезагрузите страницу или проверьте интернет.');
+                    return;
+                }
                 try {
                     const canvas = document.createElement('canvas');
-                    canvas.width = width * 2; // Удваиваем разрешение
+                    canvas.width = width * 2;
                     canvas.height = height * 2;
                     const ctx = canvas.getContext('2d');
 
-                    // Используем Canvg для рендеринга SVG
                     await Canvg.from(ctx, svgString, {
                         scaleWidth: canvas.width,
                         scaleHeight: canvas.height,
                         ignoreDimensions: true,
-                        renderCallback: function() {
+                        renderCallback: () => {
                             ctx.fillStyle = '#ffffff';
                             ctx.fillRect(0, 0, canvas.width, canvas.height);
                         }
@@ -905,7 +928,7 @@ mechanism M1 "Workers" -> A1`,
                     if (dataUrl.length > 0) {
                         const link = document.createElement('a');
                         link.href = dataUrl;
-                        link.download = 'idef0_diagram.' + format;
+                        link.download = `idef0_diagram.${format}`;
                         document.body.appendChild(link);
                         link.click();
                         document.body.removeChild(link);
@@ -920,7 +943,7 @@ mechanism M1 "Workers" -> A1`,
         }
 
         function clearEditor() {
-            editor.setValue('');
+            if (editor) editor.setValue('');
             document.getElementById('output').innerHTML = '';
             document.getElementById('error').style.display = 'none';
             document.getElementById('dot-preview').style.display = 'none';
@@ -941,6 +964,13 @@ mechanism M1 "Workers" -> A1`,
         }
 
         document.getElementById('spline-style').addEventListener('change', renderDiagram);
+
+        // Инициализация при загрузке
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                if (checkLibraries() && editor) renderDiagram();
+            }, 100);
+        });
     </script>
 </body>
 </html>
