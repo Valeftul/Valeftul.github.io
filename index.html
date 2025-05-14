@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>FlowCraft</title>
+    <title>IDEF0 Forge</title>
     <style>
         :root {
             --bg-color: #f9fafb;
@@ -14,7 +14,7 @@
             --button-gradient: linear-gradient(to right, #22c55e, #16a34a);
             --editor-bg: #ffffff;
             --output-bg: #ffffff;
-            --shadow: 0 3px 6px rgba(0,0,0,0.1);
+            --shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         [data-theme="dark"] {
             --bg-color: #111827;
@@ -25,7 +25,7 @@
             --button-gradient: linear-gradient(to right, #4ade80, #22c55e);
             --editor-bg: #1f2937;
             --output-bg: #1f2937;
-            --shadow: 0 3px 6px rgba(0,0,0,0.3);
+            --shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -39,7 +39,7 @@
             transition: background-color 0.3s, color 0.3s;
         }
         #editor-container {
-            width: 100vw;
+            width: 100%;
             max-width: 800px;
             margin: 10px 0;
             border: 1px solid var(--border-color);
@@ -58,30 +58,29 @@
         }
         .CodeMirror {
             height: 200px !important;
-            font-size: 13px !important;
+            font-size: 14px !important;
             background: var(--editor-bg) !important;
             color: var(--text-color) !important;
             border-bottom: 1px solid var(--border-color);
         }
         #output {
-            width: 100vw;
-            max-width: none;
-            min-height: 1200px;
+            width: 100%;
+            max-width: 1200px;
+            min-height: 1500px;
             height: auto;
             background: var(--output-bg);
             box-shadow: var(--shadow);
             overflow: auto;
-            position: relative;
             border-radius: 12px;
-            padding: 20px;
+            padding: 30px;
             margin: 10px 0;
             -webkit-overflow-scrolling: touch;
         }
         #output svg {
-            max-width: 95%;
+            width: 100%;
             height: auto;
+            max-width: none;
             text-rendering: geometricPrecision;
-            transform-origin: center top;
             display: block;
             margin: 0 auto;
         }
@@ -90,7 +89,7 @@
             font-size: 12px;
             margin: 10px 0;
             display: none;
-            width: 100vw;
+            width: 100%;
             max-width: 800px;
             text-align: left;
         }
@@ -127,7 +126,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
         details {
-            width: 100vw;
+            width: 100%;
             max-width: 800px;
             font-size: 12px;
             margin: 10px 0;
@@ -142,7 +141,7 @@
             color: var(--text-color);
         }
         .controls {
-            width: 100vw;
+            width: 100%;
             max-width: 800px;
             display: flex;
             flex-wrap: wrap;
@@ -166,7 +165,7 @@
             outline: none;
         }
         #dot-preview {
-            width: 100vw;
+            width: 100%;
             max-width: 800px;
             display: none;
             background: var(--editor-bg);
@@ -210,7 +209,7 @@
             stroke: #000;
             stroke-width: 1.5;
             font-family: Arial, sans-serif;
-            font-size: 16px;
+            font-size: 18px;
         }
         .idef0-arrow {
             stroke: #000;
@@ -249,20 +248,23 @@
                 font-size: 14px;
             }
             .CodeMirror {
-                font-size: 11px !important;
+                font-size: 12px !important;
             }
             details, #error, #dot-preview {
                 font-size: 10px;
             }
             #output {
-                min-height: 800px;
+                min-height: 1000px;
+            }
+            #output svg {
+                width: 90%;
             }
             select {
                 font-size: 10px;
                 padding: 8px;
             }
             #title {
-                font-size: 20px !important;
+                font-size: 22px !important;
             }
             #theme-toggle {
                 padding: 8px 16px;
@@ -275,7 +277,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.css">
 </head>
 <body>
-    <h1 style="font-size: 24px; margin: 12px; font-weight: 700; color: var(--text-color);" id="title">FlowCraft</h1>
+    <h1 style="font-size: 26px; margin: 12px; font-weight: 700; color: var(--text-color);" id="title">IDEF0 Forge</h1>
     <details>
         <summary id="instructions-summary">Инструкция</summary>
         <div id="instructions"></div>
@@ -317,6 +319,13 @@
             <option value="jpg">JPG</option>
             <option value="png">PNG</option>
         </select>
+        <button id="fit-button" onclick="fitDiagram()" title="Подогнать масштаб">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16v16H4z"/>
+                <path d="M8 8h8v8H8z"/>
+            </svg>
+            <span>Подогнать</span>
+        </button>
         <button id="save-button" onclick="exportDiagram()" title="Сохранить график">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
@@ -381,9 +390,9 @@
         // Переводы
         const translations = {
             ru: {
-                title: 'FlowCraft',
+                title: 'IDEF0 Forge',
                 instructionsSummary: 'Инструкция',
-                instructions: `Введите код IDEF0 на русском или английском. Команды:<br>
+                instructions: `Введите код IDEF0 на русском или английском для создания диаграмм. Команды:<br>
 - <code>процесс ID "Название"</code> — процесс (A0).<br>
 - <code>вход ID "Название" -> процесс</code> — вход (слева).<br>
 - <code>управление ID "Название" -> процесс</code> — управление (сверху, пунктир).<br>
@@ -393,7 +402,7 @@
 <strong>Пример:</strong><br>
 <pre style="font-size: 10px;">
 процесс A0 "Производство"
-вход I1 "С TRIGGER TOOLS AND MATERIALS" -> A0
+вход I1 "Сырьё" -> A0
 управление C1 "Инструкции" -> A0
 выход A0 -> O1 "Продукт"
 механизм M1 "Станки" -> A0
@@ -419,6 +428,7 @@
                 splineOptions: ['Ортогональные', 'Прямые'],
                 formatLabel: 'Формат:',
                 formatOptions: ['SVG', 'JPG', 'PNG'],
+                fitButton: 'Подогнать',
                 saveButton: 'Сохранить график',
                 generateButton: 'Сгенерировать',
                 themeLabel: ['Светлая', 'Тёмная'],
@@ -436,9 +446,9 @@
                 placeholder: 'Введите код IDEF0...'
             },
             en: {
-                title: 'FlowCraft',
+                title: 'IDEF0 Forge',
                 instructionsSummary: 'Instructions',
-                instructions: `Enter IDEF0 code in Russian or English. Commands:<br>
+                instructions: `Enter IDEF0 code in Russian or English to create diagrams. Commands:<br>
 - <code>process ID "Name"</code> — process (A0).<br>
 - <code>input ID "Name" -> process</code> — input (left).<br>
 - <code>control ID "Name" -> process</code> — control (top, dashed).<br>
@@ -474,6 +484,7 @@ mechanism M2 "Analysts" -> A1`,
                 splineOptions: ['Orthogonal', 'Straight'],
                 formatLabel: 'Format:',
                 formatOptions: ['SVG', 'JPG', 'PNG'],
+                fitButton: 'Fit',
                 saveButton: 'Save Diagram',
                 generateButton: 'Generate',
                 themeLabel: ['Light', 'Dark'],
@@ -503,6 +514,7 @@ mechanism M2 "Analysts" -> A1`,
             document.getElementById('dot-button').querySelector('span').textContent = t.dotButton;
             document.getElementById('spline-label').textContent = t.splineLabel;
             document.getElementById('format-label').textContent = t.formatLabel;
+            document.getElementById('fit-button').querySelector('span').textContent = t.fitButton;
             document.getElementById('save-button').querySelector('span').textContent = t.saveButton;
             document.getElementById('generate-button').querySelector('span').textContent = t.generateButton;
             const splineSelect = document.getElementById('spline-style');
@@ -549,9 +561,9 @@ mechanism M2 "Analysts" -> A1`,
             const splineStyle = document.getElementById('spline-style').value;
             let dot = 'digraph IDEF0 {\n';
             dot += '    rankdir=TB;\n';
-            dot += '    node [shape=box, style=filled, fillcolor=white, width=2.5, height=1, class="idef0-box", fontname="Arial", fontsize=16];\n';
-            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=16, fontcolor=black];\n';
-            dot += `    graph [splines=${splineStyle}, nodesep=1.2, ranksep=2.5, dpi=96];\n`;
+            dot += '    node [shape=box, style=filled, fillcolor=white, width=3, height=1.2, class="idef0-box", fontname="Arial", fontsize=18];\n';
+            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=18, fontcolor=black];\n';
+            dot += `    graph [splines=${splineStyle}, nodesep=2, ranksep=3, dpi=96];\n`;
             dot += '    {rank=min; A0}\n';
             dot += '    {rank=max; A1}\n';
 
@@ -684,9 +696,11 @@ mechanism M2 "Analysts" -> A1`,
                         `;
                         element.prepend(defs);
 
-                        // Динамический viewBox с большими отступами
-                        element.setAttribute('viewBox', `${bbox.x-200} ${bbox.y-200} ${bbox.width+400} ${bbox.height+400}`);
+                        // Корректировка viewBox и размеров
+                        element.setAttribute('viewBox', `${bbox.x-50} ${bbox.y-50} ${bbox.width+100} ${bbox.height+100}`);
                         element.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+                        element.setAttribute('width', Math.min(bbox.width + 100, 1200));
+                        element.setAttribute('height', Math.min(bbox.height + 100, 1500));
 
                         output.innerHTML = '';
                         output.appendChild(element);
@@ -701,6 +715,23 @@ mechanism M2 "Analysts" -> A1`,
                 errorDiv.innerHTML = t.errors.generalError.replace('{message}', error.message);
                 output.innerHTML = '';
             }
+        }
+
+        function fitDiagram() {
+            const output = document.getElementById('output');
+            const svg = output.querySelector('svg');
+            if (!svg) return;
+
+            const bbox = svg.getBBox();
+            const outputWidth = output.clientWidth - 60; // Учитываем padding
+            const outputHeight = output.clientHeight - 60;
+            const scaleX = outputWidth / (bbox.width + 100);
+            const scaleY = outputHeight / (bbox.height + 100);
+            const scale = Math.min(scaleX, scaleY, 1);
+
+            svg.style.transform = `scale(${scale})`;
+            svg.style.transformOrigin = 'center top';
+            console.log('Fit Scale:', scale); // Отладка масштаба
         }
 
         function exportDiagram() {
