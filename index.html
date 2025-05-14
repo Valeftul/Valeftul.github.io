@@ -6,28 +6,38 @@
     <title>Генератор IDEF0</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             margin: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            background-color: #f9f9f9;
+            background-color: #f4f6f8;
             touch-action: manipulation;
         }
         #editor-container {
             width: 100%;
             max-width: 600px;
             margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
             overflow: hidden;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .editor-controls {
+            display: flex;
+            gap: 8px;
+            padding: 8px;
+            background: #f9fafb;
+            border-bottom: 1px solid #d1d5db;
+            flex-wrap: wrap;
         }
         .CodeMirror {
             height: 200px !important;
             font-size: 12px !important;
         }
         #output {
-            border: 1px solid #999;
+            border: 1px solid #d1d5db;
             padding: 10px;
             width: 100%;
             max-width: 600px;
@@ -39,6 +49,7 @@
             overflow: auto;
             display: flex;
             justify-content: center;
+            border-radius: 8px;
             -webkit-overflow-scrolling: touch;
         }
         #output svg {
@@ -48,7 +59,7 @@
             transform-origin: center;
         }
         #error {
-            color: red;
+            color: #dc2626;
             font-size: 12px;
             margin: 10px 0;
             display: none;
@@ -59,36 +70,49 @@
         button {
             padding: 8px 16px;
             font-size: 14px;
-            background-color: #28a745;
+            background-color: #10b981;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
             margin: 5px;
             min-width: 80px;
+            transition: background-color 0.2s, transform 0.1s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             touch-action: manipulation;
         }
         button:hover {
-            background-color: #218838;
+            background-color: #059669;
+            transform: translateY(-1px);
+        }
+        button:active {
+            transform: translateY(0);
         }
         .main-button {
-            background-color: #218838;
-            padding: 10px 20px;
+            background: linear-gradient(to right, #10b981, #059669);
+            padding: 10px 24px;
             font-size: 16px;
+            font-weight: 600;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
         }
         details {
             width: 100%;
             max-width: 600px;
             font-size: 12px;
-            color: #333;
+            color: #374151;
             margin: 10px 0;
-            background: #e9ecef;
+            background: white;
             padding: 10px;
-            border-radius: 5px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
         details summary {
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
+            color: #1f2937;
         }
         .controls {
             width: 100%;
@@ -99,19 +123,23 @@
             gap: 8px;
             margin: 10px 0;
         }
-        #spline-style, #export-format {
-            padding: 5px;
+        select {
+            padding: 8px;
             font-size: 12px;
-            border-radius: 5px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            min-width: 100px;
         }
         #dot-preview {
             width: 100%;
             max-width: 600px;
             display: none;
-            background: #f0f0f0;
+            background: #f9fafb;
             padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
             font-family: monospace;
             font-size: 10px;
             white-space: pre-wrap;
@@ -153,29 +181,6 @@
             marker-end: url(#arrowhead);
             minlen: 2;
         }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-            text-align: center;
-            max-width: 300px;
-            width: 90%;
-        }
-        .modal-content select, .modal-content button {
-            margin: 10px;
-        }
         @media (max-width: 600px) {
             body {
                 margin: 5px;
@@ -198,23 +203,28 @@
             #output {
                 min-height: 400px;
             }
+            select {
+                font-size: 10px;
+                padding: 6px;
+            }
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.css">
 </head>
 <body>
-    <h1 style="font-size: 18px; margin: 10px;">Генератор IDEF0</h1>
+    <h1 style="font-size: 18px; margin: 10px; color: #1f2937;">Генератор IDEF0</h1>
     <details>
         <summary>Инструкция</summary>
-        Введите код IDEF0 на русском или английском. Команды:<br>
-        - <code>процесс</code>/<code>process ID "Название"</code> — процесс (A0).<br>
-        - <code>вход</code>/<code>input ID "Название" -> процесс</code> — вход (слева).<br>
-        - <code>управление</code>/<code>control ID "Название" -> процесс</code> — управление (сверху, пунктир).<br>
-        - <code>выход</code>/<code>output процесс -> ID "Название"</code> — выход (справа).<br>
-        - <code>выход</code>/<code>output процесс -> процесс</code> — декомпозиция (пунктир).<br>
-        - <code>механизм</code>/<code>mechanism ID "Название" -> процесс</code> — механизм (снизу, мелкий пунктир).<br>
-        <strong>Пример:</strong><br>
-        <pre style="font-size: 10px;">
+        <div id="instructions">
+            Введите код IDEF0 на русском или английском. Команды:<br>
+            - <code>процесс</code>/<code>process ID "Название"</code> — процесс (A0).<br>
+            - <code>вход</code>/<code>input ID "Название" -> процесс</code> — вход (слева).<br>
+            - <code>управление</code>/<code>control ID "Название" -> процесс</code> — управление (сверху, пунктир).<br>
+            - <code>выход</code>/<code>output процесс -> ID "Название"</code> — выход (справа).<br>
+            - <code>выход</code>/<code>output процесс -> процесс</code> — декомпозиция (пунктир).<br>
+            - <code>механизм</code>/<code>mechanism ID "Название" -> процесс</code> — механизм (снизу, мелкий пунктир).<br>
+            <strong>Пример:</strong><br>
+            <pre style="font-size: 10px;" id="example-code">
 процесс A0 "Производство"
 вход I1 "Сырьё" -> A0
 управление C1 "Инструкции" -> A0
@@ -225,10 +235,33 @@
 управление C2 "Нормативы" -> A1
 выход A1 -> O2 "Отчёт"
 механизм M2 "Инспекторы" -> A1
-        </pre>
-        Нажмите "Сгенерировать" или выберите экспорт.
+            </pre>
+        </div>
+        Нажмите "Сгенерировать" или выберите формат для сохранения графика.
     </details>
     <div id="editor-container">
+        <div class="editor-controls">
+            <select id="language" onchange="updateLanguage()">
+                <option value="ru" selected>Русский</option>
+                <option value="en">Английский</option>
+            </select>
+            <button onclick="clearEditor()" title="Очистить редактор">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m-10 5v6a2 2 0 002 2h6a2 2 0 002-2v-6m-12 0h12"/>
+                </svg>
+                Очистить
+            </button>
+            <button onclick="toggleDotPreview()" title="Показать DOT-код">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                    <polyline points="10 9 9 9 8 9"/>
+                </svg>
+                DOT-код
+            </button>
+        </div>
         <textarea id="editor" placeholder="Введите код IDEF0...">
 процесс A0 "Основной процесс"
 вход I1 "Материалы" -> A0
@@ -243,28 +276,31 @@
         </textarea>
     </div>
     <div class="controls">
-        <button onclick="clearEditor()">Очистить</button>
-        <button onclick="toggleDotPreview()">DOT-код</button>
         <label>Линии:</label>
         <select id="spline-style">
             <option value="ortho" selected>Ортогональные</option>
             <option value="polyline">Прямые</option>
         </select>
-        <button onclick="openExportModal()">Экспорт</button>
-        <button onclick="saveCode()">Сохранить</button>
-        <button onclick="renderDiagram()" class="main-button">Сгенерировать</button>
-    </div>
-    <div id="export-modal" class="modal">
-        <div class="modal-content">
-            <h3>Выберите формат</h3>
-            <select id="export-format">
-                <option value="svg">SVG</option>
-                <option value="jpg">JPG</option>
-                <option value="png">PNG</option>
-            </select>
-            <button onclick="exportDiagram()">Скачать</button>
-            <button onclick="closeExportModal()">Закрыть</button>
-        </div>
+        <label>Формат:</label>
+        <select id="export-format">
+            <option value="svg">SVG</option>
+            <option value="jpg">JPG</option>
+            <option value="png">PNG</option>
+        </select>
+        <button onclick="exportDiagram()" title="Сохранить график">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                <polyline points="17 21 17 13 7 13 7 21"/>
+                <polyline points="7 3 7 8 15 8"/>
+            </svg>
+            Сохранить график
+        </button>
+        <button onclick="renderDiagram()" class="main-button" title="Сгенерировать диаграмму">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            Сгенерировать
+        </button>
     </div>
     <div id="error"></div>
     <div id="dot-preview"></div>
@@ -306,6 +342,80 @@
         });
         editor.setOption('mode', 'idef0');
 
+        // Примеры кода для языков
+        const exampleCodes = {
+            ru: `процесс A0 "Основной процесс"
+вход I1 "Материалы" -> A0
+управление C1 "Правила" -> A0
+выход A0 -> O1 "Готовый продукт"
+механизм M1 "Рабочие" -> A0
+процесс A1 "Подпроцесс"
+вход I2 "Данные" -> A1
+управление C2 "Стандарты" -> A1
+выход A1 -> O2 "Результат"
+механизм M2 "Аналитики" -> A1`,
+            en: `process A0 "Main Process"
+input I1 "Materials" -> A0
+control C1 "Rules" -> A0
+output A0 -> O1 "Finished Product"
+mechanism M1 "Workers" -> A0
+process A1 "Subprocess"
+input I2 "Data" -> A1
+control C2 "Standards" -> A1
+output A1 -> O2 "Result"
+mechanism M2 "Analysts" -> A1`
+        };
+
+        const exampleInstructions = {
+            ru: `Введите код IDEF0 на русском или английском. Команды:<br>
+- <code>процесс ID "Название"</code> — процесс (A0).<br>
+- <code>вход ID "Название" -> процесс</code> — вход (слева).<br>
+- <code>управление ID "Название" -> процесс</code> — управление (сверху, пунктир).<br>
+- <code>выход процесс -> ID "Название"</code> — выход (справа).<br>
+- <code>выход процесс -> процесс</code> — декомпозиция (пунктир).<br>
+- <code>механизм ID "Название" -> процесс</code> — механизм (снизу, мелкий пунктир).<br>
+<strong>Пример:</strong><br>
+<pre style="font-size: 10px;">
+процесс A0 "Производство"
+вход I1 "Сырьё" -> A0
+управление C1 "Инструкции" -> A0
+выход A0 -> O1 "Продукт"
+механизм M1 "Станки" -> A0
+процесс A1 "Контроль"
+вход I2 "Стандарты" -> A1
+управление C2 "Нормативы" -> A1
+выход A1 -> O2 "Отчёт"
+механизм M2 "Инспекторы" -> A1
+</pre>`,
+            en: `Enter IDEF0 code in Russian or English. Commands:<br>
+- <code>process ID "Name"</code> — process (A0).<br>
+- <code>input ID "Name" -> process</code> — input (left).<br>
+- <code>control ID "Name" -> process</code> — control (top, dashed).<br>
+- <code>output process -> ID "Name"</code> — output (right).<br>
+- <code>output process -> process</code> — decomposition (dashed).<br>
+- <code>mechanism ID "Name" -> process</code> — mechanism (bottom, fine dashed).<br>
+<strong>Example:</strong><br>
+<pre style="font-size: 10px;">
+process A0 "Production"
+input I1 "Raw Materials" -> A0
+control C1 "Instructions" -> A0
+output A0 -> O1 "Product"
+mechanism M1 "Machines" -> A0
+process A1 "Inspection"
+input I2 "Standards" -> A1
+control C2 "Regulations" -> A1
+output A1 -> O2 "Report"
+mechanism M2 "Inspectors" -> A1
+</pre>`
+        };
+
+        // Функция для обновления языка
+        function updateLanguage() {
+            const lang = document.getElementById('language').value;
+            editor.setValue(exampleCodes[lang]);
+            document.getElementById('instructions').innerHTML = exampleInstructions[lang];
+        }
+
         // Функция для экранирования меток
         function escapeDotLabel(label) {
             return label.replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/</g, '\\<').replace(/>/g, '\\>');
@@ -317,8 +427,8 @@
             let dot = 'digraph IDEF0 {\n';
             dot += '    rankdir=TB;\n';
             dot += '    node [shape=box, style=filled, fillcolor=white, width=2.5, height=1, class="idef0-box", fontname="Arial", fontsize=16];\n';
-            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=16, fontcolor=black, labelloc=t, labeldistance=3, labelangle=30, minlen=2, weight=1];\n';
-            dot += `    graph [splines=${splineStyle}, nodesep=2.5, ranksep=4, dpi=120];\n`;
+            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=16, fontcolor=black, labelloc=t, labeldistance=3, labelangle=30, minlen=2];\n';
+            dot += `    graph [splines=${splineStyle}, nodesep=2, ranksep=3, dpi=120];\n`;
             dot += '    {rank=min; A0}\n';
             dot += '    {rank=max; A1}\n';
 
@@ -326,14 +436,11 @@
             const errors = [];
             const nodes = new Set();
             const edges = [];
-            const controlNodes = [];
-            const mechanismNodes = [];
 
             lines.forEach((line, index) => {
                 line = line.trim();
                 if (!line) return;
 
-                // Парсинг команд
                 const processMatch = line.match(/^(процесс|process)\s+([A-Za-z0-9]+)\s+"([^"]+)"/);
                 const inputMatch = line.match(/^(вход|input)\s+([A-Za-z0-9]+)\s+"([^"]+)"\s+->\s+([A-Za-z0-9]+)/);
                 const controlMatch = line.match(/^(управление|control)\s+([A-Za-z0-9]+)\s+"([^"]+)"\s+->\s+([A-Za-z0-9]+)/);
@@ -348,7 +455,7 @@
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(`Ошибка в строке ${index + 1}: метка "${label}" содержит недопустимые символы (разрешены буквы, цифры, пробелы)`);
                     processes.add(id);
                     nodes.add(id);
-                    dot += `    ${id} [label="${escapeDotLabel(label)}\\n${id}", fillcolor=white, style=filled, group=main];\n`;
+                    dot += `    ${id} [label="${escapeDotLabel(label)}\\n${id}", fillcolor=white, style=filled];\n`;
                 } else if (inputMatch) {
                     const id = inputMatch[2];
                     const label = inputMatch[3];
@@ -357,7 +464,7 @@
                     if (nodes.has(id)) errors.push(`Ошибка в строке ${index + 1}: идентификатор ${id} уже используется`);
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(`Ошибка в строке ${index + 1}: метка "${label}" содержит недопустимые символы (разрешены буквы, цифры, пробелы)`);
                     nodes.add(id);
-                    dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}", group=input];\n`;
+                    dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
                     edges.push(`    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", tailport=e, headport=w, constraint=true];\n`);
                 } else if (controlMatch) {
                     const id = controlMatch[2];
@@ -367,10 +474,7 @@
                     if (nodes.has(id)) errors.push(`Ошибка в строке ${index + 1}: идентификатор ${id} уже используется`);
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(`Ошибка в строке ${index + 1}: метка "${label}" содержит недопустимые символы (разрешены буквы, цифры, пробелы)`);
                     nodes.add(id);
-                    const invisId = `invis_${id}`;
-                    dot += `    ${invisId} [shape=none, style=invis, group=control_${target}];\n`;
-                    dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}", group=control_${target}];\n`;
-                    controlNodes.push(`    {rank=same; ${invisId} -> ${target} [style=invis];}\n`);
+                    dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
                     edges.push(`    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", class="idef0-control", tailport=s, headport=n, constraint=false];\n`);
                 } else if (outputMatch) {
                     const source = outputMatch[2];
@@ -380,7 +484,7 @@
                     if (nodes.has(id)) errors.push(`Ошибка в строке ${index + 1}: идентификатор ${id} уже используется`);
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(`Ошибка в строке ${index + 1}: метка "${label}" содержит недопустимые символы (разрешены буквы, цифры, пробелы)`);
                     nodes.add(id);
-                    dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}", group=output];\n`;
+                    dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
                     edges.push(`    ${source} -> ${id} [xlabel="${escapeDotLabel(label)}", tailport=e, headport=w, constraint=true];\n`);
                 } else if (outputProcessMatch) {
                     const source = outputProcessMatch[2];
@@ -396,17 +500,13 @@
                     if (nodes.has(id)) errors.push(`Ошибка в строке ${index + 1}: идентификатор ${id} уже используется`);
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(`Ошибка в строке ${index + 1}: метка "${label}" содержит недопустимые символы (разрешены буквы, цифры, пробелы)`);
                     nodes.add(id);
-                    const invisId = `invis_${id}`;
-                    dot += `    ${invisId} [shape=none, style=invis, group=mechanism_${target}];\n`;
-                    dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}", group=mechanism_${target}];\n`;
-                    mechanismNodes.push(`    {rank=same; ${invisId} -> ${target} [style=invis];}\n`);
+                    dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
                     edges.push(`    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", class="idef0-mechanism", tailport=n, headport=s, constraint=false];\n`);
                 } else {
                     errors.push(`Ошибка в строке ${index + 1}: неверный синтаксис. Ожидается команда процесс/process, вход/input, управление/control, выход/output или механизм/mechanism`);
                 }
             });
 
-            // Проверка правил IDEF0
             processes.forEach(proc => {
                 const inputs = edges.filter(e => e.includes(`-> ${proc}`) && e.includes('headport=w') && !e.includes('xlabel="Декомпозиция"'));
                 const outputs = edges.filter(e => e.includes(`${proc} ->`) && e.includes('tailport=e'));
@@ -414,12 +514,7 @@
                 if (outputs.length === 0 && inputs.length > 0) errors.push(`Процесс ${proc} должен иметь хотя бы один выход`);
             });
 
-            // Добавление невидимых связей для контроля и механизмов
-            dot += controlNodes.join('');
-            dot += mechanismNodes.join('');
-            // Добавление стрелок
             dot += edges.join('');
-
             dot += '}\n';
             return { dot, errors };
         }
@@ -458,7 +553,6 @@
                         `;
                         element.prepend(defs);
 
-                        // Динамическая подгонка viewBox
                         const bbox = element.getBBox();
                         element.setAttribute('viewBox', `${bbox.x-100} ${bbox.y-100} ${bbox.width+200} ${bbox.height+200}`);
                         element.setAttribute('preserveAspectRatio', 'xMidYMid meet');
@@ -478,21 +572,12 @@
             }
         }
 
-        function openExportModal() {
-            document.getElementById('export-modal').style.display = 'flex';
-        }
-
-        function closeExportModal() {
-            document.getElementById('export-modal').style.display = 'none';
-        }
-
         function exportDiagram() {
             const format = document.getElementById('export-format').value;
             const output = document.getElementById('output');
             const svg = output.querySelector('svg');
             if (!svg) {
-                alert('Нет диаграммы для экспорта!');
-                closeExportModal();
+                alert('Нет диаграммы для сохранения!');
                 return;
             }
 
@@ -535,7 +620,6 @@
                 };
                 img.src = url;
             }
-            closeExportModal();
         }
 
         function clearEditor() {
@@ -543,12 +627,6 @@
             document.getElementById('output').innerHTML = '';
             document.getElementById('error').style.display = 'none';
             document.getElementById('dot-preview').style.display = 'none';
-        }
-
-        function saveCode() {
-            const code = editor.getValue();
-            localStorage.setItem('idef0_code', code);
-            alert('Код сохранён!');
         }
 
         function toggleDotPreview() {
