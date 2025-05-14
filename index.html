@@ -3,315 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Генерация IDEF0 графов для МойДневник</title>
+    <title>IDEF0 Диаграмма из DOT</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
-            text-align: center;
-            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        h1, h2 {
-            color: #333;
+        #editor {
+            width: 80%;
+            height: 200px;
+            margin-bottom: 20px;
+            font-family: monospace;
+            font-size: 14px;
         }
-        .graph-container {
-            margin: 20px auto;
+        #output {
             border: 1px solid #ccc;
             padding: 10px;
-            background-color: #fff;
-            max-width: 800px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            width: 80%;
+            min-height: 400px;
+            overflow: auto;
         }
         button {
             padding: 10px 20px;
-            margin: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
             font-size: 16px;
+            cursor: pointer;
         }
-        button:hover {
-            background-color: #0056b3;
+        .idef0-box {
+            fill: #f0f0f0;
+            stroke: #000;
+            stroke-width: 2;
         }
-        .error {
-            color: red;
-            font-weight: bold;
+        .idef0-label {
+            font-family: Arial;
+            font-size: 12px;
         }
-        .loading {
-            color: #666;
-        }
-        .form-container {
-            margin: 20px auto;
-            max-width: 600px;
-            padding: 20px;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        label {
-            display: block;
-            margin: 10px 0 5px;
-            font-weight: bold;
-        }
-        input, textarea {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        textarea {
-            height: 80px;
+        .idef0-arrow {
+            stroke: #000;
+            stroke-width: 2;
         }
     </style>
 </head>
 <body>
-    <h1>Генерация IDEF0 графов для бизнес-процессов МойДневник</h1>
+    <h1>Генератор IDEF0 диаграмм</h1>
+    <textarea id="editor" placeholder="Введите DOT-подобный код для IDEF0...">
+digraph IDEF0 {
+    rankdir=LR;
+    node [shape=box, style=filled, fillcolor=lightgrey, width=2, height=1];
+    edge [arrowhead=vee];
 
-    <div class="form-container">
-        <h2>Добавить новый процесс</h2>
-        <label for="process-name">Название процесса (например, EditEntry):</label>
-        <input type="text" id="process-name" placeholder="EditEntry">
-        <label for="function-label">Функция (например, Редактирование записи):</label>
-        <input type="text" id="function-label" placeholder="Редактирование записи">
-        <label for="inputs">Входы (через запятую, например, ID записи, обновленные данные):</label>
-        <textarea id="inputs" placeholder="ID записи, обновленные данные"></textarea>
-        <label for="outputs">Выходы (через запятую, например, Обновленная запись, уведомление, ошибка):</label>
-        <textarea id="outputs" placeholder="Обновленная запись, уведомление, ошибка"></textarea>
-        <label for="controls">Управление (через запятую, например, Правила валидации):</label>
-        <textarea id="controls" placeholder="Правила валидации"></textarea>
-        <label for="mechanisms">Механизмы (через запятую, например, Веб-интерфейс (diary.html), Firestore):</label>
-        <textarea id="mechanisms" placeholder="Веб-интерфейс (diary.html), Firestore"></textarea>
-        <button onclick="addProcess()">Добавить процесс</button>
-    </div>
+    A0 [label="Процесс A0"];
+    Input [shape=none, label="Вход"];
+    Control [shape=none, label="Управление"];
+    Output [shape=none, label="Выход"];
+    Mechanism [shape=none, label="Механизм"];
 
-    <div id="graphs"></div>
+    Input -> A0 [label="Входной поток"];
+    Control -> A0 [label="Управляющий поток", constraint=false];
+    A0 -> Output [label="Выходной поток"];
+    Mechanism -> A0 [label="Механизм", constraint=false, style=dashed];
+}
+    </textarea>
+    <button onclick="renderDiagram()">Сгенерировать диаграмму</button>
+    <div id="output"></div>
 
-    <script src="https://unpkg.com/@hpcc-js/wasm@2.14.2/dist/index.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js"></script>
     <script>
-        // Инициализация библиотеки
-        const viz = window['@hpcc-js/wasm'];
-
-        // Начальные процессы
-        let processes = [
-            {
-                name: 'Authorization',
-                functionLabel: 'Авторизация пользователя',
-                inputs: [{ label: 'Email и пароль', id: 'I1' }],
-                outputs: [
-                    { label: 'Аутентифицированный\\nпользователь', id: 'O1' },
-                    { label: 'Сообщение об ошибке', id: 'O2' }
-                ],
-                controls: [{ label: 'Правила авторизации\\n(Firebase Auth)', id: 'C1' }],
-mechanisms: [
-                    { label: 'Веб-интерфейс\\n(login.html)', id: 'M1' },
-                    { label: 'Firebase\\nAuthentication', id: 'M2' }
-                ],
-                containerId: 'authorization-graph'
-            },
-            {
-                name: 'CreateEntry',
-                functionLabel: 'Создание записи',
-                inputs: [{ label: 'Данные записи\\n(дата, заголовок,\\nсодержание, изображение)', id: 'I1' }],
-                outputs: [
-                    { label: 'Сохраненная запись\\n(Firestore)', id: 'O1' },
-                    { label: 'Уведомление об успехе', id: 'O2' },
-                    { label: 'Сообщение об ошибке', id: 'O3' }
-                ],
-                controls: [{ label: 'Правила валидации\\n(обязательное содержание)', id: 'C1' }],
-                mechanisms: [
-                    { label: 'Веб-интерфейс\\n(diary.html)', id: 'M1' },
-                    { label: 'Firestore', id: 'M2' },
-                    { label: 'Firebase Storage', id: 'M3' }
-                ],
-                containerId: 'create-entry-graph'
-            },
-            {
-                name: 'AddSticker',
-                functionLabel: 'Добавление стикера',
-                inputs: [
-                    { label: 'Стикер\\n(системный или пользовательский)', id: 'I1' },
-                    { label: 'Координаты (x, y)', id: 'I2' }
-                ],
-                outputs: [
-                    { label: 'Стикер в записи\\n(Firestore)', id: 'O1' },
-                    { label: 'Сохраненный стикер\\n(Firebase Storage)', id: 'O2' },
-                    { label: 'Сообщение об ошибке', id: 'O3' }
-                ],
-                controls: [{ label: 'Правила загрузки\\n(формат файла)', id: 'C1' }],
-                mechanisms: [
-                    { label: 'Веб-интерфейс\\n(diary.html)', id: 'M1' },
-                    { label: 'Firestore', id: 'M2' },
-                    { label: 'Firebase Storage', id: 'M3' }
-                ],
-                containerId: 'add-sticker-graph'
-            }
-        ];
-
-        // Функция для генерации DOT-кода
-        function generateDotCode(process) {
-            return 
-                digraph ${process.name} {
-                    rankdir=TB;
-                    splines=ortho;
-                    node [fontsize=12, width=2, height=0.8];
-                    edge [fontsize=10, arrowhead=vee, color=navy];
-                    
-                    A0 [label="A-0\\n${process.functionLabel}", shape=box, style=filled, fillcolor=lightblue];
-                    
-                    ${process.inputs.map((input, i) => 
-                        I${i+1} [label="${input.label}", shape=plaintext, fillcolor=none];
-                        I${i+1} -> A0 [label="${input.id}"];
-                    ).join('\n')}
-                    
-                    ${process.outputs.map((output, i) => 
-                        O${i+1} [label="${output.label}", shape=plaintext, fillcolor=none];
-                        A0 -> O${i+1} [label="${output.id}"];
-                    ).join('\n')}
-                    
-                    ${process.controls.map((control, i) => 
-                        C${i+1} [label="${control.label}", shape=plaintext, fillcolor=none];
-                        C${i+1} -> A0 [label="${control.id}", style=dashed, arrowhead=dot];
-                    ).join('\n')}
-                    
-                    ${process.mechanisms.map((mechanism, i) => 
-                        M${i+1} [label="${mechanism.label}", shape=plaintext, fillcolor=none];
-                        M${i+1} -> A0 [label="${mechanism.id}", style=dotted, arrowhead=tee];
-                    ).join('\n')}
-                    
-                    {rank=min; ${process.inputs.map((_, i) => I${i+1}).join(';')};}
-                    {rank=same; ${process.outputs.map((_, i) => O${i+1}).join(';')};}
-                    {rank=max; ${process.controls.map((_, i) => C${i+1}).join(';')};${process.mechanisms.map((_, i) => M${i+1}).join(';')};}
-                }
-            ;
-        }
-// Функция для рендеринга всех графов
-        function renderGraphs() {
-            const graphsDiv = document.getElementById('graphs');
-            graphsDiv.innerHTML = '';
-            processes.forEach(process => {
-                const containerId = process.containerId;
-                const graphDiv = document.createElement('div');
-                graphDiv.id = containerId;
-                graphDiv.className = 'graph-container';
-                graphDiv.innerHTML = <p class="loading">Загрузка графа ${process.functionLabel}...</p>;
-                graphsDiv.appendChild(graphDiv);
-
-                const button = document.createElement('button');
-                button.textContent = Скачать ${process.functionLabel} (PNG);
-                button.onclick = () => downloadGraph(containerId, ${process.name.toLowerCase()}_idef0.png);
-                graphsDiv.appendChild(button);
-
-                if (viz && viz.graphviz) {
-                    viz.graphviz().then(graphviz => {
-                        const dotCode = generateDotCode(process);
-                        try {
-                            const svg = graphviz.renderSVGElement(dotCode);
-                            graphDiv.innerHTML = '';
-                            graphDiv.appendChild(svg);
-                            console.log(Граф ${process.name} успешно отрендерен);
-                        } catch (error) {
-                            console.error(Ошибка рендеринга графа ${process.name}:, error);
-                            graphDiv.innerHTML = <p class="error">Ошибка рендеринга графа ${process.name}: ${error.message}</p>;
-                        }
-                    }).catch(error => {
-                        console.error('Ошибка инициализации @hpcc-js/wasm:', error);
-                        graphDiv.innerHTML = <p class="error">Ошибка загрузки библиотеки: ${error.message}</p>;
+        function renderDiagram() {
+            const dot = document.getElementById('editor').value;
+            const output = document.getElementById('output');
+            
+            try {
+                const viz = new Viz();
+                viz.renderSVGElement(dot)
+                    .then(function(element) {
+                        // Очистка предыдущего вывода
+                        output.innerHTML = '';
+                        // Добавление SVG в output
+                        output.appendChild(element);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        output.innerHTML = '<p style="color: red;">Ошибка при генерации диаграммы: ' + error.message + '</p>';
                     });
-                } else {
-                    console.error('Библиотека @hpcc-js/wasm не загружена');
-                    graphDiv.innerHTML = <p class="error">Ошибка: Библиотека @hpcc-js/wasm не загружена</p>;
-                }
-            });
-        }
-
-        // Функция для добавления нового процесса
-        function addProcess() {
-            const name = document.getElementById('process-name').value.trim();
-            const functionLabel = document.getElementById('function-label').value.trim();
-            const inputs = document.getElementById('inputs').value.split(',').map((label, i) => ({
-                label: label.trim().replace(/\n/g, '\\n'),
-                id: I${i+1}
-            }));
-            const outputs = document.getElementById('outputs').value.split(',').map((label, i) => ({
-                label: label.trim().replace(/\n/g, '\\n'),
-                id: O${i+1}
-            }));
-            const controls = document.getElementById('controls').value.split(',').map((label, i) => ({
-                label: label.trim().replace(/\n/g, '\\n'),
-                id: C${i+1}
-            }));
-            const mechanisms = document.getElementById('mechanisms').value.split(',').map((label, i) => ({
-                label: label.trim().replace(/\n/g, '\\n'),
-                id: M${i+1}
-            }));
-
-            if (!name  !inputs.length  !controls.length || !mechanisms.length) {
-                alert('Заполните все поля!');
-                return;
+            } catch (error) {
+                output.innerHTML = '<p style="color: red;">Ошибка: ' + error.message + '</p>';
             }
-
-            const newProcess = {
-                name: name,
-                functionLabel: functionLabel,
-                inputs: inputs,
-                outputs: outputs,
-                controls: controls,
-                mechanisms: mechanisms,
-                containerId: ${name.toLowerCase()}-graph
-            };
-
-            processes.push(newProcess);
-            renderGraphs();
-// Очистка формы
-            document.getElementById('process-name').value = '';
-            document.getElementById('function-label').value = '';
-            document.getElementById('inputs').value = '';
-            document.getElementById('outputs').value = '';
-            document.getElementById('controls').value = '';
-            document.getElementById('mechanisms').value = '';
         }
-
-        // Функция для скачивания графа как PNG
-        function downloadGraph(containerId, filename) {
-            const container = document.getElementById(containerId);
-            const svg = container.querySelector('svg');
-            if (!svg) {
-                alert('Граф не найден! Проверьте консоль для ошибок.');
-                return;
-            }
-            const svgData = new XMLSerializer().serializeToString(svg);
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const img = new Image();
-            img.onload = () => {
-                const scale = 2; // Увеличение для повышения качества
-                canvas.width = img.width * scale;
-                canvas.height = img.height * scale;
-                ctx.scale(scale, scale);
-                ctx.drawImage(img, 0, 0);
-                try {
-                    const png = canvas.toDataURL('image/png');
-                    const link = document.createElement('a');
-                    link.href = png;
-                    link.download = filename;
-                    link.click();
-                } catch (error) {
-                    alert('Ошибка при скачивании PNG: ' + error.message);
-                    console.error('Ошибка скачивания:', error);
-                }
-            };
-            img.onerror = () => {
-                alert('Ошибка загрузки SVG!');
-                console.error('Ошибка загрузки SVG');
-            };
-            img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
-        }
-
-        // Начальный рендеринг графов
-        renderGraphs();
     </script>
 </body>
 </html>
