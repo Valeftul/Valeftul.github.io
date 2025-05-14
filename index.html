@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -12,7 +11,7 @@
             text-align: center;
             background-color: #f4f4f4;
         }
-        h1 {
+        h1, h2 {
             color: #333;
         }
         .graph-container {
@@ -40,24 +39,63 @@
             color: red;
             font-weight: bold;
         }
+        .loading {
+            color: #666;
+        }
+        .form-container {
+            margin: 20px auto;
+            max-width: 600px;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        textarea {
+            height: 80px;
+        }
     </style>
 </head>
 <body>
     <h1>Генерация IDEF0 графов для бизнес-процессов МойДневник</h1>
-    <div id="authorization-graph" class="graph-container"><p>Загрузка графа Авторизация...</p></div>
-    <button onclick="downloadGraph('authorization-graph', 'authorization_idef0.png')">Скачать Авторизация (PNG)</button>
-    <div id="create-entry-graph" class="graph-container"><p>Загрузка графа Создание записи...</p></div>
-    <button onclick="downloadGraph('create-entry-graph', 'create_entry_idef0.png')">Скачать Создание записи (PNG)</button>
-    <div id="add-sticker-graph" class="graph-container"><p>Загрузка графа Добавление стикера...</p></div>
-    <button onclick="downloadGraph('add-sticker-graph', 'add_sticker_idef0.png')">Скачать Добавление стикера (PNG)</button>
+
+    <div class="form-container">
+        <h2>Добавить новый процесс</h2>
+        <label for="process-name">Название процесса (например, EditEntry):</label>
+        <input type="text" id="process-name" placeholder="EditEntry">
+        <label for="function-label">Функция (например, Редактирование записи):</label>
+        <input type="text" id="function-label" placeholder="Редактирование записи">
+        <label for="inputs">Входы (через запятую, например, ID записи, обновленные данные):</label>
+        <textarea id="inputs" placeholder="ID записи, обновленные данные"></textarea>
+        <label for="outputs">Выходы (через запятую, например, Обновленная запись, уведомление, ошибка):</label>
+        <textarea id="outputs" placeholder="Обновленная запись, уведомление, ошибка"></textarea>
+        <label for="controls">Управление (через запятую, например, Правила валидации):</label>
+        <textarea id="controls" placeholder="Правила валидации"></textarea>
+        <label for="mechanisms">Механизмы (через запятую, например, Веб-интерфейс (diary.html), Firestore):</label>
+        <textarea id="mechanisms" placeholder="Веб-интерфейс (diary.html), Firestore"></textarea>
+        <button onclick="addProcess()">Добавить процесс</button>
+    </div>
+
+    <div id="graphs"></div>
 
     <script src="https://unpkg.com/@hpcc-js/wasm@2.14.2/dist/index.min.js"></script>
     <script>
         // Инициализация библиотеки
         const viz = window['@hpcc-js/wasm'];
 
-        // Данные процессов
-        const processes = [
+        // Начальные процессы
+        let processes = [
             {
                 name: 'Authorization',
                 functionLabel: 'Авторизация пользователя',
@@ -67,7 +105,7 @@
                     { label: 'Сообщение об ошибке', id: 'O2' }
                 ],
                 controls: [{ label: 'Правила авторизации\\n(Firebase Auth)', id: 'C1' }],
-                mechanisms: [
+mechanisms: [
                     { label: 'Веб-интерфейс\\n(login.html)', id: 'M1' },
                     { label: 'Firebase\\nAuthentication', id: 'M2' }
                 ],
@@ -94,8 +132,7 @@
                 name: 'AddSticker',
                 functionLabel: 'Добавление стикера',
                 inputs: [
-
-{ label: 'Стикер\\n(системный или пользовательский)', id: 'I1' },
+                    { label: 'Стикер\\n(системный или пользовательский)', id: 'I1' },
                     { label: 'Координаты (x, y)', id: 'I2' }
                 ],
                 outputs: [
@@ -150,36 +187,91 @@
                 }
             ;
         }
-
-        // Рендеринг графов
-        if (viz && viz.graphviz) {
-            viz.graphviz().then(graphviz => {
-                processes.forEach(process => {
-                    const dotCode = generateDotCode(process);
-                    const container = document.getElementById(process.containerId);
-                    try {
-                        const svg = graphviz.renderSVGElement(dotCode);
-                        container.innerHTML = '';
-                        container.appendChild(svg);
-                        console.log(Граф ${process.name} успешно отрендерен);
-                    } catch (error) {
-                        console.error(Ошибка рендеринга графа ${process.name}:, error);
-                        container.innerHTML = <p class="error">Ошибка рендеринга графа ${process.name}: ${error.message}</p>;
-                    }
-                });
-            }).catch(error => {
-                console.error('Ошибка инициализации @hpcc-js/wasm:', error);
-
-
-processes.forEach(process => {
-                    document.getElementById(process.containerId).innerHTML = <p class="error">Ошибка загрузки библиотеки: ${error.message}</p>;
-                });
-            });
-        } else {
-            console.error('Библиотека @hpcc-js/wasm не загружена');
+// Функция для рендеринга всех графов
+        function renderGraphs() {
+            const graphsDiv = document.getElementById('graphs');
+            graphsDiv.innerHTML = '';
             processes.forEach(process => {
-                document.getElementById(process.containerId).innerHTML = <p class="error">Ошибка: Библиотека @hpcc-js/wasm не загружена</p>;
+                const containerId = process.containerId;
+                const graphDiv = document.createElement('div');
+                graphDiv.id = containerId;
+                graphDiv.className = 'graph-container';
+                graphDiv.innerHTML = <p class="loading">Загрузка графа ${process.functionLabel}...</p>;
+                graphsDiv.appendChild(graphDiv);
+
+                const button = document.createElement('button');
+                button.textContent = Скачать ${process.functionLabel} (PNG);
+                button.onclick = () => downloadGraph(containerId, ${process.name.toLowerCase()}_idef0.png);
+                graphsDiv.appendChild(button);
+
+                if (viz && viz.graphviz) {
+                    viz.graphviz().then(graphviz => {
+                        const dotCode = generateDotCode(process);
+                        try {
+                            const svg = graphviz.renderSVGElement(dotCode);
+                            graphDiv.innerHTML = '';
+                            graphDiv.appendChild(svg);
+                            console.log(Граф ${process.name} успешно отрендерен);
+                        } catch (error) {
+                            console.error(Ошибка рендеринга графа ${process.name}:, error);
+                            graphDiv.innerHTML = <p class="error">Ошибка рендеринга графа ${process.name}: ${error.message}</p>;
+                        }
+                    }).catch(error => {
+                        console.error('Ошибка инициализации @hpcc-js/wasm:', error);
+                        graphDiv.innerHTML = <p class="error">Ошибка загрузки библиотеки: ${error.message}</p>;
+                    });
+                } else {
+                    console.error('Библиотека @hpcc-js/wasm не загружена');
+                    graphDiv.innerHTML = <p class="error">Ошибка: Библиотека @hpcc-js/wasm не загружена</p>;
+                }
             });
+        }
+
+        // Функция для добавления нового процесса
+        function addProcess() {
+            const name = document.getElementById('process-name').value.trim();
+            const functionLabel = document.getElementById('function-label').value.trim();
+            const inputs = document.getElementById('inputs').value.split(',').map((label, i) => ({
+                label: label.trim().replace(/\n/g, '\\n'),
+                id: I${i+1}
+            }));
+            const outputs = document.getElementById('outputs').value.split(',').map((label, i) => ({
+                label: label.trim().replace(/\n/g, '\\n'),
+                id: O${i+1}
+            }));
+            const controls = document.getElementById('controls').value.split(',').map((label, i) => ({
+                label: label.trim().replace(/\n/g, '\\n'),
+                id: C${i+1}
+            }));
+            const mechanisms = document.getElementById('mechanisms').value.split(',').map((label, i) => ({
+                label: label.trim().replace(/\n/g, '\\n'),
+                id: M${i+1}
+            }));
+
+            if (!name  !inputs.length  !controls.length || !mechanisms.length) {
+                alert('Заполните все поля!');
+                return;
+            }
+
+            const newProcess = {
+                name: name,
+                functionLabel: functionLabel,
+                inputs: inputs,
+                outputs: outputs,
+                controls: controls,
+                mechanisms: mechanisms,
+                containerId: ${name.toLowerCase()}-graph
+            };
+
+            processes.push(newProcess);
+            renderGraphs();
+// Очистка формы
+            document.getElementById('process-name').value = '';
+            document.getElementById('function-label').value = '';
+            document.getElementById('inputs').value = '';
+            document.getElementById('outputs').value = '';
+            document.getElementById('controls').value = '';
+            document.getElementById('mechanisms').value = '';
         }
 
         // Функция для скачивания графа как PNG
@@ -215,9 +307,11 @@ processes.forEach(process => {
                 alert('Ошибка загрузки SVG!');
                 console.error('Ошибка загрузки SVG');
             };
-            // Корректная кодировка для кириллицы
             img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
         }
+
+        // Начальный рендеринг графов
+        renderGraphs();
     </script>
 </body>
 </html>
