@@ -28,14 +28,13 @@
             --shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: Arial, sans-serif;
             margin: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
             background-color: var(--bg-color);
             color: var(--text-color);
-            touch-action: manipulation;
             transition: background-color 0.3s, color 0.3s;
         }
         #editor-container {
@@ -47,7 +46,6 @@
             overflow: hidden;
             background: var(--editor-bg);
             box-shadow: var(--shadow);
-            touch-action: manipulation;
         }
         .editor-controls {
             display: flex;
@@ -81,8 +79,6 @@
             padding: 0;
             margin: 10px 0;
             text-align: center;
-            -webkit-overflow-scrolling: touch;
-            touch-action: manipulation;
         }
         #output svg {
             width: 100%;
@@ -114,7 +110,6 @@
             align-items: center;
             gap: 8px;
             box-shadow: var(--shadow);
-            touch-action: manipulation;
         }
         button:hover {
             background-color: var(--button-hover);
@@ -198,7 +193,6 @@
             white-space: pre-wrap;
             max-height: 200px;
             overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
         }
         #theme-toggle {
             position: fixed;
@@ -390,10 +384,10 @@
     <script src="https://unpkg.com/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js" onerror="loadLocalSvgPanZoom()"></script>
     <script id="canvg-script" src="https://cdn.jsdelivr.net/npm/canvg@3.0.10/dist/umd.js" onerror="handleCanvgError()"></script>
     <script>
+        // Объект для отслеживания загрузки библиотек
         let librariesLoaded = {
             codeMirror: false,
             viz: false,
-            fullRender: false,
             svgPanZoom: false,
             canvg: false
         };
@@ -404,7 +398,7 @@
             const link = document.createElement('link');
             link.rel = 'stylesheet';
             link.href = 'libs/codemirror.min.css';
-            link.onerror = () => alert('Не удалось загрузить CodeMirror CSS даже локально.');
+            link.onerror = () => console.error('Не удалось загрузить CodeMirror CSS локально');
             link.onload = () => console.log('CodeMirror CSS загружен локально');
             document.head.appendChild(link);
         }
@@ -413,10 +407,10 @@
             console.error('Ошибка загрузки CodeMirror с CDN');
             const script = document.createElement('script');
             script.src = 'libs/codemirror.min.js';
-            script.onerror = () => alert('Не удалось загрузить CodeMirror даже локально.');
+            script.onerror = () => console.error('Не удалось загрузить CodeMirror локально');
             script.onload = () => {
                 librariesLoaded.codeMirror = true;
-                checkAllLibrariesLoaded();
+                checkLibrariesLoaded();
                 console.log('CodeMirror загружен локально');
             };
             document.body.appendChild(script);
@@ -426,10 +420,10 @@
             console.error('Ошибка загрузки Viz.js с CDN');
             const script = document.createElement('script');
             script.src = 'libs/viz.js';
-            script.onerror = () => alert('Не удалось загрузить Viz.js даже локально.');
+            script.onerror = () => console.error('Не удалось загрузить Viz.js локально');
             script.onload = () => {
                 librariesLoaded.viz = true;
-                checkAllLibrariesLoaded();
+                checkLibrariesLoaded();
                 console.log('Viz.js загружен локально');
             };
             document.body.appendChild(script);
@@ -439,10 +433,10 @@
             console.error('Ошибка загрузки full.render.js с CDN');
             const script = document.createElement('script');
             script.src = 'libs/full.render.js';
-            script.onerror = () => alert('Не удалось загрузить full.render.js даже локально.');
+            script.onerror = () => console.error('Не удалось загрузить full.render.js локально');
             script.onload = () => {
-                librariesLoaded.fullRender = true;
-                checkAllLibrariesLoaded();
+                librariesLoaded.viz = true;
+                checkLibrariesLoaded();
                 console.log('full.render.js загружен локально');
             };
             document.body.appendChild(script);
@@ -452,10 +446,10 @@
             console.error('Ошибка загрузки svg-pan-zoom с CDN');
             const script = document.createElement('script');
             script.src = 'libs/svg-pan-zoom.min.js';
-            script.onerror = () => alert('Не удалось загрузить svg-pan-zoom даже локально.');
+            script.onerror = () => console.error('Не удалось загрузить svg-pan-zoom локально');
             script.onload = () => {
                 librariesLoaded.svgPanZoom = true;
-                checkAllLibrariesLoaded();
+                checkLibrariesLoaded();
                 console.log('svg-pan-zoom загружен локально');
             };
             document.body.appendChild(script);
@@ -465,7 +459,7 @@
             console.error('Ошибка загрузки Canvg с запасного CDN');
             const script = document.createElement('script');
             script.src = 'libs/canvg.min.js';
-            script.onerror = () => alert('Не удалось загрузить Canvg даже локально. Экспорт в JPG/PNG недоступен.');
+            script.onerror = () => console.error('Не удалось загрузить Canvg локально');
             script.onload = () => {
                 librariesLoaded.canvg = true;
                 console.log('Canvg загружен локально');
@@ -474,8 +468,8 @@
         }
 
         function handleCanvgError() {
-            const script = document.getElementById('canvg-script');
             console.error('Ошибка загрузки Canvg с основного CDN');
+            const script = document.getElementById('canvg-script');
             script.onerror = null;
             script.src = 'https://unpkg.com/canvg@3.0.10/dist/umd.js';
             script.onload = () => {
@@ -488,90 +482,75 @@
             };
         }
 
-        // Проверка интернет-соединения
-        function checkOnline() {
-            return navigator.onLine;
-        }
-
-        // Проверка поддержки браузером
-        function checkBrowserSupport() {
-            const supportsPromises = typeof Promise !== 'undefined';
-            const supportsCanvas = !!document.createElement('canvas').getContext;
-            const supportsSVG = !!document.createElementNS && !!document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGRect;
-            if (!supportsPromises || !supportsCanvas || !supportsSVG) {
-                alert('Ваш браузер устарел и не поддерживает необходимые функции (Promises, Canvas, SVG). Обновите браузер.');
-                return false;
-            }
-            return true;
-        }
-
         // Проверка загрузки библиотек
-        function checkLibraries() {
-            if (!checkOnline()) {
-                alert('Нет интернет-соединения. Попробуйте использовать локальные копии библиотек.');
-                return false;
-            }
-            const missingLibraries = [];
-            if (!librariesLoaded.codeMirror) missingLibraries.push('CodeMirror');
-            if (!librariesLoaded.viz || !librariesLoaded.fullRender) missingLibraries.push('Viz.js');
-            if (!librariesLoaded.svgPanZoom) missingLibraries.push('svg-pan-zoom');
-            if (missingLibraries.length > 0) {
-                console.error('Отсутствуют библиотеки:', missingLibraries);
-                return false;
-            }
-            return true;
-        }
-
-        // Ожидание загрузки всех библиотек
-        function checkAllLibrariesLoaded() {
+        function checkLibrariesLoaded() {
             librariesLoaded.codeMirror = typeof CodeMirror !== 'undefined';
             librariesLoaded.viz = typeof Viz !== 'undefined';
-            librariesLoaded.fullRender = typeof Viz !== 'undefined';
             librariesLoaded.svgPanZoom = typeof svgPanZoom !== 'undefined';
             librariesLoaded.canvg = typeof Canvg !== 'undefined';
 
-            if (librariesLoaded.codeMirror && librariesLoaded.viz && librariesLoaded.fullRender && librariesLoaded.svgPanZoom) {
-                initializeEditorAndRender();
+            console.log('Статус загрузки библиотек:', librariesLoaded);
+
+            if (librariesLoaded.codeMirror && librariesLoaded.viz && librariesLoaded.svgPanZoom) {
+                initializeApp();
             }
         }
 
-        // Инициализация редактора и рендеринга
+        // Инициализация приложения
         let editor;
-        function initializeEditorAndRender() {
-            if (!checkBrowserSupport()) return;
+        let panZoomInstance = null;
 
-            editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
-                lineNumbers: true,
-                mode: 'text/plain',
-                theme: 'default',
-                viewportMargin: Infinity
-            });
-            editor.setSize('100%', '200px');
+        function initializeApp() {
+            console.log('Инициализация приложения...');
 
-            CodeMirror.defineMode('idef0', function() {
-                return {
-                    token: function(stream) {
-                        if (stream.match(/^(процесс|вход|управление|выход|механизм|process|input|control|output|mechanism)\b/)) {
-                            return 'keyword';
+            // Проверка поддержки браузером
+            const supportsCanvas = !!document.createElement('canvas').getContext;
+            const supportsSVG = !!document.createElementNS && !!document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGRect;
+            if (!supportsCanvas || !supportsSVG) {
+                alert('Ваш браузер не поддерживает необходимые функции (Canvas, SVG). Обновите браузер.');
+                return;
+            }
+
+            // Инициализация CodeMirror
+            try {
+                editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+                    lineNumbers: true,
+                    mode: 'text/plain',
+                    theme: 'default',
+                    viewportMargin: Infinity
+                });
+                editor.setSize('100%', '200px');
+
+                // Простая подсветка синтаксиса
+                CodeMirror.defineMode('idef0', function() {
+                    return {
+                        token: function(stream) {
+                            if (stream.match(/^(процесс|вход|управление|выход|механизм|process|input|control|output|mechanism)\b/)) {
+                                return 'keyword';
+                            }
+                            if (stream.match(/[A-Za-z0-9]+/)) {
+                                return 'variable';
+                            }
+                            if (stream.match(/"[^"]*"/)) {
+                                return 'string';
+                            }
+                            if (stream.match(/->/)) {
+                                return 'operator';
+                            }
+                            stream.next();
+                            return null;
                         }
-                        if (stream.match(/[A-Za-z0-9]+/)) {
-                            return 'variable';
-                        }
-                        if (stream.match(/"[^"]*"/)) {
-                            return 'string';
-                        }
-                        if (stream.match(/->/)) {
-                            return 'operator';
-                        }
-                        stream.next();
-                        return null;
-                    }
-                };
-            });
-            editor.setOption('mode', 'idef0');
+                    };
+                });
+                editor.setOption('mode', 'idef0');
+            } catch (e) {
+                console.error('Ошибка инициализации CodeMirror:', e);
+                alert('Не удалось инициализировать редактор. Проверьте консоль.');
+                return;
+            }
 
             updateLanguage();
-            renderDiagram();
+            loadExample();
         }
 
         // Автоопределение языка и темы
@@ -632,8 +611,8 @@
                 errors: {
                     duplicateId: 'Ошибка в строке {line}: идентификатор {id} уже используется',
                     processNotDefined: 'Ошибка в строке {line}: процесс {id} не определён',
-                    invalidLabel: 'Ошибка в строке {line}: метка "{label}" содержит недопустимые символы (разрешены буквы, цифры, пробелы)',
-                    syntaxError: 'Ошибка в строке {line}: неверный синтаксис. Ожидается команда процесс/process, вход/input, управление/control, выход/output или механизм/mechanism',
+                    invalidLabel: 'Ошибка в строке {line}: метка "{label}" содержит недопустимые символы',
+                    syntaxError: 'Ошибка в строке {line}: неверный синтаксис',
                     noInput: 'Процесс {id} должен иметь хотя бы один вход',
                     noOutput: 'Процесс {id} должен иметь хотя бы один выход',
                     renderError: 'Ошибка рендеринга: {message}<br>DOT-код:<pre>{dot}</pre>',
@@ -693,8 +672,8 @@ mechanism M1 "Workers" -> A1`,
                 errors: {
                     duplicateId: 'Error in line {line}: identifier {id} already used',
                     processNotDefined: 'Error in line {line}: process {id} not defined',
-                    invalidLabel: 'Error in line {line}: label "{label}" contains invalid characters (allowed: letters, numbers, spaces)',
-                    syntaxError: 'Error in line {line}: invalid syntax. Expected command process, input, control, output, or mechanism',
+                    invalidLabel: 'Error in line {line}: label "{label}" contains invalid characters',
+                    syntaxError: 'Error in line {line}: invalid syntax',
                     noInput: 'Process {id} must have at least one input',
                     noOutput: 'Process {id} must have at least one output',
                     renderError: 'Rendering error: {message}<br>DOT code:<pre>{dot}</pre>',
@@ -729,7 +708,6 @@ mechanism M1 "Workers" -> A1`,
             exampleSelect.options[0].text = t.exampleOptions[0];
             exampleSelect.options[1].text = t.exampleOptions[1];
             exampleSelect.options[2].text = t.exampleOptions[2];
-            loadExample();
             if (editor) editor.getInputField().placeholder = t.placeholder;
             document.documentElement.lang = lang;
         }
@@ -738,16 +716,15 @@ mechanism M1 "Workers" -> A1`,
             const lang = document.getElementById('language').value;
             const t = translations[lang];
             const example = document.getElementById('example-select').value;
-            if (editor) {
-                if (example === 'A0') {
-                    editor.setValue(t.exampleCodeA0);
-                } else if (example === 'A0A1') {
-                    editor.setValue(t.exampleCodeA0A1);
-                } else if (example === 'A1') {
-                    editor.setValue(t.exampleCodeA1);
-                }
-                renderDiagram();
+            if (!editor) return;
+            if (example === 'A0') {
+                editor.setValue(t.exampleCodeA0);
+            } else if (example === 'A0A1') {
+                editor.setValue(t.exampleCodeA0A1);
+            } else if (example === 'A1') {
+                editor.setValue(t.exampleCodeA1);
             }
+            renderDiagram();
         }
 
         function toggleTheme() {
@@ -791,7 +768,7 @@ mechanism M1 "Workers" -> A1`,
                     const id = processMatch[2];
                     const label = processMatch[3];
                     if (nodes.has(id)) errors.push(t.errors.duplicateId.replace('{line}', index + 1).replace('{id}', id));
-                    if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(t.errors.invalidLabel.replace('{line}', index + 1).replace('{label}', label));
+                    if (!/^[A-Za-z0-9\s]+$/.test(label)) errors.push(t.errors.invalidLabel.replace('{line}', index + 1).replace('{label}', label));
                     processes.add(id);
                     nodes.add(id);
                     dot += `    ${id} [label="${escapeDotLabel(label)}\\n${id}", fillcolor=white, style=filled];\n`;
@@ -801,7 +778,7 @@ mechanism M1 "Workers" -> A1`,
                     const target = inputMatch[4];
                     if (!processes.has(target)) errors.push(t.errors.processNotDefined.replace('{line}', index + 1).replace('{id}', target));
                     if (nodes.has(id)) errors.push(t.errors.duplicateId.replace('{line}', index + 1).replace('{id}', id));
-                    if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(t.errors.invalidLabel.replace('{line}', index + 1).replace('{label}', label));
+                    if (!/^[A-Za-z0-9\s]+$/.test(label)) errors.push(t.errors.invalidLabel.replace('{line}', index + 1).replace('{label}', label));
                     nodes.add(id);
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
                     const edgeKey = `${id}->${target}`;
@@ -812,7 +789,7 @@ mechanism M1 "Workers" -> A1`,
                     const target = controlMatch[4];
                     if (!processes.has(target)) errors.push(t.errors.processNotDefined.replace('{line}', index + 1).replace('{id}', target));
                     if (nodes.has(id)) errors.push(t.errors.duplicateId.replace('{line}', index + 1).replace('{id}', id));
-                    if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(t.errors.invalidLabel.replace('{line}', index + 1).replace('{label}', label));
+                    if (!/^[A-Za-z0-9\s]+$/.test(label)) errors.push(t.errors.invalidLabel.replace('{line}', index + 1).replace('{label}', label));
                     nodes.add(id);
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
                     const edgeKey = `${id}->${target}`;
@@ -823,7 +800,7 @@ mechanism M1 "Workers" -> A1`,
                     const label = outputMatch[4];
                     if (!processes.has(source)) errors.push(t.errors.processNotDefined.replace('{line}', index + 1).replace('{id}', source));
                     if (nodes.has(id)) errors.push(t.errors.duplicateId.replace('{line}', index + 1).replace('{id}', id));
-                    if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(t.errors.invalidLabel.replace('{line}', index + 1).replace('{label}', label));
+                    if (!/^[A-Za-z0-9\s]+$/.test(label)) errors.push(t.errors.invalidLabel.replace('{line}', index + 1).replace('{label}', label));
                     nodes.add(id);
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
                     const edgeKey = `${source}->${id}`;
@@ -841,7 +818,7 @@ mechanism M1 "Workers" -> A1`,
                     const target = mechanismMatch[4];
                     if (!processes.has(target)) errors.push(t.errors.processNotDefined.replace('{line}', index + 1).replace('{id}', target));
                     if (nodes.has(id)) errors.push(t.errors.duplicateId.replace('{line}', index + 1).replace('{id}', id));
-                    if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(t.errors.invalidLabel.replace('{line}', index + 1).replace('{label}', label));
+                    if (!/^[A-Za-z0-9\s]+$/.test(label)) errors.push(t.errors.invalidLabel.replace('{line}', index + 1).replace('{label}', label));
                     nodes.add(id);
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
                     const edgeKey = `${id}->${target}`;
@@ -863,11 +840,9 @@ mechanism M1 "Workers" -> A1`,
             return { dot, errors };
         }
 
-        let panZoomInstance = null;
-
         function renderDiagram() {
-            if (!checkLibraries() || !editor) {
-                alert('Не все библиотеки загружены. Проверьте интернет-соединение или локальные копии.');
+            if (!editor || !librariesLoaded.codeMirror || !librariesLoaded.viz || !librariesLoaded.svgPanZoom) {
+                alert('Не все библиотеки загружены. Проверьте консоль (F12).');
                 return;
             }
 
@@ -891,7 +866,7 @@ mechanism M1 "Workers" -> A1`,
             }
 
             const { dot, errors } = validateAndConvertToDot(code);
-            console.log('DOT Code:\n', dot);
+            console.log('Сгенерированный DOT-код:\n', dot);
 
             if (errors.length > 0) {
                 errorDiv.style.display = 'block';
@@ -983,9 +958,9 @@ mechanism M1 "Workers" -> A1`,
             }
         }
 
-        async function exportDiagram() {
-            if (!checkLibraries()) {
-                alert('Не все библиотеки загружены. Проверьте интернет-соединение или локальные копии.');
+        function exportDiagram() {
+            if (!librariesLoaded.codeMirror || !librariesLoaded.viz || !librariesLoaded.svgPanZoom) {
+                alert('Не все библиотеки загружены. Проверьте консоль (F12).');
                 return;
             }
 
@@ -999,11 +974,9 @@ mechanism M1 "Workers" -> A1`,
                 return;
             }
 
-            if (format !== 'svg') {
-                if (!librariesLoaded.canvg || typeof Canvg === 'undefined') {
-                    alert('Библиотека Canvg не загружена. Экспорт в JPG/PNG недоступен.');
-                    return;
-                }
+            if (format !== 'svg' && (!librariesLoaded.canvg || typeof Canvg === 'undefined')) {
+                alert('Библиотека Canvg не загружена. Экспорт в JPG/PNG недоступен.');
+                return;
             }
 
             const bbox = svg.getBBox();
@@ -1035,23 +1008,16 @@ mechanism M1 "Workers" -> A1`,
                     canvas.width = width * 2;
                     canvas.height = height * 2;
                     const ctx = canvas.getContext('2d');
-                    if (!ctx) {
-                        throw new Error('Не удалось создать контекст canvas');
-                    }
+                    if (!ctx) throw new Error('Не удалось создать контекст canvas');
 
                     ctx.fillStyle = '#ffffff';
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                    const v = await Canvg.fromString(ctx, svgString, {
-                        scaleWidth: canvas.width,
-                        scaleHeight: canvas.height,
-                        ignoreDimensions: true
-                    });
-                    await v.render();
+                    const v = Canvg.fromString(ctx, svgString);
+                    v.start();
 
                     const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
-                    const quality = format === 'jpg' ? 0.9 : 1.0;
-                    const dataUrl = canvas.toDataURL(mimeType, quality);
+                    const dataUrl = canvas.toDataURL(mimeType, 0.9);
 
                     if (dataUrl && dataUrl.length > 0) {
                         const link = document.createElement('a');
@@ -1065,13 +1031,14 @@ mechanism M1 "Workers" -> A1`,
                     }
                 } catch (error) {
                     console.error('Ошибка экспорта:', error);
-                    alert('Не удалось экспортировать диаграмму в ' + format.toUpperCase() + '. Проверьте консоль для деталей.');
+                    alert('Не удалось экспортировать диаграмму в ' + format.toUpperCase() + '. Проверьте консоль.');
                 }
             }
         }
 
         function clearEditor() {
-            if (editor) editor.setValue('');
+            if (!editor) return;
+            editor.setValue('');
             document.getElementById('output').innerHTML = '';
             document.getElementById('error').style.display = 'none';
             document.getElementById('dot-preview').style.display = 'none';
@@ -1095,7 +1062,7 @@ mechanism M1 "Workers" -> A1`,
 
         // Инициализация при загрузке
         window.addEventListener('load', () => {
-            checkAllLibrariesLoaded();
+            checkLibrariesLoaded();
         });
     </script>
 </body>
