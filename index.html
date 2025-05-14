@@ -6,25 +6,25 @@
     <title>FlowCraft</title>
     <style>
         :root {
-            --bg-color: #f1f5f9;
+            --bg-color: #f9fafb;
             --text-color: #1f2937;
             --border-color: #d1d5db;
             --button-bg: #22c55e;
             --button-hover: #16a34a;
             --button-gradient: linear-gradient(to right, #22c55e, #16a34a);
             --editor-bg: #ffffff;
-            --output-bg: linear-gradient(to bottom, #f1f5f9, #e2e8f0);
+            --output-bg: #ffffff;
             --shadow: 0 3px 6px rgba(0,0,0,0.1);
         }
         [data-theme="dark"] {
-            --bg-color: #1e293b;
-            --text-color: #e2e8f0;
-            --border-color: #475569;
+            --bg-color: #111827;
+            --text-color: #f3f4f6;
+            --border-color: #4b5563;
             --button-bg: #4ade80;
             --button-hover: #22c55e;
             --button-gradient: linear-gradient(to right, #4ade80, #22c55e);
-            --editor-bg: #2d3748;
-            --output-bg: linear-gradient(to bottom, #334155, #1e293b);
+            --editor-bg: #1f2937;
+            --output-bg: #1f2937;
             --shadow: 0 3px 6px rgba(0,0,0,0.3);
         }
         body {
@@ -39,8 +39,8 @@
             transition: background-color 0.3s, color 0.3s;
         }
         #editor-container {
-            width: 95vw;
-            max-width: 600px;
+            width: 100vw;
+            max-width: 800px;
             margin: 10px 0;
             border: 1px solid var(--border-color);
             border-radius: 12px;
@@ -61,37 +61,37 @@
             font-size: 13px !important;
             background: var(--editor-bg) !important;
             color: var(--text-color) !important;
+            border-bottom: 1px solid var(--border-color);
         }
         #output {
-            width: 95vw;
-            max-width: 600px;
-            min-height: 1000px;
+            width: 100vw;
+            max-width: none;
+            min-height: 1200px;
             height: auto;
             background: var(--output-bg);
             box-shadow: var(--shadow);
-            overflow: visible;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
+            overflow: auto;
+            position: relative;
             border-radius: 12px;
-            padding: 15px;
+            padding: 20px;
             margin: 10px 0;
             -webkit-overflow-scrolling: touch;
         }
         #output svg {
-            width: 100%;
+            max-width: 95%;
             height: auto;
             text-rendering: geometricPrecision;
-            transform: scale(0.9);
             transform-origin: center top;
+            display: block;
+            margin: 0 auto;
         }
         #error {
             color: #ef4444;
             font-size: 12px;
             margin: 10px 0;
             display: none;
-            width: 95vw;
-            max-width: 600px;
+            width: 100vw;
+            max-width: 800px;
             text-align: left;
         }
         button {
@@ -116,7 +116,7 @@
             transform: scale(1.05);
         }
         button:active {
-            transform: scale(0.98);
+            transform: scale(0.95);
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         .main-button {
@@ -127,8 +127,8 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
         details {
-            width: 95vw;
-            max-width: 600px;
+            width: 100vw;
+            max-width: 800px;
             font-size: 12px;
             margin: 10px 0;
             background: var(--editor-bg);
@@ -142,8 +142,8 @@
             color: var(--text-color);
         }
         .controls {
-            width: 95vw;
-            max-width: 600px;
+            width: 100vw;
+            max-width: 800px;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
@@ -166,8 +166,8 @@
             outline: none;
         }
         #dot-preview {
-            width: 95vw;
-            max-width: 600px;
+            width: 100vw;
+            max-width: 800px;
             display: none;
             background: var(--editor-bg);
             padding: 12px;
@@ -180,6 +180,30 @@
             max-height: 200px;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+        }
+        #theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: var(--button-gradient);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
+            z-index: 1000;
+        }
+        #theme-toggle:hover {
+            transform: scale(1.05);
+        }
+        #theme-toggle:active {
+            transform: scale(0.95);
         }
         .idef0-box {
             fill: #ffffff !important;
@@ -216,12 +240,12 @@
                 margin: 5px;
             }
             button {
-                padding: 10px 20px;
+                padding: 8px 16px;
                 font-size: 12px;
                 min-width: 80px;
             }
             .main-button {
-                padding: 12px 24px;
+                padding: 10px 20px;
                 font-size: 14px;
             }
             .CodeMirror {
@@ -231,21 +255,27 @@
                 font-size: 10px;
             }
             #output {
-                min-height: 600px;
+                min-height: 800px;
             }
             select {
                 font-size: 10px;
                 padding: 8px;
             }
             #title {
-                font-size: 18px !important;
+                font-size: 20px !important;
+            }
+            #theme-toggle {
+                padding: 8px 16px;
+                font-size: 12px;
+                bottom: 10px;
+                right: 10px;
             }
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.css">
 </head>
 <body>
-    <h1 style="font-size: 22px; margin: 12px; font-weight: 700; color: var(--text-color); text-shadow: 0 1px 2px rgba(0,0,0,0.1);" id="title">FlowCraft</h1>
+    <h1 style="font-size: 24px; margin: 12px; font-weight: 700; color: var(--text-color);" id="title">FlowCraft</h1>
     <details>
         <summary id="instructions-summary">Инструкция</summary>
         <div id="instructions"></div>
@@ -255,10 +285,6 @@
             <select id="language" onchange="updateLanguage()">
                 <option value="ru" selected>Русский</option>
                 <option value="en">Английский</option>
-            </select>
-            <select id="theme" onchange="updateTheme()">
-                <option value="light" selected>Светлая</option>
-                <option value="dark">Тёмная</option>
             </select>
             <button id="clear-button" onclick="clearEditor()" title="Очистить редактор">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -309,6 +335,12 @@
     <div id="error"></div>
     <div id="dot-preview"></div>
     <div id="output"></div>
+    <button id="theme-toggle" onclick="toggleTheme()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <span id="theme-label">Тёмная</span>
+    </button>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js"></script>
@@ -361,7 +393,7 @@
 <strong>Пример:</strong><br>
 <pre style="font-size: 10px;">
 процесс A0 "Производство"
-вход I1 "Сырьё" -> A0
+вход I1 "С TRIGGER TOOLS AND MATERIALS" -> A0
 управление C1 "Инструкции" -> A0
 выход A0 -> O1 "Продукт"
 механизм M1 "Станки" -> A0
@@ -389,8 +421,7 @@
                 formatOptions: ['SVG', 'JPG', 'PNG'],
                 saveButton: 'Сохранить график',
                 generateButton: 'Сгенерировать',
-                themeLabel: 'Тема:',
-                themeOptions: ['Светлая', 'Тёмная'],
+                themeLabel: ['Светлая', 'Тёмная'],
                 errors: {
                     duplicateId: 'Ошибка в строке {line}: идентификатор {id} уже используется',
                     processNotDefined: 'Ошибка в строке {line}: процесс {id} не определён',
@@ -445,8 +476,7 @@ mechanism M2 "Analysts" -> A1`,
                 formatOptions: ['SVG', 'JPG', 'PNG'],
                 saveButton: 'Save Diagram',
                 generateButton: 'Generate',
-                themeLabel: 'Theme:',
-                themeOptions: ['Light', 'Dark'],
+                themeLabel: ['Light', 'Dark'],
                 errors: {
                     duplicateId: 'Error in line {line}: identifier {id} already used',
                     processNotDefined: 'Error in line {line}: process {id} not defined',
@@ -482,23 +512,30 @@ mechanism M2 "Analysts" -> A1`,
             formatSelect.options[0].text = t.formatOptions[0];
             formatSelect.options[1].text = t.formatOptions[1];
             formatSelect.options[2].text = t.formatOptions[2];
-            const themeSelect = document.getElementById('theme');
-            themeSelect.options[0].text = t.themeOptions[0];
-            themeSelect.options[1].text = t.themeOptions[1];
             editor.setValue(t.exampleCode);
             editor.getInputField().placeholder = t.placeholder;
+            updateThemeLabel();
             document.documentElement.lang = lang;
         }
 
-        // Функция для обновления темы
-        function updateTheme() {
-            const theme = document.getElementById('theme').value;
-            document.body.setAttribute('data-theme', theme);
+        // Функция для переключения темы
+        function toggleTheme() {
+            const currentTheme = document.body.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', newTheme);
+            updateThemeLabel();
+        }
+
+        // Функция для обновления метки темы
+        function updateThemeLabel() {
+            const lang = document.getElementById('language').value;
+            const t = translations[lang];
+            const currentTheme = document.body.getAttribute('data-theme') || 'light';
+            document.getElementById('theme-label').textContent = t.themeLabel[currentTheme === 'light' ? 1 : 0];
         }
 
         // Инициализация
         updateLanguage();
-        updateTheme();
 
         // Функция для экранирования меток
         function escapeDotLabel(label) {
@@ -514,7 +551,7 @@ mechanism M2 "Analysts" -> A1`,
             dot += '    rankdir=TB;\n';
             dot += '    node [shape=box, style=filled, fillcolor=white, width=2.5, height=1, class="idef0-box", fontname="Arial", fontsize=16];\n';
             dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=16, fontcolor=black];\n';
-            dot += `    graph [splines=${splineStyle}, nodesep=1.5, ranksep=3, dpi=96];\n`;
+            dot += `    graph [splines=${splineStyle}, nodesep=1.2, ranksep=2.5, dpi=96];\n`;
             dot += '    {rank=min; A0}\n';
             dot += '    {rank=max; A1}\n';
 
@@ -637,6 +674,7 @@ mechanism M2 "Analysts" -> A1`,
                         const bbox = element.getBBox();
                         console.log('SVG Generated:\n', element.outerHTML); // Отладка SVG
                         console.log('Bbox:', { x: bbox.x, y: bbox.y, width: bbox.width, height: bbox.height }); // Отладка размеров
+                        console.log('Output Size:', { width: output.clientWidth, height: output.clientHeight }); // Отладка контейнера
 
                         const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
                         defs.innerHTML = `
@@ -646,11 +684,9 @@ mechanism M2 "Analysts" -> A1`,
                         `;
                         element.prepend(defs);
 
-                        // Увеличенный viewBox для полного отображения
-                        element.setAttribute('viewBox', `${bbox.x-100} ${bbox.y-100} ${bbox.width+200} ${bbox.height+200}`);
+                        // Динамический viewBox с большими отступами
+                        element.setAttribute('viewBox', `${bbox.x-200} ${bbox.y-200} ${bbox.width+400} ${bbox.height+400}`);
                         element.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-                        element.setAttribute('width', '100%');
-                        element.setAttribute('height', 'auto');
 
                         output.innerHTML = '';
                         output.appendChild(element);
