@@ -72,10 +72,11 @@
         #output {
             width: 100%;
             max-width: 1200px;
-            height: 800px;
+            height: auto;
+            min-height: 400px;
             background: var(--output-bg);
             box-shadow: var(--shadow);
-            overflow: auto;
+            overflow: hidden;
             border-radius: 12px;
             padding: 0;
             margin: 10px 0;
@@ -85,8 +86,6 @@
         #output svg {
             width: 100%;
             height: auto;
-            max-width: none;
-            text-rendering: geometricPrecision;
             display: block;
             margin: 0 auto;
         }
@@ -388,6 +387,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js"></script>
     <script src="https://unpkg.com/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvg@3.0.10/lib/umd.js"></script>
     <script>
         // Автоопределение языка и темы
         const userLang = navigator.language.startsWith('ru') ? 'ru' : 'en';
@@ -485,7 +485,8 @@
                     noOutput: 'Процесс {id} должен иметь хотя бы один выход',
                     renderError: 'Ошибка рендеринга: {message}<br>DOT-код:<pre>{dot}</pre>',
                     generalError: 'Общая ошибка: {message}',
-                    noDiagram: 'Нет диаграммы для сохранения!'
+                    noDiagram: 'Нет диаграммы для сохранения!',
+                    emptyInput: 'Введите код перед генерацией диаграммы!'
                 },
                 placeholder: 'Введите код IDEF0...'
             },
@@ -545,7 +546,8 @@ mechanism M1 "Workers" -> A1`,
                     noOutput: 'Process {id} must have at least one output',
                     renderError: 'Rendering error: {message}<br>DOT code:<pre>{dot}</pre>',
                     generalError: 'General error: {message}',
-                    noDiagram: 'No diagram to save!'
+                    noDiagram: 'No diagram to save!',
+                    emptyInput: 'Enter code before generating the diagram!'
                 },
                 placeholder: 'Enter IDEF0 code...'
             }
@@ -718,10 +720,22 @@ mechanism M1 "Workers" -> A1`,
         function renderDiagram() {
             const lang = document.getElementById('language').value;
             const t = translations[lang];
-            const code = editor.getValue();
+            const code = editor.getValue().trim();
             const output = document.getElementById('output');
             const errorDiv = document.getElementById('error');
             const dotPreview = document.getElementById('dot-preview');
+
+            if (!code) {
+                errorDiv.style.display = 'block';
+                errorDiv.innerHTML = t.errors.emptyInput;
+                output.innerHTML = '';
+                dotPreview.style.display = 'none';
+                if (panZoomInstance) {
+                    panZoomInstance.destroy();
+                    panZoomInstance = null;
+                }
+                return;
+            }
 
             const { dot, errors } = validateAndConvertToDot(code);
             console.log('DOT Code:\n', dot);
@@ -748,7 +762,6 @@ mechanism M1 "Workers" -> A1`,
                 const viz = new Viz();
                 viz.renderSVGElement(dot)
                     .then(function(element) {
-                        // Определяем размеры на основе содержимого SVG
                         const bbox = element.getBBox();
                         const padding = 20;
                         const svgWidth = bbox.width + 2 * padding;
@@ -769,7 +782,13 @@ mechanism M1 "Workers" -> A1`,
                         output.innerHTML = '';
                         output.appendChild(element);
 
-                        // Инициализация svg-pan-zoom с адаптивным масштабом
+                        // Динамический масштаб
+                        const containerWidth = output.clientWidth;
+                        const containerHeight = output.clientHeight || 400;
+                        const zoomX = containerWidth / svgWidth;
+                        const zoomY = containerHeight / svgHeight;
+                        const initialZoom = Math.min(zoomX, zoomY) * 0.9;
+
                         if (panZoomInstance) {
                             panZoomInstance.destroy();
                         }
@@ -779,12 +798,10 @@ mechanism M1 "Workers" -> A1`,
                             controlIconsEnabled: true,
                             fit: true,
                             center: true,
-                            minZoom: 0.1,
+                            minZoom: 0.05,
                             maxZoom: 10,
                             zoomScaleSensitivity: 0.2,
-                            initialZoom: 1,
-                            contain: true,
-                            viewport: { selector: '#output', margin: 10 }
+                            initialZoom: initialZoom
                         });
                     })
                     .catch(error => {
@@ -807,7 +824,7 @@ mechanism M1 "Workers" -> A1`,
             }
         }
 
-        function exportDiagram() {
+        async function exportDiagram() {
             const lang = document.getElementById('language').value;
             const t = translations[lang];
             const format = document.getElementById('export-format').value;
@@ -818,20 +835,17 @@ mechanism M1 "Workers" -> A1`,
                 return;
             }
 
-            // Получаем реальные размеры графика через getBBox
             const bbox = svg.getBBox();
             const padding = 20;
-            const width = Math.max(bbox.width + 2 * padding, 100); // Минимальная ширина
-            const height = Math.max(bbox.height + 2 * padding, 100); // Минимальная высота
+            const width = Math.max(bbox.width + 2 * padding, 100);
+            const height = Math.max(bbox.height + 2 * padding, 100);
 
-            // Клонируем SVG для экспорта
             const svgClone = svg.cloneNode(true);
             svgClone.setAttribute('width', width);
             svgClone.setAttribute('height', height);
             svgClone.setAttribute('viewBox', `${bbox.x - padding} ${bbox.y - padding} ${width} ${height}`);
 
-            const serializer = new XMLSerializer();
-            let svgString = serializer.serializeToString(svgClone);
+            let svgString = new XMLSerializer().serializeToString(svgClone);
             svgString = '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' + svgString;
 
             if (format === 'svg') {
@@ -845,19 +859,28 @@ mechanism M1 "Workers" -> A1`,
                 document.body.removeChild(link);
                 URL.revokeObjectURL(url);
             } else {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                canvas.width = width * 2; // Удваиваем разрешение
-                canvas.height = height * 2;
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                const img = new Image();
-                img.onload = function() {
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width * 2; // Удваиваем разрешение
+                    canvas.height = height * 2;
+                    const ctx = canvas.getContext('2d');
+
+                    // Используем canvg для рендеринга SVG
+                    await Canvg.from(ctx, svgString, {
+                        scaleWidth: canvas.width,
+                        scaleHeight: canvas.height,
+                        ignoreDimensions: true,
+                        renderCallback: () => {
+                            ctx.fillStyle = '#ffffff';
+                            ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        }
+                    }).render();
+
                     const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
                     const quality = format === 'jpg' ? 0.9 : 1.0;
                     const dataUrl = canvas.toDataURL(mimeType, quality);
-                    if (dataUrl.length > 0) { // Проверка на пустой результат
+
+                    if (dataUrl.length > 0) {
                         const link = document.createElement('a');
                         link.href = dataUrl;
                         link.download = `idef0_diagram.${format}`;
@@ -865,15 +888,12 @@ mechanism M1 "Workers" -> A1`,
                         link.click();
                         document.body.removeChild(link);
                     } else {
-                        alert('Ошибка при создании изображения. Попробуйте другой формат.');
+                        alert('Ошибка при создании изображения.');
                     }
-                    URL.revokeObjectURL(img.src);
-                };
-                img.onerror = function() {
-                    alert('Ошибка загрузки SVG в canvas. Проверьте консоль для деталей.');
-                    console.error('SVG загрузка провалилась:', svgString);
-                };
-                img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
+                } catch (error) {
+                    console.error('Ошибка экспорта:', error);
+                    alert('Не удалось экспортировать диаграмму в ' + format.toUpperCase());
+                }
             }
         }
 
