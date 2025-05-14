@@ -75,21 +75,19 @@
             height: 800px;
             background: var(--output-bg);
             box-shadow: var(--shadow);
-            overflow: auto;
+            overflow: hidden;
             border-radius: 12px;
             padding: 20px;
             margin: 10px 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            text-align: center;
             -webkit-overflow-scrolling: touch;
         }
         #output svg {
             width: 100%;
-            height: 100%;
+            height: auto;
             max-width: none;
-            max-height: none;
             text-rendering: geometricPrecision;
+            display: inline-block;
         }
         #error {
             color: #ef4444;
@@ -141,7 +139,7 @@
         details {
             width: 100%;
             max-width: 800px;
-            font-size: 12px;
+            font-size: 14px;
             margin: 10px 0;
             background: var(--editor-bg);
             padding: 12px;
@@ -152,6 +150,13 @@
             cursor: pointer;
             font-weight: 600;
             color: var(--text-color);
+        }
+        details pre {
+            font-size: 12px;
+            margin: 10px 0;
+            background: var(--bg-color);
+            padding: 10px;
+            border-radius: 8px;
         }
         .controls {
             width: 100%;
@@ -198,7 +203,9 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            padding: 10px;
+            padding: 8px;
+            width: 32px;
+            height: 32px;
             background: var(--button-gradient);
             color: white;
             border: none;
@@ -206,6 +213,7 @@
             cursor: pointer;
             display: flex;
             align-items: center;
+            justify-content: center;
             box-shadow: var(--shadow);
             transition: transform 0.2s, box-shadow 0.2s;
             z-index: 1000;
@@ -221,7 +229,7 @@
             stroke: #000;
             stroke-width: 1.5;
             font-family: Arial, sans-serif;
-            font-size: 14px;
+            font-size: 12px;
         }
         .idef0-arrow {
             stroke: #000;
@@ -267,6 +275,9 @@
                 font-size: 11px !important;
             }
             details, #error, #dot-preview {
+                font-size: 12px;
+            }
+            details pre {
                 font-size: 10px;
             }
             #output {
@@ -280,7 +291,9 @@
                 font-size: 20px !important;
             }
             #theme-toggle {
-                padding: 8px;
+                padding: 6px;
+                width: 28px;
+                height: 28px;
                 bottom: 10px;
                 right: 10px;
             }
@@ -360,6 +373,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js"></script>
+    <script src="https://unpkg.com/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
     <script>
         // Автоопределение языка и темы
         const userLang = navigator.language.startsWith('ru') ? 'ru' : 'en';
@@ -404,36 +418,27 @@
             ru: {
                 title: 'IDEF0 Forge',
                 instructionsSummary: 'Инструкция',
-                instructions: `Введите код IDEF0 на русском или английском для создания диаграмм. Команды:<br>
-- <code>процесс ID "Название"</code> — процесс (A0).<br>
+                instructions: `Создавайте IDEF0-диаграммы, вводя код на русском или английском.<br>
+<b>Команды:</b><br>
+- <code>процесс ID "Название"</code> — процесс (прямоугольник).<br>
 - <code>вход ID "Название" -> процесс</code> — вход (слева).<br>
 - <code>управление ID "Название" -> процесс</code> — управление (сверху, пунктир).<br>
 - <code>выход процесс -> ID "Название"</code> — выход (справа).<br>
 - <code>выход процесс -> процесс</code> — декомпозиция (пунктир).<br>
 - <code>механизм ID "Название" -> процесс</code> — механизм (снизу, мелкий пунктир).<br>
-<strong>Пример:</strong><br>
-<pre style="font-size: 10px;">
+<b>Пример:</b><br>
+<pre>
 процесс A0 "Производство"
 вход I1 "Сырьё" -> A0
 управление C1 "Инструкции" -> A0
 выход A0 -> O1 "Продукт"
 механизм M1 "Станки" -> A0
-процесс A1 "Контроль"
-вход I2 "Стандарты" -> A1
-управление C2 "Нормативы" -> A1
-выход A1 -> O2 "Отчёт"
-механизм M2 "Инспекторы" -> A1
 </pre>`,
                 exampleCode: `процесс A0 "Основной процесс"
 вход I1 "Материалы" -> A0
 управление C1 "Правила" -> A0
 выход A0 -> O1 "Готовый продукт"
-механизм M1 "Рабочие" -> A0
-процесс A1 "Подпроцесс"
-вход I2 "Данные" -> A1
-управление C2 "Стандарты" -> A1
-выход A1 -> O2 "Результат"
-механизм M2 "Аналитики" -> A1`,
+механизм M1 "Рабочие" -> A0`,
                 clearButton: 'Очистить',
                 dotButton: 'DOT-код',
                 splineLabel: 'Линии:',
@@ -458,36 +463,27 @@
             en: {
                 title: 'IDEF0 Forge',
                 instructionsSummary: 'Instructions',
-                instructions: `Enter IDEF0 code in Russian or English to create diagrams. Commands:<br>
-- <code>process ID "Name"</code> — process (A0).<br>
+                instructions: `Create IDEF0 diagrams by entering code in Russian or English.<br>
+<b>Commands:</b><br>
+- <code>process ID "Name"</code> — process (rectangle).<br>
 - <code>input ID "Name" -> process</code> — input (left).<br>
 - <code>control ID "Name" -> process</code> — control (top, dashed).<br>
 - <code>output process -> ID "Name"</code> — output (right).<br>
 - <code>output process -> process</code> — decomposition (dashed).<br>
 - <code>mechanism ID "Name" -> process</code> — mechanism (bottom, fine dashed).<br>
-<strong>Example:</strong><br>
-<pre style="font-size: 10px;">
+<b>Example:</b><br>
+<pre>
 process A0 "Production"
 input I1 "Raw Materials" -> A0
 control C1 "Instructions" -> A0
 output A0 -> O1 "Product"
 mechanism M1 "Machines" -> A0
-process A1 "Inspection"
-input I2 "Standards" -> A1
-control C2 "Regulations" -> A1
-output A1 -> O2 "Report"
-mechanism M2 "Inspectors" -> A1
 </pre>`,
                 exampleCode: `process A0 "Main Process"
 input I1 "Materials" -> A0
 control C1 "Rules" -> A0
 output A0 -> O1 "Finished Product"
-mechanism M1 "Workers" -> A0
-process A1 "Subprocess"
-input I2 "Data" -> A1
-control C2 "Standards" -> A1
-output A1 -> O2 "Result"
-mechanism M2 "Analysts" -> A1`,
+mechanism M1 "Workers" -> A0`,
                 clearButton: 'Clear',
                 dotButton: 'DOT Code',
                 splineLabel: 'Lines:',
@@ -558,9 +554,9 @@ mechanism M2 "Analysts" -> A1`,
             const splineStyle = document.getElementById('spline-style').value;
             let dot = 'digraph IDEF0 {\n';
             dot += '    rankdir=TB;\n';
-            dot += '    node [shape=box, style=filled, fillcolor=white, width=2, height=0.8, class="idef0-box", fontname="Arial", fontsize=14];\n';
-            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=14, fontcolor=black];\n';
-            dot += `    graph [splines=${splineStyle}, nodesep=1.2, ranksep=1.8, dpi=96];\n`;
+            dot += '    node [shape=box, style=filled, fillcolor=white, width=1.5, height=0.6, class="idef0-box", fontname="Arial", fontsize=12];\n';
+            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=12, fontcolor=black, minlen=1, weight=1, labelloc=t, labelangle=0];\n';
+            dot += `    graph [splines=${splineStyle}, nodesep=0.8, ranksep=1, dpi=72, concentrate=true];\n`;
             dot += '    {rank=min; A0}\n';
             dot += '    {rank=max; A1}\n';
 
@@ -651,6 +647,8 @@ mechanism M2 "Analysts" -> A1`,
             return { dot, errors };
         }
 
+        let panZoomInstance = null;
+
         function renderDiagram() {
             const lang = document.getElementById('language').value;
             const t = translations[lang];
@@ -667,6 +665,10 @@ mechanism M2 "Analysts" -> A1`,
                 errorDiv.innerHTML = errors.join('<br>');
                 output.innerHTML = '';
                 dotPreview.style.display = 'none';
+                if (panZoomInstance) {
+                    panZoomInstance.destroy();
+                    panZoomInstance = null;
+                }
                 return;
             }
 
@@ -699,16 +701,39 @@ mechanism M2 "Analysts" -> A1`,
 
                         output.innerHTML = '';
                         output.appendChild(element);
+
+                        // Инициализация svg-pan-zoom
+                        if (panZoomInstance) {
+                            panZoomInstance.destroy();
+                        }
+                        panZoomInstance = svgPanZoom(element, {
+                            zoomEnabled: true,
+                            panEnabled: true,
+                            controlIconsEnabled: true,
+                            fit: true,
+                            center: true,
+                            minZoom: 0.5,
+                            maxZoom: 5,
+                            zoomScaleSensitivity: 0.2
+                        });
                     })
                     .catch(error => {
                         errorDiv.style.display = 'block';
                         errorDiv.innerHTML = t.errors.renderError.replace('{message}', error.message).replace('{dot}', dot);
                         output.innerHTML = '';
+                        if (panZoomInstance) {
+                            panZoomInstance.destroy();
+                            panZoomInstance = null;
+                        }
                     });
             } catch (error) {
                 errorDiv.style.display = 'block';
                 errorDiv.innerHTML = t.errors.generalError.replace('{message}', error.message);
                 output.innerHTML = '';
+                if (panZoomInstance) {
+                    panZoomInstance.destroy();
+                    panZoomInstance = null;
+                }
             }
         }
 
@@ -769,6 +794,10 @@ mechanism M2 "Analysts" -> A1`,
             document.getElementById('output').innerHTML = '';
             document.getElementById('error').style.display = 'none';
             document.getElementById('dot-preview').style.display = 'none';
+            if (panZoomInstance) {
+                panZoomInstance.destroy();
+                panZoomInstance = null;
+            }
         }
 
         function toggleDotPreview() {
@@ -784,4 +813,4 @@ mechanism M2 "Analysts" -> A1`,
         document.getElementById('spline-style').addEventListener('change', renderDiagram);
     </script>
 </body>
-</html>
+    </html>
