@@ -172,7 +172,7 @@ output A0 -> A1
                     const target = inputMatch[3];
                     if (!processes.has(target)) errors.push(`Ошибка в строке ${index + 1}: процесс ${target} не определён`);
                     if (nodes.has(id)) errors.push(`Ошибка в строке ${index + 1}: идентификатор ${id} уже используется`);
-                    if (!/^[A-Za-z0-9\s]+$/.test(label)) errors \nerrors.push(`Ошибка в строке ${index + 1}: метка "${label}" содержит недопустимые символы`);
+                    if (!/^[A-Za-z0-9\s]+$/.test(label)) errors.push(`Ошибка в строке ${index + 1}: метка "${label}" содержит недопустимые символы`);
                     nodes.add(id);
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
                     edges.push(`    ${id} -> ${target} [label="${escapeDotLabel(label)}", tailport=e, headport=w];\n`);
@@ -251,7 +251,7 @@ output A0 -> A1
                         defs.innerHTML = `
                             <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
                                 <polygon points="0 0, 10 3.5, 0 7" fill="black" />
-                            marker>
+                            </marker>
                         `;
                         element.prepend(defs);
                         output.innerHTML = '';
