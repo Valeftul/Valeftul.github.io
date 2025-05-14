@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>Генератор IDEF0</title>
+    <title>CodeToIDEF0</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -158,28 +158,24 @@
             stroke: #000;
             stroke-width: 1;
             marker-end: url(#arrowhead);
-            minlen: 2;
         }
         .idef0-control {
             stroke: #000;
             stroke-width: 1;
             stroke-dasharray: 5,5;
             marker-end: url(#arrowhead);
-            minlen: 2;
         }
         .idef0-mechanism {
             stroke: #000;
             stroke-width: 1;
             stroke-dasharray: 2,2;
             marker-end: url(#arrowhead);
-            minlen: 2;
         }
         .idef0-decomposition {
             stroke: #000;
             stroke-width: 1;
             stroke-dasharray: 3,3;
             marker-end: url(#arrowhead);
-            minlen: 2;
         }
         @media (max-width: 600px) {
             body {
@@ -212,32 +208,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.css">
 </head>
 <body>
-    <h1 style="font-size: 18px; margin: 10px; color: #1f2937;">Генератор IDEF0</h1>
+    <h1 style="font-size: 18px; margin: 10px; color: #1f2937;" id="title">CodeToIDEF0</h1>
     <details>
-        <summary>Инструкция</summary>
-        <div id="instructions">
-            Введите код IDEF0 на русском или английском. Команды:<br>
-            - <code>процесс</code>/<code>process ID "Название"</code> — процесс (A0).<br>
-            - <code>вход</code>/<code>input ID "Название" -> процесс</code> — вход (слева).<br>
-            - <code>управление</code>/<code>control ID "Название" -> процесс</code> — управление (сверху, пунктир).<br>
-            - <code>выход</code>/<code>output процесс -> ID "Название"</code> — выход (справа).<br>
-            - <code>выход</code>/<code>output процесс -> процесс</code> — декомпозиция (пунктир).<br>
-            - <code>механизм</code>/<code>mechanism ID "Название" -> процесс</code> — механизм (снизу, мелкий пунктир).<br>
-            <strong>Пример:</strong><br>
-            <pre style="font-size: 10px;" id="example-code">
-процесс A0 "Производство"
-вход I1 "Сырьё" -> A0
-управление C1 "Инструкции" -> A0
-выход A0 -> O1 "Продукт"
-механизм M1 "Станки" -> A0
-процесс A1 "Контроль"
-вход I2 "Стандарты" -> A1
-управление C2 "Нормативы" -> A1
-выход A1 -> O2 "Отчёт"
-механизм M2 "Инспекторы" -> A1
-            </pre>
-        </div>
-        Нажмите "Сгенерировать" или выберите формат для сохранения графика.
+        <summary id="instructions-summary">Инструкция</summary>
+        <div id="instructions"></div>
     </details>
     <div id="editor-container">
         <div class="editor-controls">
@@ -245,13 +219,13 @@
                 <option value="ru" selected>Русский</option>
                 <option value="en">Английский</option>
             </select>
-            <button onclick="clearEditor()" title="Очистить редактор">
+            <button id="clear-button" onclick="clearEditor()" title="Очистить редактор">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m-10 5v6a2 2 0 002 2h6a2 2 0 002-2v-6m-12 0h12"/>
                 </svg>
-                Очистить
+                <span>Очистить</span>
             </button>
-            <button onclick="toggleDotPreview()" title="Показать DOT-код">
+            <button id="dot-button" onclick="toggleDotPreview()" title="Показать DOT-код">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                     <polyline points="14 2 14 8 20 8"/>
@@ -259,47 +233,36 @@
                     <line x1="16" y1="17" x2="8" y2="17"/>
                     <polyline points="10 9 9 9 8 9"/>
                 </svg>
-                DOT-код
+                <span>DOT-код</span>
             </button>
         </div>
-        <textarea id="editor" placeholder="Введите код IDEF0...">
-процесс A0 "Основной процесс"
-вход I1 "Материалы" -> A0
-управление C1 "Правила" -> A0
-выход A0 -> O1 "Готовый продукт"
-механизм M1 "Рабочие" -> A0
-процесс A1 "Подпроцесс"
-вход I2 "Данные" -> A1
-управление C2 "Стандарты" -> A1
-выход A1 -> O2 "Результат"
-механизм M2 "Аналитики" -> A1
-        </textarea>
+        <textarea id="editor" placeholder="Введите код IDEF0..."></textarea>
     </div>
     <div class="controls">
-        <label>Линии:</label>
+        <label id="spline-label">Линии:</label>
         <select id="spline-style">
             <option value="ortho" selected>Ортогональные</option>
             <option value="polyline">Прямые</option>
         </select>
-        <label>Формат:</label>
+        <label id="format-label">Формат:</label>
         <select id="export-format">
             <option value="svg">SVG</option>
             <option value="jpg">JPG</option>
             <option value="png">PNG</option>
         </select>
-        <button onclick="exportDiagram()" title="Сохранить график">
+        <button id="save-button" onclick="exportDiagram()" title="Сохранить график">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
                 <polyline points="17 21 17 13 7 13 7 21"/>
                 <polyline points="7 3 7 8 15 8"/>
             </svg>
-            Сохранить график
+            <span>Сохранить график</span>
         </button>
-        <button onclick="renderDiagram()" class="main-button" title="Сгенерировать диаграмму">
+        <button id="generate-button" onclick="renderDiagram()" class="main-button" title="Сгенерировать диаграмму">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polygon points="5 3 19 12 5 21 5 3"/>
             </svg>
-            Сгенерировать
+            <span>Сгенерировать</span>
         </button>
     </div>
     <div id="error"></div>
@@ -342,32 +305,12 @@
         });
         editor.setOption('mode', 'idef0');
 
-        // Примеры кода для языков
-        const exampleCodes = {
-            ru: `процесс A0 "Основной процесс"
-вход I1 "Материалы" -> A0
-управление C1 "Правила" -> A0
-выход A0 -> O1 "Готовый продукт"
-механизм M1 "Рабочие" -> A0
-процесс A1 "Подпроцесс"
-вход I2 "Данные" -> A1
-управление C2 "Стандарты" -> A1
-выход A1 -> O2 "Результат"
-механизм M2 "Аналитики" -> A1`,
-            en: `process A0 "Main Process"
-input I1 "Materials" -> A0
-control C1 "Rules" -> A0
-output A0 -> O1 "Finished Product"
-mechanism M1 "Workers" -> A0
-process A1 "Subprocess"
-input I2 "Data" -> A1
-control C2 "Standards" -> A1
-output A1 -> O2 "Result"
-mechanism M2 "Analysts" -> A1`
-        };
-
-        const exampleInstructions = {
-            ru: `Введите код IDEF0 на русском или английском. Команды:<br>
+        // Переводы
+        const translations = {
+            ru: {
+                title: 'CodeToIDEF0',
+                instructionsSummary: 'Инструкция',
+                instructions: `Введите код IDEF0 на русском или английском. Команды:<br>
 - <code>процесс ID "Название"</code> — процесс (A0).<br>
 - <code>вход ID "Название" -> процесс</code> — вход (слева).<br>
 - <code>управление ID "Название" -> процесс</code> — управление (сверху, пунктир).<br>
@@ -387,7 +330,41 @@ mechanism M2 "Analysts" -> A1`
 выход A1 -> O2 "Отчёт"
 механизм M2 "Инспекторы" -> A1
 </pre>`,
-            en: `Enter IDEF0 code in Russian or English. Commands:<br>
+                exampleCode: `процесс A0 "Основной процесс"
+вход I1 "Материалы" -> A0
+управление C1 "Правила" -> A0
+выход A0 -> O1 "Готовый продукт"
+механизм M1 "Рабочие" -> A0
+процесс A1 "Подпроцесс"
+вход I2 "Данные" -> A1
+управление C2 "Стандарты" -> A1
+выход A1 -> O2 "Результат"
+механизм M2 "Аналитики" -> A1`,
+                clearButton: 'Очистить',
+                dotButton: 'DOT-код',
+                splineLabel: 'Линии:',
+                splineOptions: ['Ортогональные', 'Прямые'],
+                formatLabel: 'Формат:',
+                formatOptions: ['SVG', 'JPG', 'PNG'],
+                saveButton: 'Сохранить график',
+                generateButton: 'Сгенерировать',
+                errors: {
+                    duplicateId: 'Ошибка в строке {line}: идентификатор {id} уже используется',
+                    processNotDefined: 'Ошибка в строке {line}: процесс {id} не определён',
+                    invalidLabel: 'Ошибка в строке {line}: метка "{label}" содержит недопустимые символы (разрешены буквы, цифры, пробелы)',
+                    syntaxError: 'Ошибка в строке {line}: неверный синтаксис. Ожидается команда процесс/process, вход/input, управление/control, выход/output или механизм/mechanism',
+                    noInput: 'Процесс {id} должен иметь хотя бы один вход',
+                    noOutput: 'Процесс {id} должен иметь хотя бы один выход',
+                    renderError: 'Ошибка рендеринга: {message}<br>DOT-код:<pre>{dot}</pre>',
+                    generalError: 'Общая ошибка: {message}',
+                    noDiagram: 'Нет диаграммы для сохранения!'
+                },
+                placeholder: 'Введите код IDEF0...'
+            },
+            en: {
+                title: 'CodeToIDEF0',
+                instructionsSummary: 'Instructions',
+                instructions: `Enter IDEF0 code in Russian or English. Commands:<br>
 - <code>process ID "Name"</code> — process (A0).<br>
 - <code>input ID "Name" -> process</code> — input (left).<br>
 - <code>control ID "Name" -> process</code> — control (top, dashed).<br>
@@ -406,15 +383,67 @@ input I2 "Standards" -> A1
 control C2 "Regulations" -> A1
 output A1 -> O2 "Report"
 mechanism M2 "Inspectors" -> A1
-</pre>`
+</pre>`,
+                exampleCode: `process A0 "Main Process"
+input I1 "Materials" -> A0
+control C1 "Rules" -> A0
+output A0 -> O1 "Finished Product"
+mechanism M1 "Workers" -> A0
+process A1 "Subprocess"
+input I2 "Data" -> A1
+control C2 "Standards" -> A1
+output A1 -> O2 "Result"
+mechanism M2 "Analysts" -> A1`,
+                clearButton: 'Clear',
+                dotButton: 'DOT Code',
+                splineLabel: 'Lines:',
+                splineOptions: ['Orthogonal', 'Straight'],
+                formatLabel: 'Format:',
+                formatOptions: ['SVG', 'JPG', 'PNG'],
+                saveButton: 'Save Diagram',
+                generateButton: 'Generate',
+                errors: {
+                    duplicateId: 'Error in line {line}: identifier {id} already used',
+                    processNotDefined: 'Error in line {line}: process {id} not defined',
+                    invalidLabel: 'Error in line {line}: label "{label}" contains invalid characters (allowed: letters, numbers, spaces)',
+                    syntaxError: 'Error in line {line}: invalid syntax. Expected command process, input, control, output, or mechanism',
+                    noInput: 'Process {id} must have at least one input',
+                    noOutput: 'Process {id} must have at least one output',
+                    renderError: 'Rendering error: {message}<br>DOT code:<pre>{dot}</pre>',
+                    generalError: 'General error: {message}',
+                    noDiagram: 'No diagram to save!'
+                },
+                placeholder: 'Enter IDEF0 code...'
+            }
         };
 
-        // Функция для обновления языка
+        // Функция для обновления интерфейса
         function updateLanguage() {
             const lang = document.getElementById('language').value;
-            editor.setValue(exampleCodes[lang]);
-            document.getElementById('instructions').innerHTML = exampleInstructions[lang];
+            const t = translations[lang];
+            document.getElementById('title').textContent = t.title;
+            document.getElementById('instructions-summary').textContent = t.instructionsSummary;
+            document.getElementById('instructions').innerHTML = t.instructions;
+            document.getElementById('clear-button').querySelector('span').textContent = t.clearButton;
+            document.getElementById('dot-button').querySelector('span').textContent = t.dotButton;
+            document.getElementById('spline-label').textContent = t.splineLabel;
+            document.getElementById('format-label').textContent = t.formatLabel;
+            document.getElementById('save-button').querySelector('span').textContent = t.saveButton;
+            document.getElementById('generate-button').querySelector('span').textContent = t.generateButton;
+            const splineSelect = document.getElementById('spline-style');
+            splineSelect.options[0].text = t.splineOptions[0];
+            splineSelect.options[1].text = t.splineOptions[1];
+            const formatSelect = document.getElementById('export-format');
+            formatSelect.options[0].text = t.formatOptions[0];
+            formatSelect.options[1].text = t.formatOptions[1];
+            formatSelect.options[2].text = t.formatOptions[2];
+            editor.setValue(t.exampleCode);
+            editor.getInputField().placeholder = t.placeholder;
+            document.documentElement.lang = lang;
         }
+
+        // Инициализация языка
+        updateLanguage();
 
         // Функция для экранирования меток
         function escapeDotLabel(label) {
@@ -422,12 +451,14 @@ mechanism M2 "Inspectors" -> A1
         }
 
         function validateAndConvertToDot(code) {
+            const lang = document.getElementById('language').value;
+            const t = translations[lang];
             const lines = code.trim().split('\n').filter(line => line.trim());
             const splineStyle = document.getElementById('spline-style').value;
             let dot = 'digraph IDEF0 {\n';
             dot += '    rankdir=TB;\n';
             dot += '    node [shape=box, style=filled, fillcolor=white, width=2.5, height=1, class="idef0-box", fontname="Arial", fontsize=16];\n';
-            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=16, fontcolor=black, labelloc=t, labeldistance=3, labelangle=30, minlen=2];\n';
+            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=16, fontcolor=black, labelloc=t, labeldistance=3, labelangle=30];\n';
             dot += `    graph [splines=${splineStyle}, nodesep=2, ranksep=3, dpi=120];\n`;
             dot += '    {rank=min; A0}\n';
             dot += '    {rank=max; A1}\n';
@@ -451,8 +482,8 @@ mechanism M2 "Inspectors" -> A1
                 if (processMatch) {
                     const id = processMatch[2];
                     const label = processMatch[3];
-                    if (nodes.has(id)) errors.push(`Ошибка в строке ${index + 1}: идентификатор ${id} уже используется`);
-                    if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(`Ошибка в строке ${index + 1}: метка "${label}" содержит недопустимые символы (разрешены буквы, цифры, пробелы)`);
+                    if (nodes.has(id)) errors.push(t.errors.duplicateId.replace('{line}', index + 1).replace('{id}', id));
+                    if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(t.errors.invalidLabel.replace('{line}', index + 1).replace('{label}', label));
                     processes.add(id);
                     nodes.add(id);
                     dot += `    ${id} [label="${escapeDotLabel(label)}\\n${id}", fillcolor=white, style=filled];\n`;
@@ -460,9 +491,9 @@ mechanism M2 "Inspectors" -> A1
                     const id = inputMatch[2];
                     const label = inputMatch[3];
                     const target = inputMatch[4];
-                    if (!processes.has(target)) errors.push(`Ошибка в строке ${index + 1}: процесс ${target} не определён`);
-                    if (nodes.has(id)) errors.push(`Ошибка в строке ${index + 1}: идентификатор ${id} уже используется`);
-                    if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(`Ошибка в строке ${index + 1}: метка "${label}" содержит недопустимые символы (разрешены буквы, цифры, пробелы)`);
+                    if (!processes.has(target)) errors.push(t.errors.processNotDefined.replace('{line}', index + 1).replace('{id}', target));
+                    if (nodes.has(id)) errors.push(t.errors.duplicateId.replace('{line}', index + 1).replace('{id}', id));
+                    if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(t.errors.invalidLabel.replace('{line}', index + 1).replace('{label}', label));
                     nodes.add(id);
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
                     edges.push(`    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", tailport=e, headport=w, constraint=true];\n`);
@@ -470,9 +501,9 @@ mechanism M2 "Inspectors" -> A1
                     const id = controlMatch[2];
                     const label = controlMatch[3];
                     const target = controlMatch[4];
-                    if (!processes.has(target)) errors.push(`Ошибка в строке ${index + 1}: процесс ${target} не определён`);
-                    if (nodes.has(id)) errors.push(`Ошибка в строке ${index + 1}: идентификатор ${id} уже используется`);
-                    if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(`Ошибка в строке ${index + 1}: метка "${label}" содержит недопустимые символы (разрешены буквы, цифры, пробелы)`);
+                    if (!processes.has(target)) errors.push(t.errors.processNotDefined.replace('{line}', index + 1).replace('{id}', target));
+                    if (nodes.has(id)) errors.push(t.errors.duplicateId.replace('{line}', index + 1).replace('{id}', id));
+                    if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(t.errors.invalidLabel.replace('{line}', index + 1).replace('{label}', label));
                     nodes.add(id);
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
                     edges.push(`    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", class="idef0-control", tailport=s, headport=n, constraint=false];\n`);
@@ -480,38 +511,38 @@ mechanism M2 "Inspectors" -> A1
                     const source = outputMatch[2];
                     const id = outputMatch[3];
                     const label = outputMatch[4];
-                    if (!processes.has(source)) errors.push(`Ошибка в строке ${index + 1}: процесс ${source} не определён`);
-                    if (nodes.has(id)) errors.push(`Ошибка в строке ${index + 1}: идентификатор ${id} уже используется`);
-                    if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(`Ошибка в строке ${index + 1}: метка "${label}" содержит недопустимые символы (разрешены буквы, цифры, пробелы)`);
+                    if (!processes.has(source)) errors.push(t.errors.processNotDefined.replace('{line}', index + 1).replace('{id}', source));
+                    if (nodes.has(id)) errors.push(t.errors.duplicateId.replace('{line}', index + 1).replace('{id}', id));
+                    if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(t.errors.invalidLabel.replace('{line}', index + 1).replace('{label}', label));
                     nodes.add(id);
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
                     edges.push(`    ${source} -> ${id} [xlabel="${escapeDotLabel(label)}", tailport=e, headport=w, constraint=true];\n`);
                 } else if (outputProcessMatch) {
                     const source = outputProcessMatch[2];
                     const target = outputProcessMatch[3];
-                    if (!processes.has(source)) errors.push(`Ошибка в строке ${index + 1}: процесс ${source} не определён`);
-                    if (!processes.has(target)) errors.push(`Ошибка в строке ${index + 1}: процесс ${target} не определён`);
-                    edges.push(`    ${source} -> ${target} [xlabel="Декомпозиция", class="idef0-decomposition", tailport=e, headport=w, constraint=true];\n`);
+                    if (!processes.has(source)) errors.push(t.errors.processNotDefined.replace('{line}', index + 1).replace('{id}', source));
+                    if (!processes.has(target)) errors.push(t.errors.processNotDefined.replace('{line}', index + 1).replace('{id}', target));
+                    edges.push(`    ${source} -> ${target} [xlabel="${lang === 'ru' ? 'Декомпозиция' : 'Decomposition'}", class="idef0-decomposition", tailport=e, headport=w, constraint=true];\n`);
                 } else if (mechanismMatch) {
                     const id = mechanismMatch[2];
                     const label = mechanismMatch[3];
                     const target = mechanismMatch[4];
-                    if (!processes.has(target)) errors.push(`Ошибка в строке ${index + 1}: процесс ${target} не определён`);
-                    if (nodes.has(id)) errors.push(`Ошибка в строке ${index + 1}: идентификатор ${id} уже используется`);
-                    if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(`Ошибка в строке ${index + 1}: метка "${label}" содержит недопустимые символы (разрешены буквы, цифры, пробелы)`);
+                    if (!processes.has(target)) errors.push(t.errors.processNotDefined.replace('{line}', index + 1).replace('{id}', target));
+                    if (nodes.has(id)) errors.push(t.errors.duplicateId.replace('{line}', index + 1).replace('{id}', id));
+                    if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(t.errors.invalidLabel.replace('{line}', index + 1).replace('{label}', label));
                     nodes.add(id);
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
                     edges.push(`    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", class="idef0-mechanism", tailport=n, headport=s, constraint=false];\n`);
                 } else {
-                    errors.push(`Ошибка в строке ${index + 1}: неверный синтаксис. Ожидается команда процесс/process, вход/input, управление/control, выход/output или механизм/mechanism`);
+                    errors.push(t.errors.syntaxError.replace('{line}', index + 1));
                 }
             });
 
             processes.forEach(proc => {
-                const inputs = edges.filter(e => e.includes(`-> ${proc}`) && e.includes('headport=w') && !e.includes('xlabel="Декомпозиция"'));
+                const inputs = edges.filter(e => e.includes(`-> ${proc}`) && e.includes('headport=w') && !e.includes(`xlabel="${lang === 'ru' ? 'Декомпозиция' : 'Decomposition'}"`));
                 const outputs = edges.filter(e => e.includes(`${proc} ->`) && e.includes('tailport=e'));
-                if (inputs.length === 0 && outputs.length > 0) errors.push(`Процесс ${proc} должен иметь хотя бы один вход`);
-                if (outputs.length === 0 && inputs.length > 0) errors.push(`Процесс ${proc} должен иметь хотя бы один выход`);
+                if (inputs.length === 0 && outputs.length > 0) errors.push(t.errors.noInput.replace('{id}', proc));
+                if (outputs.length === 0 && inputs.length > 0) errors.push(t.errors.noOutput.replace('{id}', proc));
             });
 
             dot += edges.join('');
@@ -520,12 +551,15 @@ mechanism M2 "Inspectors" -> A1
         }
 
         function renderDiagram() {
+            const lang = document.getElementById('language').value;
+            const t = translations[lang];
             const code = editor.getValue();
             const output = document.getElementById('output');
             const errorDiv = document.getElementById('error');
             const dotPreview = document.getElementById('dot-preview');
 
             const { dot, errors } = validateAndConvertToDot(code);
+            console.log('DOT Code:\n', dot); // Отладка
 
             if (errors.length > 0) {
                 errorDiv.style.display = 'block';
@@ -562,22 +596,24 @@ mechanism M2 "Inspectors" -> A1
                     })
                     .catch(error => {
                         errorDiv.style.display = 'block';
-                        errorDiv.innerHTML = 'Ошибка рендеринга: ' + error.message + '<br>DOT-код:<pre>' + dot + '</pre>';
+                        errorDiv.innerHTML = t.errors.renderError.replace('{message}', error.message).replace('{dot}', dot);
                         output.innerHTML = '';
                     });
             } catch (error) {
                 errorDiv.style.display = 'block';
-                errorDiv.innerHTML = 'Общая ошибка: ' + error.message;
+                errorDiv.innerHTML = t.errors.generalError.replace('{message}', error.message);
                 output.innerHTML = '';
             }
         }
 
         function exportDiagram() {
+            const lang = document.getElementById('language').value;
+            const t = translations[lang];
             const format = document.getElementById('export-format').value;
             const output = document.getElementById('output');
             const svg = output.querySelector('svg');
             if (!svg) {
-                alert('Нет диаграммы для сохранения!');
+                alert(t.errors.noDiagram);
                 return;
             }
 
