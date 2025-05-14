@@ -72,8 +72,7 @@
         #output {
             width: 100%;
             max-width: 1200px;
-            height: auto;
-            min-height: 400px;
+            height: 400px; /* Фиксированная высота для стабильности */
             background: var(--output-bg);
             box-shadow: var(--shadow);
             overflow: hidden;
@@ -282,8 +281,7 @@
             }
             #output {
                 width: 100vw;
-                height: auto;
-                min-height: 50vh;
+                height: 50vh; /* Адаптивная высота для мобильных */
                 max-height: 70vh;
                 padding: 0;
             }
@@ -307,7 +305,7 @@
             }
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.css" onerror="alert('Не удалось загрузить CodeMirror CSS. Проверьте подключение к интернету.')">
 </head>
 <body>
     <h1 style="font-size: 24px; margin: 12px; font-weight: 700; color: var(--text-color);" id="title">IDEF0 Forge</h1>
@@ -383,12 +381,30 @@
         </svg>
     </button>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js"></script>
-    <script src="https://unpkg.com/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvg@3.0.10/lib/umd.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.js" onerror="alert('Не удалось загрузить CodeMirror. Проверьте подключение к интернету.')"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js" onerror="alert('Не удалось загрузить Viz.js. Проверьте подключение к интернету.')"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js" onerror="alert('Не удалось загрузить Viz.js full render. Проверьте подключение к интернету.')"></script>
+    <script src="https://unpkg.com/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js" onerror="alert('Не удалось загрузить svg-pan-zoom. Проверьте подключение к интернету.')"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvg@3.0.10/lib/umd.js" onerror="alert('Не удалось загрузить Canvg. Проверьте подключение к интернету.')"></script>
     <script>
+        // Проверка загрузки библиотек
+        if (typeof CodeMirror === 'undefined') {
+            alert('CodeMirror не загружен. Проверьте подключение к интернету или консоль (F12) для ошибок.');
+            throw new Error('CodeMirror not loaded');
+        }
+        if (typeof Viz === 'undefined') {
+            alert('Viz.js не загружен. Проверьте подключение к интернету или консоль (F12) для ошибок.');
+            throw new Error('Viz.js not loaded');
+        }
+        if (typeof svgPanZoom === 'undefined') {
+            alert('svg-pan-zoom не загружен. Проверьте подключение к интернету или консоль (F12) для ошибок.');
+            throw new Error('svg-pan-zoom not loaded');
+        }
+        if (typeof Canvg === 'undefined') {
+            alert('Canvg не загружен. Проверьте подключение к интернету или консоль (F12) для ошибок.');
+            throw new Error('Canvg not loaded');
+        }
+
         // Автоопределение языка и темы
         const userLang = navigator.language.startsWith('ru') ? 'ru' : 'en';
         const userTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -620,8 +636,8 @@ mechanism M1 "Workers" -> A1`,
             let dot = 'digraph IDEF0 {\n';
             dot += '    rankdir=TB;\n';
             dot += '    node [shape=box, style=filled, fillcolor=white, width=1.2, height=0.5, class="idef0-box", fontname="Arial", fontsize=10];\n';
-            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=8, fontcolor=black, minlen=2, weight=1, labelloc=t, labelangle=0];\n';
-            dot += `    graph [splines="${splineStyle}", nodesep=1, ranksep=1.5, dpi=96];\n';
+            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=8, fontcolor=black, minlen=2, weight=1, labelloc=t, labelangle=0, markerend="url(#arrowhead)"];\n';
+            dot += `    graph [splines="${splineStyle}", nodesep=1, ranksep=1.5, dpi=96];\n`;
 
             const processes = new Set();
             const errors = [];
@@ -773,7 +789,7 @@ mechanism M1 "Workers" -> A1`,
 
                         const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
                         defs.innerHTML = `
-                            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto" markerUnits="strokeWidth">
                                 <polygon points="0 0, 10 3.5, 0 7" fill="black" stroke="none" />
                             </marker>
                         `;
@@ -783,30 +799,32 @@ mechanism M1 "Workers" -> A1`,
                         output.appendChild(element);
 
                         // Динамический масштаб для полного отображения на экране
-                        const containerWidth = output.clientWidth;
-                        const containerHeight = output.clientHeight || 400;
-                        const zoomX = containerWidth / svgWidth;
-                        const zoomY = containerHeight / svgHeight;
-                        const initialZoom = Math.min(zoomX, zoomY) * 0.9; // 90% для небольшого отступа
+                        setTimeout(function() {
+                            const containerWidth = output.clientWidth;
+                            const containerHeight = output.clientHeight || 400;
+                            const zoomX = containerWidth / svgWidth;
+                            const zoomY = containerHeight / svgHeight;
+                            const initialZoom = Math.min(zoomX, zoomY) * 0.9; // 90% для небольшого отступа
 
-                        if (panZoomInstance) {
-                            panZoomInstance.destroy();
-                        }
-                        panZoomInstance = svgPanZoom(element, {
-                            zoomEnabled: true,
-                            panEnabled: true,
-                            controlIconsEnabled: true,
-                            fit: true,
-                            center: true,
-                            minZoom: 0.05,
-                            maxZoom: 10,
-                            zoomScaleSensitivity: 0.2,
-                            initialZoom: initialZoom
-                        });
+                            if (panZoomInstance) {
+                                panZoomInstance.destroy();
+                            }
+                            panZoomInstance = svgPanZoom(element, {
+                                zoomEnabled: true,
+                                panEnabled: true,
+                                controlIconsEnabled: true,
+                                fit: true,
+                                center: true,
+                                minZoom: 0.05,
+                                maxZoom: 10,
+                                zoomScaleSensitivity: 0.2,
+                                initialZoom: initialZoom
+                            });
 
-                        // Принудительное центрирование и масштабирование
-                        panZoomInstance.zoom(initialZoom);
-                        panZoomInstance.center();
+                            // Принудительное центрирование и масштабирование
+                            panZoomInstance.zoom(initialZoom);
+                            panZoomInstance.center();
+                        }, 100); // Задержка для корректного рендеринга
                     })
                     .catch(error => {
                         errorDiv.style.display = 'block';
@@ -869,12 +887,12 @@ mechanism M1 "Workers" -> A1`,
                     canvas.height = height * 2;
                     const ctx = canvas.getContext('2d');
 
-                    // Используем canvg для рендеринга SVG
+                    // Используем Canvg для рендеринга SVG
                     await Canvg.from(ctx, svgString, {
                         scaleWidth: canvas.width,
                         scaleHeight: canvas.height,
                         ignoreDimensions: true,
-                        renderCallback: () => {
+                        renderCallback: function() {
                             ctx.fillStyle = '#ffffff';
                             ctx.fillRect(0, 0, canvas.width, canvas.height);
                         }
@@ -887,7 +905,7 @@ mechanism M1 "Workers" -> A1`,
                     if (dataUrl.length > 0) {
                         const link = document.createElement('a');
                         link.href = dataUrl;
-                        link.download = `idef0_diagram.${format}`;
+                        link.download = 'idef0_diagram.' + format;
                         document.body.appendChild(link);
                         link.click();
                         document.body.removeChild(link);
