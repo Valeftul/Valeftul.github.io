@@ -618,7 +618,7 @@ mechanism M1 "Workers" -> A1`,
             dot += '    rankdir=TB;\n';
             dot += '    node [shape=box, style=filled, fillcolor=white, width=1.2, height=0.5, class="idef0-box", fontname="Arial", fontsize=10];\n';
             dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=8, fontcolor=black, minlen=2, weight=1, labelloc=t, labelangle=0];\n';
-            dot += `    graph [splines=${splineStyle}, nodesep=1, ranksep=1.5, dpi=96];\n';
+            dot += `    graph [splines="${splineStyle}", nodesep=1, ranksep=1.5, dpi=96];\n`; // Исправлено форматирование
 
             const processes = new Set();
             const errors = [];
@@ -894,4 +894,4 @@ mechanism M1 "Workers" -> A1`,
         document.getElementById('spline-style').addEventListener('change', renderDiagram);
     </script>
 </body>
-</html>
+    </html>
