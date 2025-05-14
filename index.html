@@ -31,7 +31,9 @@
             padding: 10px;
             width: 100%;
             max-width: 600px;
-            min-height: 600px;
+            min-height: 800px;
+            height: auto;
+            max-height: 100vh;
             background: white;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             overflow: auto;
@@ -69,6 +71,11 @@
         button:hover {
             background-color: #218838;
         }
+        .main-button {
+            background-color: #218838;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
         details {
             width: 100%;
             max-width: 600px;
@@ -92,7 +99,7 @@
             gap: 8px;
             margin: 10px 0;
         }
-        #spline-style {
+        #spline-style, #export-format {
             padding: 5px;
             font-size: 12px;
             border-radius: 5px;
@@ -123,24 +130,51 @@
             stroke: #000;
             stroke-width: 1;
             marker-end: url(#arrowhead);
+            minlen: 2;
         }
         .idef0-control {
             stroke: #000;
             stroke-width: 1;
             stroke-dasharray: 5,5;
             marker-end: url(#arrowhead);
+            minlen: 2;
         }
         .idef0-mechanism {
             stroke: #000;
             stroke-width: 1;
             stroke-dasharray: 2,2;
             marker-end: url(#arrowhead);
+            minlen: 2;
         }
         .idef0-decomposition {
             stroke: #000;
             stroke-width: 1;
             stroke-dasharray: 3,3;
             marker-end: url(#arrowhead);
+            minlen: 2;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            max-width: 300px;
+            width: 90%;
+        }
+        .modal-content select, .modal-content button {
+            margin: 10px;
         }
         @media (max-width: 600px) {
             body {
@@ -151,6 +185,10 @@
                 font-size: 12px;
                 min-width: 70px;
             }
+            .main-button {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
             .CodeMirror {
                 font-size: 10px !important;
             }
@@ -158,7 +196,7 @@
                 font-size: 10px;
             }
             #output {
-                min-height: 300px;
+                min-height: 400px;
             }
         }
     </style>
@@ -205,19 +243,28 @@
         </textarea>
     </div>
     <div class="controls">
-        <button onclick="renderDiagram()">Сгенерировать</button>
-        <button onclick="exportSVG()">Экспорт SVG</button>
-        <button onclick="exportJPG()">Экспорт JPG</button>
-        <button onclick="exportPNG()">Экспорт PNG</button>
         <button onclick="clearEditor()">Очистить</button>
-        <button onclick="saveCode()">Сохранить</button>
-        <button onclick="loadCode()">Загрузить</button>
         <button onclick="toggleDotPreview()">DOT-код</button>
         <label>Линии:</label>
         <select id="spline-style">
             <option value="ortho" selected>Ортогональные</option>
             <option value="polyline">Прямые</option>
         </select>
+        <button onclick="openExportModal()">Экспорт</button>
+        <button onclick="saveCode()">Сохранить</button>
+        <button onclick="renderDiagram()" class="main-button">Сгенерировать</button>
+    </div>
+    <div id="export-modal" class="modal">
+        <div class="modal-content">
+            <h3>Выберите формат</h3>
+            <select id="export-format">
+                <option value="svg">SVG</option>
+                <option value="jpg">JPG</option>
+                <option value="png">PNG</option>
+            </select>
+            <button onclick="exportDiagram()">Скачать</button>
+            <button onclick="closeExportModal()">Закрыть</button>
+        </div>
     </div>
     <div id="error"></div>
     <div id="dot-preview"></div>
@@ -270,8 +317,8 @@
             let dot = 'digraph IDEF0 {\n';
             dot += '    rankdir=TB;\n';
             dot += '    node [shape=box, style=filled, fillcolor=white, width=2.5, height=1, class="idef0-box", fontname="Arial", fontsize=16];\n';
-            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=14, fontcolor=black, labelloc=t, labeldistance=2, labelangle=45];\n';
-            dot += `    graph [splines=${splineStyle}, nodesep=2, ranksep=3, dpi=120];\n`;
+            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=16, fontcolor=black, labelloc=t, labeldistance=3, labelangle=30, minlen=2, weight=1];\n';
+            dot += `    graph [splines=${splineStyle}, nodesep=2.5, ranksep=4, dpi=120];\n`;
             dot += '    {rank=min; A0}\n';
             dot += '    {rank=max; A1}\n';
 
@@ -279,12 +326,14 @@
             const errors = [];
             const nodes = new Set();
             const edges = [];
+            const controlNodes = [];
+            const mechanismNodes = [];
 
             lines.forEach((line, index) => {
                 line = line.trim();
                 if (!line) return;
 
-                // Парсинг команд на русском и английском
+                // Парсинг команд
                 const processMatch = line.match(/^(процесс|process)\s+([A-Za-z0-9]+)\s+"([^"]+)"/);
                 const inputMatch = line.match(/^(вход|input)\s+([A-Za-z0-9]+)\s+"([^"]+)"\s+->\s+([A-Za-z0-9]+)/);
                 const controlMatch = line.match(/^(управление|control)\s+([A-Za-z0-9]+)\s+"([^"]+)"\s+->\s+([A-Za-z0-9]+)/);
@@ -299,7 +348,7 @@
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(`Ошибка в строке ${index + 1}: метка "${label}" содержит недопустимые символы (разрешены буквы, цифры, пробелы)`);
                     processes.add(id);
                     nodes.add(id);
-                    dot += `    ${id} [label="${escapeDotLabel(label)}\\n${id}", fillcolor=white, style=filled];\n`;
+                    dot += `    ${id} [label="${escapeDotLabel(label)}\\n${id}", fillcolor=white, style=filled, group=main];\n`;
                 } else if (inputMatch) {
                     const id = inputMatch[2];
                     const label = inputMatch[3];
@@ -308,7 +357,7 @@
                     if (nodes.has(id)) errors.push(`Ошибка в строке ${index + 1}: идентификатор ${id} уже используется`);
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(`Ошибка в строке ${index + 1}: метка "${label}" содержит недопустимые символы (разрешены буквы, цифры, пробелы)`);
                     nodes.add(id);
-                    dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
+                    dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}", group=input];\n`;
                     edges.push(`    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", tailport=e, headport=w, constraint=true];\n`);
                 } else if (controlMatch) {
                     const id = controlMatch[2];
@@ -318,7 +367,10 @@
                     if (nodes.has(id)) errors.push(`Ошибка в строке ${index + 1}: идентификатор ${id} уже используется`);
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(`Ошибка в строке ${index + 1}: метка "${label}" содержит недопустимые символы (разрешены буквы, цифры, пробелы)`);
                     nodes.add(id);
-                    dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
+                    const invisId = `invis_${id}`;
+                    dot += `    ${invisId} [shape=none, style=invis, group=control_${target}];\n`;
+                    dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}", group=control_${target}];\n`;
+                    controlNodes.push(`    {rank=same; ${invisId} -> ${target} [style=invis];}\n`);
                     edges.push(`    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", class="idef0-control", tailport=s, headport=n, constraint=false];\n`);
                 } else if (outputMatch) {
                     const source = outputMatch[2];
@@ -328,7 +380,7 @@
                     if (nodes.has(id)) errors.push(`Ошибка в строке ${index + 1}: идентификатор ${id} уже используется`);
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(`Ошибка в строке ${index + 1}: метка "${label}" содержит недопустимые символы (разрешены буквы, цифры, пробелы)`);
                     nodes.add(id);
-                    dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
+                    dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}", group=output];\n`;
                     edges.push(`    ${source} -> ${id} [xlabel="${escapeDotLabel(label)}", tailport=e, headport=w, constraint=true];\n`);
                 } else if (outputProcessMatch) {
                     const source = outputProcessMatch[2];
@@ -344,7 +396,10 @@
                     if (nodes.has(id)) errors.push(`Ошибка в строке ${index + 1}: идентификатор ${id} уже используется`);
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(`Ошибка в строке ${index + 1}: метка "${label}" содержит недопустимые символы (разрешены буквы, цифры, пробелы)`);
                     nodes.add(id);
-                    dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
+                    const invisId = `invis_${id}`;
+                    dot += `    ${invisId} [shape=none, style=invis, group=mechanism_${target}];\n`;
+                    dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}", group=mechanism_${target}];\n`;
+                    mechanismNodes.push(`    {rank=same; ${invisId} -> ${target} [style=invis];}\n`);
                     edges.push(`    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", class="idef0-mechanism", tailport=n, headport=s, constraint=false];\n`);
                 } else {
                     errors.push(`Ошибка в строке ${index + 1}: неверный синтаксис. Ожидается команда процесс/process, вход/input, управление/control, выход/output или механизм/mechanism`);
@@ -359,6 +414,9 @@
                 if (outputs.length === 0 && inputs.length > 0) errors.push(`Процесс ${proc} должен иметь хотя бы один выход`);
             });
 
+            // Добавление невидимых связей для контроля и механизмов
+            dot += controlNodes.join('');
+            dot += mechanismNodes.join('');
             // Добавление стрелок
             dot += edges.join('');
 
@@ -402,7 +460,7 @@
 
                         // Динамическая подгонка viewBox
                         const bbox = element.getBBox();
-                        element.setAttribute('viewBox', `${bbox.x-50} ${bbox.y-50} ${bbox.width+100} ${bbox.height+100}`);
+                        element.setAttribute('viewBox', `${bbox.x-100} ${bbox.y-100} ${bbox.width+200} ${bbox.height+200}`);
                         element.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
                         output.innerHTML = '';
@@ -420,93 +478,64 @@
             }
         }
 
-        function exportSVG() {
-            const output = document.getElementById('output');
-            const svg = output.querySelector('svg');
-            if (!svg) {
-                alert('Нет диаграммы для экспорта!');
-                return;
-            }
-
-            const serializer = new XMLSerializer();
-            const source = serializer.serializeToString(svg);
-            const blob = new Blob([source], { type: 'image/svg+xml;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'idef0_diagram.svg';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
+        function openExportModal() {
+            document.getElementById('export-modal').style.display = 'flex';
         }
 
-        function exportJPG() {
+        function closeExportModal() {
+            document.getElementById('export-modal').style.display = 'none';
+        }
+
+        function exportDiagram() {
+            const format = document.getElementById('export-format').value;
             const output = document.getElementById('output');
             const svg = output.querySelector('svg');
             if (!svg) {
                 alert('Нет диаграммы для экспорта!');
+                closeExportModal();
                 return;
             }
 
             const serializer = new XMLSerializer();
             const svgString = serializer.serializeToString(svg);
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const img = new Image();
-            const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-            const url = URL.createObjectURL(svgBlob);
 
-            img.onload = function() {
-                canvas.width = img.width * 2;
-                canvas.height = img.height * 2;
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                const jpgUrl = canvas.toDataURL('image/jpeg', 0.9);
+            if (format === 'svg') {
+                const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
-                link.href = jpgUrl;
-                link.download = 'idef0_diagram.jpg';
+                link.href = url;
+                link.download = 'idef0_diagram.svg';
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
                 URL.revokeObjectURL(url);
-            };
-            img.src = url;
-        }
+            } else {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+                const url = URL.createObjectURL(svgBlob);
 
-        function exportPNG() {
-            const output = document.getElementById('output');
-            const svg = output.querySelector('svg');
-            if (!svg) {
-                alert('Нет диаграммы для экспорта!');
-                return;
+                img.onload = function() {
+                    canvas.width = img.width * 2;
+                    canvas.height = img.height * 2;
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
+                    const quality = format === 'jpg' ? 0.9 : 1.0;
+                    const dataUrl = canvas.toDataURL(mimeType, quality);
+                    const link = document.createElement('a');
+                    link.href = dataUrl;
+                    link.download = `idef0_diagram.${format}`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                };
+                img.src = url;
             }
-
-            const serializer = new XMLSerializer();
-            const svgString = serializer.serializeToString(svg);
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const img = new Image();
-            const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-            const url = URL.createObjectURL(svgBlob);
-
-            img.onload = function() {
-                canvas.width = img.width * 2;
-                canvas.height = img.height * 2;
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                const pngUrl = canvas.toDataURL('image/png');
-                const link = document.createElement('a');
-                link.href = pngUrl;
-                link.download = 'idef0_diagram.png';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                URL.revokeObjectURL(url);
-            };
-            img.src = url;
+            closeExportModal();
         }
 
         function clearEditor() {
@@ -520,16 +549,6 @@
             const code = editor.getValue();
             localStorage.setItem('idef0_code', code);
             alert('Код сохранён!');
-        }
-
-        function loadCode() {
-            const code = localStorage.getItem('idef0_code');
-            if (code) {
-                editor.setValue(code);
-                renderDiagram();
-            } else {
-                alert('Нет сохранённого кода!');
-            }
         }
 
         function toggleDotPreview() {
