@@ -1,4 +1,4 @@
-> Панкуля:
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -10,12 +10,18 @@
             font-family: Arial, sans-serif;
             margin: 20px;
             text-align: center;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
         }
         .graph-container {
-            margin: 20px 0;
+            margin: 20px auto;
             border: 1px solid #ccc;
             padding: 10px;
-            display: inline-block;
+            background-color: #fff;
+            max-width: 800px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         button {
             padding: 10px 20px;
@@ -23,7 +29,9 @@
             background-color: #007bff;
             color: white;
             border: none;
+            border-radius: 5px;
             cursor: pointer;
+            font-size: 16px;
         }
         button:hover {
             background-color: #0056b3;
@@ -36,73 +44,72 @@
 </head>
 <body>
     <h1>Генерация IDEF0 графов для бизнес-процессов МойДневник</h1>
-    <div id="authorization-graph" class="graph-container"></div>
+    <div id="authorization-graph" class="graph-container"><p>Загрузка графа Авторизация...</p></div>
     <button onclick="downloadGraph('authorization-graph', 'authorization_idef0.png')">Скачать Авторизация (PNG)</button>
-    <div id="create-entry-graph" class="graph-container"></div>
+    <div id="create-entry-graph" class="graph-container"><p>Загрузка графа Создание записи...</p></div>
     <button onclick="downloadGraph('create-entry-graph', 'create_entry_idef0.png')">Скачать Создание записи (PNG)</button>
-    <div id="add-sticker-graph" class="graph-container"></div>
+    <div id="add-sticker-graph" class="graph-container"><p>Загрузка графа Добавление стикера...</p></div>
     <button onclick="downloadGraph('add-sticker-graph', 'add_sticker_idef0.png')">Скачать Добавление стикера (PNG)</button>
 
     <script src="https://unpkg.com/@hpcc-js/wasm@2.14.2/dist/index.min.js"></script>
     <script>
-        // Инициализация Viz
-        const viz = window["@hpcc-js/wasm"];
+        // Инициализация библиотеки
+        const viz = window['@hpcc-js/wasm'];
 
         // Данные процессов
         const processes = [
             {
-                name: "Authorization",
-                functionLabel: "Авторизация пользователя",
-                inputs: [{label: "Email и пароль", id: "I1"}],
+                name: 'Authorization',
+                functionLabel: 'Авторизация пользователя',
+                inputs: [{ label: 'Email и пароль', id: 'I1' }],
                 outputs: [
-                    {label: "Аутентифицированный\\nпользователь", id: "O1"},
-                    {label: "Сообщение об ошибке", id: "O2"}
+                    { label: 'Аутентифицированный\\nпользователь', id: 'O1' },
+                    { label: 'Сообщение об ошибке', id: 'O2' }
                 ],
-                controls: [{label: "Правила авторизации\\n(Firebase Auth)", id: "C1"}],
+                controls: [{ label: 'Правила авторизации\\n(Firebase Auth)', id: 'C1' }],
                 mechanisms: [
-                    {label: "Веб-интерфейс\\n(login.html)", id: "M1"},
-                    {label: "Firebase\\nAuthentication", id: "M2"}
+                    { label: 'Веб-интерфейс\\n(login.html)', id: 'M1' },
+                    { label: 'Firebase\\nAuthentication', id: 'M2' }
                 ],
-                containerId: "authorization-graph"
+                containerId: 'authorization-graph'
             },
             {
-                name: "CreateEntry",
-                functionLabel: "Создание записи",
-                inputs: [{label: "Данные записи\\n(дата, заголовок,\\nсодержание, изображение)", id: "I1"}],
+                name: 'CreateEntry',
+                functionLabel: 'Создание записи',
+                inputs: [{ label: 'Данные записи\\n(дата, заголовок,\\nсодержание, изображение)', id: 'I1' }],
                 outputs: [
-                    {label: "Сохраненная запись\\n(Firestore)", id: "O1"},
-                    {label: "Уведомление об успехе", id: "O2"},
-                    {label: "Сообщение об ошибке", id: "O3"}
+                    { label: 'Сохраненная запись\\n(Firestore)', id: 'O1' },
+                    { label: 'Уведомление об успехе', id: 'O2' },
+                    { label: 'Сообщение об ошибке', id: 'O3' }
                 ],
-                controls: [{label: "Правила валидации\\n(обязательное содержание)", id: "C1"}],
+                controls: [{ label: 'Правила валидации\\n(обязательное содержание)', id: 'C1' }],
                 mechanisms: [
-                    {label: "Веб-интерфейс\\n(diary.html)", id: "M1"},
-                    {label: "Firestore", id: "M2"},
-                    {label: "Firebase Storage", id: "M3"}
+                    { label: 'Веб-интерфейс\\n(diary.html)', id: 'M1' },
+                    { label: 'Firestore', id: 'M2' },
+                    { label: 'Firebase Storage', id: 'M3' }
                 ],
-                containerId: "create-entry-graph"
+                containerId: 'create-entry-graph'
             },
             {
-                name: "AddSticker",
-                functionLabel: "Добавление стикера",
+                name: 'AddSticker',
+                functionLabel: 'Добавление стикера',
                 inputs: [
-                    {label: "Стикер\\n(системный или пользовательский)", id: "I1"},
-                    {label: "Координаты (x, y)", id: "I2"}
+
+{ label: 'Стикер\\n(системный или пользовательский)', id: 'I1' },
+                    { label: 'Координаты (x, y)', id: 'I2' }
                 ],
                 outputs: [
-                    {label: "Стикер в записи\\n(Firestore)", id: "O1"},
-                    {label: "Сохраненный стикер\\n(Firebase Storage)", id: "O2"},
-                    {label: "Сообщение об ошибке", id: "O3"}
-
-> Панкуля:
-],
-                controls: [{label: "Правила загрузки\\n(формат файла)", id: "C1"}],
-                mechanisms: [
-                    {label: "Веб-интерфейс\\n(diary.html)", id: "M1"},
-                    {label: "Firestore", id: "M2"},
-                    {label: "Firebase Storage", id: "M3"}
+                    { label: 'Стикер в записи\\n(Firestore)', id: 'O1' },
+                    { label: 'Сохраненный стикер\\n(Firebase Storage)', id: 'O2' },
+                    { label: 'Сообщение об ошибке', id: 'O3' }
                 ],
-                containerId: "add-sticker-graph"
+                controls: [{ label: 'Правила загрузки\\n(формат файла)', id: 'C1' }],
+                mechanisms: [
+                    { label: 'Веб-интерфейс\\n(diary.html)', id: 'M1' },
+                    { label: 'Firestore', id: 'M2' },
+                    { label: 'Firebase Storage', id: 'M3' }
+                ],
+                containerId: 'add-sticker-graph'
             }
         ];
 
@@ -145,41 +152,42 @@
         }
 
         // Рендеринг графов
-        if (viz) {
-            Promise.all(
-                processes.map(process => {
+        if (viz && viz.graphviz) {
+            viz.graphviz().then(graphviz => {
+                processes.forEach(process => {
                     const dotCode = generateDotCode(process);
                     const container = document.getElementById(process.containerId);
-                    return viz.dot(dotCode, { format: "svg" })
-                        .then(svg => {
-                            container.innerHTML = svg;
-                            console.log(Граф ${process.name} успешно отрендерен);
-                        })
-                        .catch(error => {
-                            console.error(Ошибка рендеринга графа ${process.name}:, error);
-                            container.innerHTML = <p class="error">Ошибка: ${error.message}</p>;
-                        });
-                })
-            ).catch(error => {
-                console.error("Общая ошибка рендеринга:", error);
-                processes.forEach(process => {
-                    document.getElementById(process.containerId).innerHTML = <p class="error">Ошибка рендеринга: ${error.message}</p>;
+                    try {
+                        const svg = graphviz.renderSVGElement(dotCode);
+                        container.innerHTML = '';
+                        container.appendChild(svg);
+                        console.log(Граф ${process.name} успешно отрендерен);
+                    } catch (error) {
+                        console.error(Ошибка рендеринга графа ${process.name}:, error);
+                        container.innerHTML = <p class="error">Ошибка рендеринга графа ${process.name}: ${error.message}</p>;
+                    }
+                });
+            }).catch(error => {
+                console.error('Ошибка инициализации @hpcc-js/wasm:', error);
+
+
+processes.forEach(process => {
+                    document.getElementById(process.containerId).innerHTML = <p class="error">Ошибка загрузки библиотеки: ${error.message}</p>;
                 });
             });
         } else {
-            console.error("Библиотека @hpcc-js/wasm не загружена");
+            console.error('Библиотека @hpcc-js/wasm не загружена');
             processes.forEach(process => {
                 document.getElementById(process.containerId).innerHTML = <p class="error">Ошибка: Библиотека @hpcc-js/wasm не загружена</p>;
             });
         }
 
-> Панкуля:
-// Функция для скачивания графа как PNG
+        // Функция для скачивания графа как PNG
         function downloadGraph(containerId, filename) {
             const container = document.getElementById(containerId);
             const svg = container.querySelector('svg');
             if (!svg) {
-                alert("Граф не найден! Проверьте консоль для ошибок.");
+                alert('Граф не найден! Проверьте консоль для ошибок.');
                 return;
             }
             const svgData = new XMLSerializer().serializeToString(svg);
@@ -187,20 +195,27 @@
             const ctx = canvas.getContext('2d');
             const img = new Image();
             img.onload = () => {
-                const scale = 2; // Увеличение масштаба для качества
+                const scale = 2; // Увеличение для повышения качества
                 canvas.width = img.width * scale;
                 canvas.height = img.height * scale;
                 ctx.scale(scale, scale);
                 ctx.drawImage(img, 0, 0);
-                const png = canvas.toDataURL('image/png');
-                const link = document.createElement('a');
-                link.href = png;
-                link.download = filename;
-                link.click();
+                try {
+                    const png = canvas.toDataURL('image/png');
+                    const link = document.createElement('a');
+                    link.href = png;
+                    link.download = filename;
+                    link.click();
+                } catch (error) {
+                    alert('Ошибка при скачивании PNG: ' + error.message);
+                    console.error('Ошибка скачивания:', error);
+                }
             };
             img.onerror = () => {
-                alert("Ошибка загрузки SVG!");
+                alert('Ошибка загрузки SVG!');
+                console.error('Ошибка загрузки SVG');
             };
+            // Корректная кодировка для кириллицы
             img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
         }
     </script>
