@@ -558,14 +558,14 @@ mechanism M1 "Workers" -> A0`,
             dot += '    rankdir=TB;\n';
             dot += '    node [shape=box, style=filled, fillcolor=white, width=2, height=0.8, class="idef0-box", fontname="Arial", fontsize=12];\n';
             dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=12, fontcolor=black, minlen=2, weight=1, labelloc=t, labelangle=0];\n';
-            dot += `    graph [splines=${splineStyle}, nodesep=1.5, ranksep=2, dpi=72];\n`;
+            dot += `    graph [splines=${splineStyle}, nodesep=1.5, ranksep=2, dpi=96];\n`;
             dot += '    {rank=min; A0}\n';
             dot += '    {rank=max; A1}\n';
 
             const processes = new Set();
             const errors = [];
             const nodes = new Set();
-            const edges = new Map(); // Используем Map для уникальности связей
+            const edges = new Map();
 
             lines.forEach((line, index) => {
                 line = line.trim();
@@ -665,7 +665,7 @@ mechanism M1 "Workers" -> A0`,
             const dotPreview = document.getElementById('dot-preview');
 
             const { dot, errors } = validateAndConvertToDot(code);
-            console.log('DOT Code:\n', dot); // Отладка
+            console.log('DOT Code:\n', dot);
 
             if (errors.length > 0) {
                 errorDiv.style.display = 'block';
@@ -689,10 +689,9 @@ mechanism M1 "Workers" -> A0`,
                 const viz = new Viz();
                 viz.renderSVGElement(dot)
                     .then(function(element) {
-                        const bbox = element.getBBox();
-                        console.log('SVG Generated:\n', element.outerHTML); // Отладка SVG
-                        console.log('Bbox:', { x: bbox.x, y: bbox.y, width: bbox.width, height: bbox.height }); // Отладка размеров
-                        console.log('Output Size:', { width: output.clientWidth, height: output.clientHeight }); // Отладка контейнера
+                        const outputWidth = output.clientWidth;
+                        const outputHeight = output.clientHeight;
+                        console.log('Output Size:', { width: outputWidth, height: outputHeight });
 
                         const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
                         defs.innerHTML = `
@@ -702,16 +701,15 @@ mechanism M1 "Workers" -> A0`,
                         `;
                         element.prepend(defs);
 
-                        // Установка viewBox с учётом размеров #output и отступов
-                        const padding = 50;
+                        // Устанавливаем viewBox на основе размеров #output
                         element.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-                        element.setAttribute('viewBox', `${bbox.x - padding} ${bbox.y - padding} ${bbox.width + 2 * padding} ${bbox.height + 2 * padding}`);
+                        element.setAttribute('viewBox', `0 0 ${outputWidth} ${outputHeight}`);
                         element.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
                         output.innerHTML = '';
                         output.appendChild(element);
 
-                        // Инициализация svg-pan-zoom с централизацией и масштабированием под #output
+                        // Инициализация svg-pan-zoom с ограничением масштаба
                         if (panZoomInstance) {
                             panZoomInstance.destroy();
                         }
@@ -723,7 +721,8 @@ mechanism M1 "Workers" -> A0`,
                             center: true,
                             minZoom: 0.5,
                             maxZoom: 5,
-                            zoomScaleSensitivity: 0.2
+                            zoomScaleSensitivity: 0.2,
+                            initialZoom: 1
                         });
                     })
                     .catch(error => {
@@ -758,22 +757,21 @@ mechanism M1 "Workers" -> A0`,
             }
 
             const serializer = new XMLSerializer();
-            const svgString = serializer.serializeToString(svg);
+            let svgString = serializer.serializeToString(svg);
             const parser = new DOMParser();
             const doc = parser.parseFromString(svgString, 'image/svg+xml');
             const svgElement = doc.documentElement;
 
-            // Убедимся, что экспортируется весь viewBox
-            const viewBox = svgElement.getAttribute('viewBox').split(' ');
-            const width = parseFloat(viewBox[2]);
-            const height = parseFloat(viewBox[3]);
-            svgElement.setAttribute('width', width);
-            svgElement.setAttribute('height', height);
+            // Устанавливаем размеры для экспорта
+            const outputWidth = output.clientWidth;
+            const outputHeight = output.clientHeight;
+            svgElement.setAttribute('width', outputWidth);
+            svgElement.setAttribute('height', outputHeight);
 
-            const fullSvgString = new XMLSerializer().serializeToString(svgElement);
+            svgString = serializer.serializeToString(svgElement);
 
             if (format === 'svg') {
-                const blob = new Blob([fullSvgString], { type: 'image/svg+xml;charset=utf-8' });
+                const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.href = url;
@@ -785,8 +783,8 @@ mechanism M1 "Workers" -> A0`,
             } else {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
-                canvas.width = width * 2; // Удваиваем разрешение
-                canvas.height = height * 2;
+                canvas.width = outputWidth * 2; // Удваиваем разрешение
+                canvas.height = outputHeight * 2;
                 ctx.fillStyle = '#ffffff';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 const img = new Image();
@@ -803,7 +801,9 @@ mechanism M1 "Workers" -> A0`,
                     document.body.removeChild(link);
                     URL.revokeObjectURL(img.src);
                 };
-                img.src = 'data:image/svg+xml;base64,' + btoa(fullSvgString);
+                // Кодируем SVG с учётом UTF-8
+                const svgData = unescape(encodeURIComponent(svgString));
+                img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
             }
         }
 
@@ -831,4 +831,4 @@ mechanism M1 "Workers" -> A0`,
         document.getElementById('spline-style').addEventListener('change', renderDiagram);
     </script>
 </body>
-</html>
+        </html>
