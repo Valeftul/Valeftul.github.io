@@ -28,7 +28,7 @@
             border: 1px solid #999;
             padding: 15px;
             width: 80%;
-            min-height: 500px;
+            min-height: 600px;
             background: white;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             overflow: auto;
@@ -38,7 +38,7 @@
         #output svg {
             max-width: 100%;
             height: auto;
-            text-rendering: geometricPrecision; /* Чёткий текст */
+            text-rendering: geometricPrecision;
         }
         #error {
             color: red;
@@ -75,7 +75,7 @@
             stroke: #000;
             stroke-width: 2;
             font-family: Arial, sans-serif;
-            font-size: 14px;
+            font-size: 16px;
         }
         .idef0-arrow {
             stroke: #000;
@@ -94,6 +94,12 @@
             stroke-dasharray: 2,2;
             marker-end: url(#arrowhead);
         }
+        .idef0-decomposition {
+            stroke: #000;
+            stroke-width: 2;
+            stroke-dasharray: 3,3;
+            marker-end: url(#arrowhead);
+        }
     </style>
 </head>
 <body>
@@ -104,7 +110,7 @@
         - <code>input ID "Название" -> процесс</code> — вход (слева).<br>
         - <code>control ID "Название" -> процесс</code> — управление (сверху, пунктир).<br>
         - <code>output процесс -> ID "Название"</code> — выход (справа).<br>
-        - <code>output процесс -> процесс</code> — связь между процессами.<br>
+        - <code>output процесс -> процесс</code> — декомпозиция (пунктирная стрелка).<br>
         - <code>mechanism ID "Название" -> процесс</code> — механизм (снизу, мелкий пунктир).<br>
         <strong>Пример:</strong><br>
         <pre>
@@ -114,8 +120,8 @@ control C1 "Инструкции" -> A0
 output A0 -> O1 "Продукт"
 mechanism M1 "Станки" -> A0
 process A1 "Контроль"
-output A0 -> A1
 input I2 "Стандарты" -> A1
+output A0 -> A1
 output A1 -> O2 "Отчёт"
         </pre>
         Нажмите "Сгенерировать" или "Экспорт SVG".
@@ -127,8 +133,8 @@ control C1 "Правила" -> A0
 output A0 -> O1 "Готовый продукт"
 mechanism M1 "Рабочие" -> A0
 process A1 "Подпроцесс"
-output A0 -> A1
 input I2 "Данные" -> A1
+output A0 -> A1
 output A1 -> O2 "Результат"
     </textarea>
     <div>
@@ -150,9 +156,10 @@ output A1 -> O2 "Результат"
             const lines = code.trim().split('\n').filter(line => line.trim());
             let dot = 'digraph IDEF0 {\n';
             dot += '    rankdir=TB;\n';
-            dot += '    node [shape=box, style=filled, fillcolor=white, width=2.5, height=1, class="idef0-box", fontname="Arial", fontsize=14];\n';
-            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=14];\n';
-            dot += '    graph [splines=ortho, nodesep=1.5, ranksep=1.5];\n';
+            dot += '    node [shape=box, style=filled, fillcolor=white, width=3, height=1.2, class="idef0-box", fontname="Arial", fontsize=16];\n';
+            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=14, fontcolor=black, labelloc=t];\n';
+            dot += '    graph [splines=ortho, nodesep=2, ranksep=2, concentrate=true, dpi=96];\n';
+            dot += '    {rank=same; ' + [...new Set(lines.filter(l => l.match(/^process/)).map(l => l.match(/([A-Za-z0-9]+)/)[1]))].join(' ') + '}\n';
 
             const processes = new Set();
             const errors = [];
@@ -214,7 +221,7 @@ output A1 -> O2 "Результат"
                     const target = outputProcessMatch[2];
                     if (!processes.has(source)) errors.push(`Ошибка в строке ${index + 1}: процесс ${source} не определён`);
                     if (!processes.has(target)) errors.push(`Ошибка в строке ${index + 1}: процесс ${target} не определён`);
-                    edges.push(`    ${source} -> ${target} [xlabel="Декомпозиция", tailport=e, headport=w, constraint=true];\n`);
+                    edges.push(`    ${source} -> ${target} [xlabel="Декомпозиция", class="idef0-decomposition", tailport=e, headport=w, constraint=true];\n`);
                 } else if (mechanismMatch) {
                     const id = mechanismMatch[1];
                     const label = mechanismMatch[2];
