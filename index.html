@@ -383,13 +383,31 @@
         </svg>
     </button>
 
-    <!-- Подключение библиотек с резервными источниками -->
+    <!-- Подключение библиотек с улучшенной обработкой ошибок -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.js" onerror="console.error('Ошибка загрузки CodeMirror'); alert('Не удалось загрузить CodeMirror. Проверьте интернет.')"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js" onerror="console.error('Ошибка загрузки Viz.js'); alert('Не удалось загрузить Viz.js. Проверьте интернет.')"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js" onerror="console.error('Ошибка загрузки full.render.js'); alert('Не удалось загрузить full.render.js. Проверьте интернет.')"></script>
     <script src="https://unpkg.com/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js" onerror="console.error('Ошибка загрузки svg-pan-zoom'); alert('Не удалось загрузить svg-pan-zoom. Проверьте интернет.')"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvg@3.0.10/dist/umd.js" onerror="console.error('Ошибка загрузки Canvg с основного CDN'); this.onerror=null; this.src='https://unpkg.com/canvg@3.0.10/dist/umd.js';"></script>
+    <script id="canvg-script" src="https://cdn.jsdelivr.net/npm/canvg@3.0.10/dist/umd.js" onerror="handleCanvgError()"></script>
     <script>
+        // Обработка ошибки загрузки Canvg
+        function handleCanvgError() {
+            const script = document.getElementById('canvg-script');
+            console.error('Ошибка загрузки Canvg с основного CDN: https://cdn.jsdelivr.net/npm/canvg@3.0.10/dist/umd.js');
+            script.onerror = null; // Сбрасываем обработчик, чтобы избежать бесконечного цикла
+            script.src = 'https://unpkg.com/canvg@3.0.10/dist/umd.js'; // Переключение на запасной источник
+            script.onload = () => console.log('Canvg загружен с запасного источника');
+            script.onerror = () => {
+                console.error('Ошибка загрузки Canvg с запасного CDN: https://unpkg.com/canvg@3.0.10/dist/umd.js');
+                alert('Не удалось загрузить библиотеку Canvg. Экспорт в JPG/PNG недоступен. Проверьте интернет или перезагрузите страницу.');
+            };
+            setTimeout(() => {
+                if (typeof Canvg === 'undefined') {
+                    console.warn('Canvg не загружен после попыток. Экспорт отключён.');
+                }
+            }, 5000); // Тайм-аут на 5 секунд
+        }
+
         // Проверка интернет-соединения
         function checkOnline() {
             return navigator.onLine;
@@ -401,7 +419,7 @@
                 alert('Нет интернет-соединения. Проверьте сеть и перезагрузите страницу.');
                 return false;
             }
-            if (typeof CodeMirror === 'undefined' || typeof Viz === 'undefined' || typeof svgPanZoom === 'undefined' || typeof Canvg === 'undefined') {
+            if (typeof CodeMirror === 'undefined' || typeof Viz === 'undefined' || typeof svgPanZoom === 'undefined') {
                 alert('Одна или несколько библиотек не загружены. Проверьте консоль для деталей или перезагрузите страницу.');
                 console.error('Отсутствует одна из библиотек:', {
                     CodeMirror: typeof CodeMirror,
@@ -877,6 +895,11 @@ mechanism M1 "Workers" -> A1`,
                 return;
             }
 
+            if (typeof Canvg === 'undefined') {
+                alert('Библиотека Canvg не загружена. Экспорт в JPG/PNG недоступен. Попробуйте перезагрузить страницу или проверьте интернет.');
+                return;
+            }
+
             const bbox = svg.getBBox();
             const padding = 20;
             const width = Math.max(bbox.width + 2 * padding, 100);
@@ -901,10 +924,6 @@ mechanism M1 "Workers" -> A1`,
                 document.body.removeChild(link);
                 URL.revokeObjectURL(url);
             } else {
-                if (typeof Canvg === 'undefined') {
-                    alert('Библиотека Canvg не загружена. Перезагрузите страницу или проверьте интернет.');
-                    return;
-                }
                 try {
                     const canvas = document.createElement('canvas');
                     canvas.width = width * 2;
