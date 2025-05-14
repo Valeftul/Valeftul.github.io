@@ -618,7 +618,7 @@ mechanism M1 "Workers" -> A1`,
             dot += '    rankdir=TB;\n';
             dot += '    node [shape=box, style=filled, fillcolor=white, width=1.2, height=0.5, class="idef0-box", fontname="Arial", fontsize=10];\n';
             dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=8, fontcolor=black, minlen=2, weight=1, labelloc=t, labelangle=0];\n';
-            dot += `    graph [splines="${splineStyle}", nodesep=1, ranksep=1.5, dpi=96];\n`; // Исправлено форматирование
+            dot += `    graph [splines="${splineStyle}", nodesep=1, ranksep=1.5, dpi=96];\n`; // Убедились, что синтаксис корректен
 
             const processes = new Set();
             const errors = [];
@@ -785,7 +785,7 @@ mechanism M1 "Workers" -> A1`,
                             maxZoom: 5,
                             zoomScaleSensitivity: 0.2,
                             initialZoom: 0.7,
-                            contain: true // Адаптация под размер контейнера
+                            contain: true
                         });
                     })
                     .catch(error => {
@@ -832,7 +832,10 @@ mechanism M1 "Workers" -> A1`,
             svgClone.setAttribute('viewBox', `${bbox.x - padding} ${bbox.y - padding} ${width} ${height}`);
 
             const serializer = new XMLSerializer();
-            const svgString = serializer.serializeToString(svgClone);
+            let svgString = serializer.serializeToString(svgClone);
+
+            // Убеждаемся, что SVG корректен
+            svgString = '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' + svgString;
 
             if (format === 'svg') {
                 const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
@@ -865,8 +868,7 @@ mechanism M1 "Workers" -> A1`,
                     document.body.removeChild(link);
                     URL.revokeObjectURL(img.src);
                 };
-                const svgData = unescape(encodeURIComponent(svgString));
-                img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
+                img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
             }
         }
 
@@ -894,4 +896,4 @@ mechanism M1 "Workers" -> A1`,
         document.getElementById('spline-style').addEventListener('change', renderDiagram);
     </script>
 </body>
-    </html>
+</html>
