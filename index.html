@@ -1,84 +1,175 @@
-
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Главная</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <title>Генерация IDEF0 графов для МойДневник</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+        .graph-container {
+            margin: 20px 0;
+            border: 1px solid #ccc;
+            padding: 10px;
+            display: inline-block;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    
-    <header class="header">
-        <h1>Использование CMS в коммерции</h1>
-        <nav class="nav">
-            <ul>
-                <li><a href="index.html">Главная</a></li>
-                <li><a href="pages/services.html">Видео</a></li>
-                <li><a href="pages/about.html">О нас</a></li>
-                <li><a href="pages/contact.html">Контакты</a></li>
-            </ul>
-        </nav>
-    </header>
+    <h1>Генерация IDEF0 графов для бизнес-процессов МойДневник</h1>
+    <div id="authorization-graph" class="graph-container"></div>
+    <button onclick="downloadGraph('authorization-graph', 'authorization_idef0.png')">Скачать Авторизация (PNG)</button>
+    <div id="create-entry-graph" class="graph-container"></div>
+    <button onclick="downloadGraph('create-entry-graph', 'create_entry_idef0.png')">Скачать Создание записи (PNG)</button>
+    <div id="add-sticker-graph" class="graph-container"></div>
+    <button onclick="downloadGraph('add-sticker-graph', 'add_sticker_idef0.png')">Скачать Добавление стикера (PNG)</button>
 
-    <div class="container">
-
-        <input type="checkbox" id="sidebar-toggle" class="sidebar-toggle">
-        <label for="sidebar-toggle" class="sidebar-icon">☰</label>
-    
-        <aside class="sidebar">
-            <button class="close-btn" onclick="document.getElementById('sidebar-toggle').checked = false;">×</button>
-            <h2>Меню</h2>
-            <ul>
-                <li><a href="pages/link1.html">Основные компоненты CMS</a></li>
-                <li><a href="pages/link2.html">Преимущества использования CMS</a></li>
-                <li><a href="pages/link3.html">Оценка и выбор правильной CMS</a></li>
-                <li><a href="pages/link4.html">Пользовательская CMS против готовых решений</a></li>
-            </ul>
-        </aside>
-        <main class="main-content clearfix">
-            <img src="src/to_index.png" class="main-right">
-            <div class="text-content">
-                <h2>Что такое CMS?</h2>
-                <p> <strong>Система управления контентом (CMS)</strong> — это программное приложение или набор связанных программ, которые позволяют пользователям создавать, управлять и поддерживать цифровой контент,
-                часто для веб-сайтов или других онлайн-платформ. Содержимое может включать текст, изображения, видео, аудиофайлы, документы, мультимедийные файлы и многое другое.</p>
-                <p> Как правило, CMS позволяет нетехническим пользователям легко управлять и обновлять контент на веб-сайте, не требуя навыков технического программирования или веб-разработки.
-                    Системы управления контентом делают процесс создания и управления веб-сайтом более удобным и доступным для всех.</p>
-                <p> Некоторые основные функции CMS включают создание, редактирование, организацию и удаление контента, управление версиями контента, а также управление пользователями и разрешениями.
-                Благодаря широкому использованию систем управления контентом любой может легко создать и поддерживать веб-сайт, даже не имея знаний или опыта программирования.</p>
-            </div>
-            <div class="text-content">
-                <h2>Типы систем управления контентом</h2>
-                <p>Доступно несколько типов платформ CMS, каждая из которых отличается архитектурой, функциональностью и вариантами использования. Вот три основных типа систем управления контентом:</p>
-                <ul class="numbered-list">
-                    <li><strong>Безголовая CMS:</strong>
-                        это система управления контентом, которая не имеет внешнего интерфейса или уровня представления. Вместо этого контент отделен от представления, что позволяет
-                         разработчикам выбирать любую интерфейсную технологию для отображения контента. В безголовой CMS контент управляется через API (интерфейсы прикладного программирования) , которые могут
-                          обслуживать контент на нескольких устройствах и платформах, что делает его популярным выбором для предприятий с несколькими каналами доставки, такими как веб-сайты, мобильные приложения и устройства IoT.</li>
-                    <li><strong>Развязанная CMS:</strong>
-                        это гибрид безголовой и традиционной монолитной (связанной) CMS. Как и безголовая CMS, несвязанная CMS отделяет управление контентом от уровня представления. Тем не менее, он также включает
-                         в себя встроенные интерфейсные шаблоны и инструменты, позволяющие создавать и предварительно просматривать контент перед запуском. Это позволяет создателям контента иметь больший контроль над представлением
-                          своего контента, в то же время используя преимущества гибкости и масштабируемости несвязанной архитектуры.</li>
-                    <li><strong>Монолитная (связанная) CMS:</strong>
-                        это традиционная система управления контентом с тесно интегрированными уровнями управления контентом и представления. Этот тип CMS поставляется со встроенными шаблонами и
-                         инструментами дизайна для создания и поддержания внешнего вида веб-сайта. Монолитные платформы CMS обычно предлагают более оптимизированный опыт для нетехнических пользователей, но они могут быть менее гибкими,
-                          чем безголовые или развязанные варианты CMS.</li>
-                </ul>
-            </div>
-        </main>
-    </div>
-
-    <footer>
-        <p>© 2024 CMS в электронной коммерции. Все права защищены.</p>
-    </footer>
-
-    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js"></script>
     <script>
-        // Инициализация компонентов Material
-        const drawer = new mdc.drawer.MDCModalDrawer(document.querySelector('.mdc-drawer'));
+        // Инициализация Viz.js
+        const viz = new Viz();
+
+        // Данные процессов
+        const processes = [
+            {
+                name: "Authorization",
+                functionLabel: "Авторизация пользователя",
+                inputs: [{label: "Email и пароль", id: "I1"}],
+                outputs: [
+                    {label: "Аутентифицированный\\nпользователь", id: "O1"},
+                    {label: "Сообщение об ошибке", id: "O2"}
+                ],
+                controls: [{label: "Правила авторизации\\n(Firebase Auth)", id: "C1"}],
+                mechanisms: [
+                    {label: "Веб-интерфейс\\n(login.html)", id: "M1"},
+                    {label: "Firebase\\nAuthentication", id: "M2"}
+                ],
+                containerId: "authorization-graph"
+            },
+            {
+                name: "CreateEntry",
+                functionLabel: "Создание записи",
+                inputs: [{label: "Данные записи\\n(дата, заголовок,\\nсодержание, изображение)", id: "I1"}],
+                outputs: [
+                    {label: "Сохраненная запись\\n(Firestore)", id: "O1"},
+                    {label: "Уведомление об успехе", id: "O2"},
+                    {label: "Сообщение об ошибке", id: "O3"}
+                ],
+                controls: [{label: "Правила валидации\\n(обязательное содержание)", id: "C1"}],
+                mechanisms: [
+                    {label: "Веб-интерфейс\\n(diary.html)", id: "M1"},
+                    {label: "Firestore", id: "M2"},
+                    {label: "Firebase Storage", id: "M3"}
+                ],
+                containerId: "create-entry-graph"
+            },
+            {
+                name: "AddSticker",
+                functionLabel: "Добавление стикера",
+                inputs: [
+                    {label: "Стикер\\n(системный или пользовательский)", id: "I1"},
+                    {label: "Координаты (x, y)", id: "I2"}
+                ],
+                outputs: [
+                    {label: "Стикер в записи\\n(Firestore)", id: "O1"},
+                    {label: "Сохраненный стикер\\n(Firebase Storage)", id: "O2"},
+                    {label: "Сообщение об ошибке", id: "O3"}
+],
+                controls: [{label: "Правила загрузки\\n(формат файла)", id: "C1"}],
+                mechanisms: [
+                    {label: "Веб-интерфейс\\n(diary.html)", id: "M1"},
+                    {label: "Firestore", id: "M2"},
+                    {label: "Firebase Storage", id: "M3"}
+                ],
+                containerId: "add-sticker-graph"
+            }
+        ];
+
+        // Функция для генерации DOT-кода
+        function generateDotCode(process) {
+            return 
+                digraph ${process.name} {
+                    rankdir=TB;
+                    node [fontsize=12, width=2, height=0.8];
+                    edge [fontsize=10, arrowhead=vee, color=navy];
+                    
+                    A0 [label="A-0\\n${process.functionLabel}", shape=box, style=filled, fillcolor=lightblue];
+                    
+                    ${process.inputs.map((input, i) => 
+                        I${i+1} [label="${input.label}", shape=plaintext, fillcolor=none];
+                        I${i+1} -> A0 [label="${input.id}"];
+                    ).join('\n')}
+                    
+                    ${process.outputs.map((output, i) => 
+                        O${i+1} [label="${output.label}", shape=plaintext, fillcolor=none];
+                        A0 -> O${i+1} [label="${output.id}"];
+                    ).join('\n')}
+                    
+                    ${process.controls.map((control, i) => 
+                        C${i+1} [label="${control.label}", shape=plaintext, fillcolor=none];
+                        C${i+1} -> A0 [label="${control.id}", style=dashed, arrowhead=dot];
+                    ).join('\n')}
+                    
+                    ${process.mechanisms.map((mechanism, i) => 
+                        M${i+1} [label="${mechanism.label}", shape=plaintext, fillcolor=none];
+                        M${i+1} -> A0 [label="${mechanism.id}", style=dotted, arrowhead=tee];
+                    ).join('\n')}
+                    
+                    {rank=min; ${process.inputs.map((_, i) => I${i+1}).join(';')};}
+                    {rank=same; ${process.outputs.map((_, i) => O${i+1}).join(';')};}
+                    {rank=max; ${process.controls.map((_, i) => C${i+1}).join(';')};${process.mechanisms.map((_, i) => M${i+1}).join(';')};}
+                }
+            ;
+        }
+
+        // Рендеринг графов
+        processes.forEach(process => {
+            const dotCode = generateDotCode(process);
+            viz.renderSVGElement(dotCode)
+                .then(element => {
+                    document.getElementById(process.containerId).appendChild(element);
+                })
+                .catch(error => console.error("Ошибка рендеринга:", error));
+        });
+
+        // Функция для скачивания графа как PNG
+        function downloadGraph(containerId, filename) {
+            const svg = document.getElementById(containerId).querySelector('svg');
+            if (!svg) {
+                alert("Граф не найден!");
+                return;
+            }
+            const svgData = new XMLSerializer().serializeToString(svg);
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            img.onload = () => {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                const png = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.href = png;
+                link.download = filename;
+                link.click();
+            };
+            img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
+        }
     </script>
 </body>
 </html>
