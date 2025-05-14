@@ -565,7 +565,7 @@ mechanism M1 "Workers" -> A0`,
             const processes = new Set();
             const errors = [];
             const nodes = new Set();
-            const edges = [];
+            const edges = new Map(); // Используем Map для уникальности связей
 
             lines.forEach((line, index) => {
                 line = line.trim();
@@ -595,7 +595,8 @@ mechanism M1 "Workers" -> A0`,
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(t.errors.invalidLabel.replace('{line}', index + 1).replace('{label}', label));
                     nodes.add(id);
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
-                    edges.push(`    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", tailport=e, headport=w, constraint=true, class="idef0-arrow"];\n`);
+                    const edgeKey = `${id}->${target}`;
+                    if (!edges.has(edgeKey)) edges.set(edgeKey, `    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", tailport=e, headport=w, constraint=true, class="idef0-arrow"];\n`);
                 } else if (controlMatch) {
                     const id = controlMatch[2];
                     const label = controlMatch[3];
@@ -605,7 +606,8 @@ mechanism M1 "Workers" -> A0`,
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(t.errors.invalidLabel.replace('{line}', index + 1).replace('{label}', label));
                     nodes.add(id);
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
-                    edges.push(`    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", tailport=n, headport=s, constraint=false, class="idef0-control"];\n`);
+                    const edgeKey = `${id}->${target}`;
+                    if (!edges.has(edgeKey)) edges.set(edgeKey, `    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", tailport=n, headport=s, constraint=false, class="idef0-control"];\n`);
                 } else if (outputMatch) {
                     const source = outputMatch[2];
                     const id = outputMatch[3];
@@ -615,13 +617,15 @@ mechanism M1 "Workers" -> A0`,
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(t.errors.invalidLabel.replace('{line}', index + 1).replace('{label}', label));
                     nodes.add(id);
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
-                    edges.push(`    ${source} -> ${id} [xlabel="${escapeDotLabel(label)}", tailport=e, headport=w, constraint=true, class="idef0-arrow"];\n`);
+                    const edgeKey = `${source}->${id}`;
+                    if (!edges.has(edgeKey)) edges.set(edgeKey, `    ${source} -> ${id} [xlabel="${escapeDotLabel(label)}", tailport=e, headport=w, constraint=true, class="idef0-arrow"];\n`);
                 } else if (outputProcessMatch) {
                     const source = outputProcessMatch[2];
                     const target = outputProcessMatch[3];
                     if (!processes.has(source)) errors.push(t.errors.processNotDefined.replace('{line}', index + 1).replace('{id}', source));
                     if (!processes.has(target)) errors.push(t.errors.processNotDefined.replace('{line}', index + 1).replace('{id}', target));
-                    edges.push(`    ${source} -> ${target} [xlabel="${lang === 'ru' ? 'Декомпозиция' : 'Decomposition'}", class="idef0-decomposition", tailport=e, headport=w, constraint=true];\n`);
+                    const edgeKey = `${source}->${target}`;
+                    if (!edges.has(edgeKey)) edges.set(edgeKey, `    ${source} -> ${target} [xlabel="${lang === 'ru' ? 'Декомпозиция' : 'Decomposition'}", class="idef0-decomposition", tailport=e, headport=w, constraint=true];\n`);
                 } else if (mechanismMatch) {
                     const id = mechanismMatch[2];
                     const label = mechanismMatch[3];
@@ -631,20 +635,21 @@ mechanism M1 "Workers" -> A0`,
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(t.errors.invalidLabel.replace('{line}', index + 1).replace('{label}', label));
                     nodes.add(id);
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
-                    edges.push(`    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", tailport=s, headport=n, constraint=false, class="idef0-mechanism"];\n`);
+                    const edgeKey = `${id}->${target}`;
+                    if (!edges.has(edgeKey)) edges.set(edgeKey, `    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", tailport=s, headport=n, constraint=false, class="idef0-mechanism"];\n`);
                 } else {
                     errors.push(t.errors.syntaxError.replace('{line}', index + 1));
                 }
             });
 
             processes.forEach(proc => {
-                const inputs = edges.filter(e => e.includes(`-> ${proc}`) && e.includes('headport=w') && !e.includes(`xlabel="${lang === 'ru' ? 'Декомпозиция' : 'Decomposition'}"`));
-                const outputs = edges.filter(e => e.includes(`${proc} ->`) && e.includes('tailport=e'));
+                const inputs = Array.from(edges.entries()).filter(([_, edge]) => edge.includes(`-> ${proc}`) && edge.includes('headport=w') && !edge.includes(`xlabel="${lang === 'ru' ? 'Декомпозиция' : 'Decomposition'}"`));
+                const outputs = Array.from(edges.entries()).filter(([_, edge]) => edge.includes(`${proc} ->`) && edge.includes('tailport=e'));
                 if (inputs.length === 0 && outputs.length > 0) errors.push(t.errors.noInput.replace('{id}', proc));
                 if (outputs.length === 0 && inputs.length > 0) errors.push(t.errors.noOutput.replace('{id}', proc));
             });
 
-            dot += edges.join('');
+            dot += Array.from(edges.values()).join('');
             dot += '}\n';
             return { dot, errors };
         }
@@ -706,7 +711,7 @@ mechanism M1 "Workers" -> A0`,
                         output.innerHTML = '';
                         output.appendChild(element);
 
-                        // Инициализация svg-pan-zoom
+                        // Инициализация svg-pan-zoom с централизацией и масштабированием под #output
                         if (panZoomInstance) {
                             panZoomInstance.destroy();
                         }
@@ -754,9 +759,21 @@ mechanism M1 "Workers" -> A0`,
 
             const serializer = new XMLSerializer();
             const svgString = serializer.serializeToString(svg);
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(svgString, 'image/svg+xml');
+            const svgElement = doc.documentElement;
+
+            // Убедимся, что экспортируется весь viewBox
+            const viewBox = svgElement.getAttribute('viewBox').split(' ');
+            const width = parseFloat(viewBox[2]);
+            const height = parseFloat(viewBox[3]);
+            svgElement.setAttribute('width', width);
+            svgElement.setAttribute('height', height);
+
+            const fullSvgString = new XMLSerializer().serializeToString(svgElement);
 
             if (format === 'svg') {
-                const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+                const blob = new Blob([fullSvgString], { type: 'image/svg+xml;charset=utf-8' });
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.href = url;
@@ -768,15 +785,12 @@ mechanism M1 "Workers" -> A0`,
             } else {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
+                canvas.width = width * 2; // Удваиваем разрешение
+                canvas.height = height * 2;
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
                 const img = new Image();
-                const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-                const url = URL.createObjectURL(svgBlob);
-
                 img.onload = function() {
-                    canvas.width = img.width * 2;
-                    canvas.height = img.height * 2;
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
                     const quality = format === 'jpg' ? 0.9 : 1.0;
@@ -787,9 +801,9 @@ mechanism M1 "Workers" -> A0`,
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
-                    URL.revokeObjectURL(url);
+                    URL.revokeObjectURL(img.src);
                 };
-                img.src = url;
+                img.src = 'data:image/svg+xml;base64,' + btoa(fullSvgString);
             }
         }
 
