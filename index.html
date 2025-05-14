@@ -3,53 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>CodeToIDEF0</title>
+    <title>IDEF0Flow</title>
     <style>
+        :root {
+            --bg-color: #f8fafc;
+            --text-color: #1f2937;
+            --border-color: #d1d5db;
+            --button-bg: #10b981;
+            --button-hover: #059669;
+            --button-gradient: linear-gradient(to right, #10b981, #059669);
+            --editor-bg: #ffffff;
+            --shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        [data-theme="dark"] {
+            --bg-color: #1e293b;
+            --text-color: #e2e8f0;
+            --border-color: #475569;
+            --button-bg: #34d399;
+            --button-hover: #10b981;
+            --button-gradient: linear-gradient(to right, #34d399, #10b981);
+            --editor-bg: #2d3748;
+            --shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             margin: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            background-color: #f4f6f8;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             touch-action: manipulation;
+            transition: background-color 0.3s, color 0.3s;
         }
         #editor-container {
-            width: 100%;
+            width: 90vw;
             max-width: 600px;
             margin: 10px 0;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
             overflow: hidden;
-            background: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            background: var(--editor-bg);
+            box-shadow: var(--shadow);
         }
         .editor-controls {
             display: flex;
             gap: 8px;
             padding: 8px;
-            background: #f9fafb;
-            border-bottom: 1px solid #d1d5db;
+            background: var(--editor-bg);
+            border-bottom: 1px solid var(--border-color);
             flex-wrap: wrap;
         }
         .CodeMirror {
             height: 200px !important;
             font-size: 12px !important;
+            background: var(--editor-bg) !important;
+            color: var(--text-color) !important;
         }
         #output {
-            border: 1px solid #d1d5db;
+            border: 2px solid transparent;
+            border-image: linear-gradient(to right, #10b981, #059669) 1;
             padding: 10px;
-            width: 100%;
+            width: 90vw;
             max-width: 600px;
             min-height: 800px;
             height: auto;
             max-height: 100vh;
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: var(--editor-bg);
+            box-shadow: var(--shadow);
             overflow: auto;
             display: flex;
             justify-content: center;
-            border-radius: 8px;
+            align-items: center;
+            border-radius: 12px;
             -webkit-overflow-scrolling: touch;
         }
         #output svg {
@@ -59,89 +85,95 @@
             transform-origin: center;
         }
         #error {
-            color: #dc2626;
+            color: #ef4444;
             font-size: 12px;
             margin: 10px 0;
             display: none;
-            width: 100%;
+            width: 90vw;
             max-width: 600px;
             text-align: left;
         }
         button {
-            padding: 8px 16px;
+            padding: 10px 20px;
             font-size: 14px;
-            background-color: #10b981;
+            background-color: var(--button-bg);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             margin: 5px;
-            min-width: 80px;
-            transition: background-color 0.2s, transform 0.1s;
+            min-width: 90px;
+            transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
             display: flex;
             align-items: center;
-            gap: 6px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            gap: 8px;
+            box-shadow: var(--shadow);
             touch-action: manipulation;
         }
         button:hover {
-            background-color: #059669;
-            transform: translateY(-1px);
+            background-color: var(--button-hover);
+            transform: scale(1.05);
         }
         button:active {
-            transform: translateY(0);
+            transform: scale(1);
         }
         .main-button {
-            background: linear-gradient(to right, #10b981, #059669);
-            padding: 10px 24px;
+            background: var(--button-gradient);
+            padding: 12px 28px;
             font-size: 16px;
             font-weight: 600;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
         }
         details {
-            width: 100%;
+            width: 90vw;
             max-width: 600px;
             font-size: 12px;
-            color: #374151;
             margin: 10px 0;
-            background: white;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            background: var(--editor-bg);
+            padding: 12px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
         }
         details summary {
             cursor: pointer;
             font-weight: 600;
-            color: #1f2937;
+            color: var(--text-color);
         }
         .controls {
-            width: 100%;
+            width: 90vw;
             max-width: 600px;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             margin: 10px 0;
         }
         select {
-            padding: 8px;
+            padding: 10px;
             font-size: 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--editor-bg);
+            color: var(--text-color);
             cursor: pointer;
-            min-width: 100px;
+            min-width: 120px;
+            transition: border-color 0.3s;
+        }
+        select:focus {
+            border-color: var(--button-bg);
+            outline: none;
         }
         #dot-preview {
-            width: 100%;
+            width: 90vw;
             max-width: 600px;
             display: none;
-            background: #f9fafb;
-            padding: 10px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
+            background: var(--editor-bg);
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
             font-family: monospace;
             font-size: 10px;
+            color: var(--text-color);
             white-space: pre-wrap;
             max-height: 200px;
             overflow-y: auto;
@@ -182,12 +214,12 @@
                 margin: 5px;
             }
             button {
-                padding: 6px 12px;
+                padding: 8px 16px;
                 font-size: 12px;
-                min-width: 70px;
+                min-width: 80px;
             }
             .main-button {
-                padding: 8px 16px;
+                padding: 10px 20px;
                 font-size: 14px;
             }
             .CodeMirror {
@@ -201,14 +233,14 @@
             }
             select {
                 font-size: 10px;
-                padding: 6px;
+                padding: 8px;
             }
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.css">
 </head>
 <body>
-    <h1 style="font-size: 18px; margin: 10px; color: #1f2937;" id="title">CodeToIDEF0</h1>
+    <h1 style="font-size: 20px; margin: 12px; color: var(--text-color);" id="title">IDEF0Flow</h1>
     <details>
         <summary id="instructions-summary">Инструкция</summary>
         <div id="instructions"></div>
@@ -218,6 +250,10 @@
             <select id="language" onchange="updateLanguage()">
                 <option value="ru" selected>Русский</option>
                 <option value="en">Английский</option>
+            </select>
+            <select id="theme" onchange="updateTheme()">
+                <option value="light" selected>Светлая</option>
+                <option value="dark">Тёмная</option>
             </select>
             <button id="clear-button" onclick="clearEditor()" title="Очистить редактор">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -308,7 +344,7 @@
         // Переводы
         const translations = {
             ru: {
-                title: 'CodeToIDEF0',
+                title: 'IDEF0Flow',
                 instructionsSummary: 'Инструкция',
                 instructions: `Введите код IDEF0 на русском или английском. Команды:<br>
 - <code>процесс ID "Название"</code> — процесс (A0).<br>
@@ -348,6 +384,8 @@
                 formatOptions: ['SVG', 'JPG', 'PNG'],
                 saveButton: 'Сохранить график',
                 generateButton: 'Сгенерировать',
+                themeLabel: 'Тема:',
+                themeOptions: ['Светлая', 'Тёмная'],
                 errors: {
                     duplicateId: 'Ошибка в строке {line}: идентификатор {id} уже используется',
                     processNotDefined: 'Ошибка в строке {line}: процесс {id} не определён',
@@ -362,7 +400,7 @@
                 placeholder: 'Введите код IDEF0...'
             },
             en: {
-                title: 'CodeToIDEF0',
+                title: 'IDEF0Flow',
                 instructionsSummary: 'Instructions',
                 instructions: `Enter IDEF0 code in Russian or English. Commands:<br>
 - <code>process ID "Name"</code> — process (A0).<br>
@@ -402,6 +440,8 @@ mechanism M2 "Analysts" -> A1`,
                 formatOptions: ['SVG', 'JPG', 'PNG'],
                 saveButton: 'Save Diagram',
                 generateButton: 'Generate',
+                themeLabel: 'Theme:',
+                themeOptions: ['Light', 'Dark'],
                 errors: {
                     duplicateId: 'Error in line {line}: identifier {id} already used',
                     processNotDefined: 'Error in line {line}: process {id} not defined',
@@ -417,7 +457,7 @@ mechanism M2 "Analysts" -> A1`,
             }
         };
 
-        // Функция для обновления интерфейса
+        // Функция для обновления языка
         function updateLanguage() {
             const lang = document.getElementById('language').value;
             const t = translations[lang];
@@ -437,13 +477,23 @@ mechanism M2 "Analysts" -> A1`,
             formatSelect.options[0].text = t.formatOptions[0];
             formatSelect.options[1].text = t.formatOptions[1];
             formatSelect.options[2].text = t.formatOptions[2];
+            const themeSelect = document.getElementById('theme');
+            themeSelect.options[0].text = t.themeOptions[0];
+            themeSelect.options[1].text = t.themeOptions[1];
             editor.setValue(t.exampleCode);
             editor.getInputField().placeholder = t.placeholder;
             document.documentElement.lang = lang;
         }
 
-        // Инициализация языка
+        // Функция для обновления темы
+        function updateTheme() {
+            const theme = document.getElementById('theme').value;
+            document.body.setAttribute('data-theme', theme);
+        }
+
+        // Инициализация
         updateLanguage();
+        updateTheme();
 
         // Функция для экранирования меток
         function escapeDotLabel(label) {
@@ -458,8 +508,8 @@ mechanism M2 "Analysts" -> A1`,
             let dot = 'digraph IDEF0 {\n';
             dot += '    rankdir=TB;\n';
             dot += '    node [shape=box, style=filled, fillcolor=white, width=2.5, height=1, class="idef0-box", fontname="Arial", fontsize=16];\n';
-            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=16, fontcolor=black, labelloc=t, labeldistance=3, labelangle=30];\n';
-            dot += `    graph [splines=${splineStyle}, nodesep=1.5, ranksep=2.5, dpi=120];\n`;
+            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=16, fontcolor=black];\n';
+            dot += `    graph [splines=${splineStyle}, nodesep=1, ranksep=2, dpi=96];\n`;
             dot += '    {rank=min; A0}\n';
             dot += '    {rank=max; A1}\n';
 
@@ -579,6 +629,7 @@ mechanism M2 "Analysts" -> A1`,
                 const viz = new Viz();
                 viz.renderSVGElement(dot)
                     .then(function(element) {
+                        console.log('SVG Generated:\n', element.outerHTML); // Отладка SVG
                         const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
                         defs.innerHTML = `
                             <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
@@ -588,7 +639,7 @@ mechanism M2 "Analysts" -> A1`,
                         element.prepend(defs);
 
                         const bbox = element.getBBox();
-                        element.setAttribute('viewBox', `${bbox.x-100} ${bbox.y-100} ${bbox.width+200} ${bbox.height+200}`);
+                        element.setAttribute('viewBox', `${bbox.x-50} ${bbox.y-50} ${bbox.width+100} ${bbox.height+100}`);
                         element.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
                         output.innerHTML = '';
