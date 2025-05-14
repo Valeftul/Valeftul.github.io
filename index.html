@@ -2,137 +2,181 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Генератор IDEF0</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
             background-color: #f9f9f9;
+            touch-action: manipulation; /* Улучшает сенсорное взаимодействие */
         }
         #editor-container {
-            width: 80%;
-            margin: 15px 0;
-            border: 2px solid #ccc;
+            width: 100%;
+            max-width: 600px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
             border-radius: 5px;
+            overflow: hidden;
+        }
+        .CodeMirror {
+            height: 200px !important;
+            font-size: 12px !important;
         }
         #output {
             border: 1px solid #999;
-            padding: 15px;
-            width: 80%;
-            min-height: 600px;
+            padding: 10px;
+            width: 100%;
+            max-width: 600px;
+            min-height: 400px;
             background: white;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             overflow: auto;
             display: flex;
             justify-content: center;
+            -webkit-overflow-scrolling: touch; /* Плавная прокрутка на iOS */
         }
         #output svg {
-            max-width: 100%;
+            width: 100%;
             height: auto;
             text-rendering: geometricPrecision;
-            transition: transform 0.2s;
+            transform-origin: center;
         }
         #error {
             color: red;
-            font-size: 14px;
+            font-size: 12px;
             margin: 10px 0;
             display: none;
-            width: 80%;
+            width: 100%;
+            max-width: 600px;
             text-align: left;
         }
         button {
-            padding: 10px 20px;
-            font-size: 16px;
+            padding: 8px 16px;
+            font-size: 14px;
             background-color: #28a745;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             margin: 5px;
+            min-width: 80px;
+            touch-action: manipulation;
         }
         button:hover {
             background-color: #218838;
         }
-        #help {
-            width: 80%;
-            font-size: 14px;
+        details {
+            width: 100%;
+            max-width: 600px;
+            font-size: 12px;
             color: #333;
             margin: 10px 0;
             background: #e9ecef;
-            padding: 15px;
+            padding: 10px;
             border-radius: 5px;
         }
+        details summary {
+            cursor: pointer;
+            font-weight: bold;
+        }
         .controls {
-            width: 80%;
+            width: 100%;
+            max-width: 600px;
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             margin: 10px 0;
         }
-        #zoom-slider {
-            width: 150px;
+        #spline-style {
+            padding: 5px;
+            font-size: 12px;
+            border-radius: 5px;
         }
         #dot-preview {
-            width: 80%;
+            width: 100%;
+            max-width: 600px;
             display: none;
             background: #f0f0f0;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-family: monospace;
+            font-size: 10px;
             white-space: pre-wrap;
-            max-height: 300px;
+            max-height: 200px;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
         .idef0-box {
             fill: #ffffff !important;
             stroke: #000;
-            stroke-width: 2;
+            stroke-width: 1.5;
             font-family: Arial, sans-serif;
-            font-size: 16px;
+            font-size: 14px;
         }
         .idef0-arrow {
             stroke: #000;
-            stroke-width: 2;
+            stroke-width: 1.5;
             marker-end: url(#arrowhead);
         }
         .idef0-control {
             stroke: #000;
-            stroke-width: 2;
-            stroke-dasharray: 5,5;
+            stroke-width: 1.5;
+            stroke-dasharray: 4,4;
             marker-end: url(#arrowhead);
         }
         .idef0-mechanism {
             stroke: #000;
-            stroke-width: 2;
+            stroke-width: 1.5;
             stroke-dasharray: 2,2;
             marker-end: url(#arrowhead);
         }
         .idef0-decomposition {
             stroke: #000;
-            stroke-width: 2;
+            stroke-width: 1.5;
             stroke-dasharray: 3,3;
             marker-end: url(#arrowhead);
+        }
+        @media (max-width: 600px) {
+            body {
+                margin: 5px;
+            }
+            button {
+                padding: 6px 12px;
+                font-size: 12px;
+                min-width: 70px;
+            }
+            .CodeMirror {
+                font-size: 10px !important;
+            }
+            details, #error, #dot-preview {
+                font-size: 10px;
+            }
+            #output {
+                min-height: 300px;
+            }
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.css">
 </head>
 <body>
-    <h1>Генератор диаграмм IDEF0</h1>
-    <div id="help">
-        <strong>Инструкция:</strong> Введите код в формате IDEF0 на русском или английском. Команды:<br>
-        - <code>процесс</code> или <code>process ID "Название"</code> — процесс (например, A0).<br>
-        - <code>вход</code> или <code>input ID "Название" -> процесс</code> — вход (слева).<br>
-        - <code>управление</code> или <code>control ID "Название" -> процесс</code> — управление (сверху, пунктир).<br>
-        - <code>выход</code> или <code>output процесс -> ID "Название"</code> — выход (справа).<br>
-        - <code>выход</code> или <code>output процесс -> процесс</code> — декомпозиция (пунктир).<br>
-        - <code>механизм</code> или <code>mechanism ID "Название" -> процесс</code> — механизм (снизу, мелкий пунктир).<br>
+    <h1 style="font-size: 18px; margin: 10px;">Генератор IDEF0</h1>
+    <details>
+        <summary>Инструкция</summary>
+        Введите код IDEF0 на русском или английском. Команды:<br>
+        - <code>процесс</code>/<code>process ID "Название"</code> — процесс (A0).<br>
+        - <code>вход</code>/<code>input ID "Название" -> процесс</code> — вход (слева).<br>
+        - <code>управление</code>/<code>control ID "Название" -> процесс</code> — управление (сверху, пунктир).<br>
+        - <code>выход</code>/<code>output процесс -> ID "Название"</code> — выход (справа).<br>
+        - <code>выход</code>/<code>output процесс -> процесс</code> — декомпозиция (пунктир).<br>
+        - <code>механизм</code>/<code>mechanism ID "Название" -> процесс</code> — механизм (снизу, мелкий пунктир).<br>
         <strong>Пример:</strong><br>
-        <pre>
+        <pre style="font-size: 10px;">
 процесс A0 "Производство"
 вход I1 "Сырьё" -> A0
 управление C1 "Инструкции" -> A0
@@ -144,7 +188,7 @@
 выход A1 -> O2 "Отчёт"
         </pre>
         Нажмите "Сгенерировать" или "Экспорт SVG".
-    </div>
+    </details>
     <div id="editor-container">
         <textarea id="editor" placeholder="Введите код IDEF0...">
 процесс A0 "Основной процесс"
@@ -164,13 +208,11 @@
         <button onclick="clearEditor()">Очистить</button>
         <button onclick="saveCode()">Сохранить</button>
         <button onclick="loadCode()">Загрузить</button>
-        <button onclick="toggleDotPreview()">Показать DOT</button>
-        <label>Масштаб:</label>
-        <input type="range" id="zoom-slider" min="0.5" max="2" step="0.1" value="1">
-        <label>Стиль линий:</label>
+        <button onclick="toggleDotPreview()">DOT-код</button>
+        <label>Линии:</label>
         <select id="spline-style">
+            <option value="polyline" selected>Прямые</option>
             <option value="ortho">Ортогональные</option>
-            <option value="polyline">Прямые</option>
         </select>
     </div>
     <div id="error"></div>
@@ -188,7 +230,7 @@
             theme: 'default',
             viewportMargin: Infinity
         });
-        editor.setSize('100%', '250px');
+        editor.setSize('100%', '200px');
 
         // Подсветка синтаксиса IDEF0
         CodeMirror.defineMode('idef0', function() {
@@ -223,9 +265,9 @@
             const splineStyle = document.getElementById('spline-style').value;
             let dot = 'digraph IDEF0 {\n';
             dot += '    rankdir=TB;\n';
-            dot += '    node [shape=box, style=filled, fillcolor=white, width=3, height=1.2, class="idef0-box", fontname="Arial", fontsize=16];\n';
-            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=14, fontcolor=black, labelloc=t];\n';
-            dot += `    graph [splines=${splineStyle}, nodesep=2, ranksep=3, concentrate=true, dpi=96];\n`;
+            dot += '    node [shape=box, style=filled, fillcolor=white, width=2.5, height=1, class="idef0-box", fontname="Arial", fontsize=14];\n';
+            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=12, fontcolor=black, labelloc=t];\n';
+            dot += `    graph [splines=${splineStyle}, nodesep=1.5, ranksep=2.5, concentrate=true, dpi=120];\n`;
             dot += '    {rank=min; A0}\n';
             dot += '    {rank=max; A1}\n';
 
@@ -348,14 +390,13 @@
                     .then(function(element) {
                         const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
                         defs.innerHTML = `
-                            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
-                                <polygon points="0 0, 10 3.5, 0 7" fill="black" />
+                            <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                                <polygon points="0 0, 8 3, 0 6" fill="black" />
                             </marker>
                         `;
                         element.prepend(defs);
                         output.innerHTML = '';
                         output.appendChild(element);
-                        updateZoom();
                     })
                     .catch(error => {
                         errorDiv.style.display = 'block';
@@ -423,16 +464,34 @@
             }
         }
 
-        function updateZoom() {
-            const svg = document.querySelector('#output svg');
-            if (svg) {
-                const zoom = document.getElementById('zoom-slider').value;
-                svg.style.transform = `scale(${zoom})`;
-                svg.style.transformOrigin = 'center';
+        // Сенсорное масштабирование
+        let scale = 1;
+        let startDistance = 0;
+        const output = document.getElementById('output');
+        output.addEventListener('touchstart', function(e) {
+            if (e.touches.length === 2) {
+                startDistance = Math.hypot(
+                    e.touches[0].pageX - e.touches[1].pageX,
+                    e.touches[0].pageY - e.touches[1].pageY
+                );
             }
-        }
+        });
+        output.addEventListener('touchmove', function(e) {
+            if (e.touches.length === 2) {
+                const currentDistance = Math.hypot(
+                    e.touches[0].pageX - e.touches[1].pageX,
+                    e.touches[0].pageY - e.touches[1].pageY
+                );
+                scale = Math.max(0.5, Math.min(3, scale * (currentDistance / startDistance)));
+                const svg = output.querySelector('svg');
+                if (svg) {
+                    svg.style.transform = `scale(${scale})`;
+                }
+                startDistance = currentDistance;
+                e.preventDefault();
+            }
+        });
 
-        document.getElementById('zoom-slider').addEventListener('input', updateZoom);
         document.getElementById('spline-style').addEventListener('change', renderDiagram);
     </script>
 </body>
