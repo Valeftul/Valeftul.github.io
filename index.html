@@ -127,15 +127,16 @@ output A0 -> A1
     <div id="output"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js"></script>
     <script>
         function validateAndConvertToDot(code) {
             const lines = code.trim().split('\n').filter(line => line.trim());
             let dot = 'digraph IDEF0 {\n';
-            dot += '    rankdir=TB;\n'; // Вертикальная ориентация для лучшего соответствия IDEF0
+            dot += '    rankdir=TB;\n';
             dot += '    node [shape=box, style=filled, fillcolor=f0f0f0, width=2, height=0.8, class="idef0-box", fontname="Arial", fontsize=12];\n';
             dot += '    edge [class="idef0-arrow"];\n';
-            dot += '    graph [splines=ortho, nodesep=1, ranksep=1];\n'; // Ортогональные линии и расстояния
+            dot += '    graph [splines=ortho, nodesep=1, ranksep=1];\n';
 
             const processes = new Set();
             const errors = [];
@@ -149,7 +150,7 @@ output A0 -> A1
                 // Парсинг команд IDEF0
                 const processMatch = line.match(/^process\s+([A-Za-z0-9]+)\s+"([^"]+)"/);
                 const inputMatch = line.match(/^input\s+([A-Za-z0-9]+)\s+"([^"]+)"\s+->\s+([A-Za-z0-9]+)/);
-                const controlMatch = line.match(/^control\s+([A-Za-z0-9]+)\s+" map:([^"]+)"\s+->\s+([A-Za-z0-9]+)/);
+                const controlMatch = line.match(/^control\s+([A-Za-z0-9]+)\s+"([^"]+)"\s+->\s+([A-Za-z0-9]+)/);
                 const outputMatch = line.match(/^output\s+([A-Za-z0-9]+)\s+->\s+([A-Za-z0-9]+)\s+"([^"]+)"/);
                 const mechanismMatch = line.match(/^mechanism\s+([A-Za-z0-9]+)\s+"([^"]+)"\s+->\s+([A-Za-z0-9]+)/);
 
@@ -186,8 +187,9 @@ output A0 -> A1
                     if (nodes.has(id)) errors.push(Ошибка в строке ${index + 1}: идентификатор ${id} уже используется);
                     nodes.add(id);
                     dot +=     ${id} [shape=none, label="${label}"];\n;
-edges.push(    ${source} -> ${id} [label="${label}", tailport=e, headport=w];\n);
-                } else if (mechanismMatch) {
+                    edges.push(    ${source} -> ${id} [label="${label}", tailport=e, headport=w];\n);
+
+} else if (mechanismMatch) {
                     const id = mechanismMatch[1];
                     const label = mechanismMatch[2];
                     const target = mechanismMatch[3];
@@ -209,11 +211,10 @@ edges.push(    ${source} -> ${id} [label="${label}", tailport=e, headport=w];\n)
                 if (outputs.length === 0 && inputs.length > 0) errors.push(Процесс ${proc} должен иметь хотя бы один выход);
             });
 
-            // Добавление стрелок после узлов для корректного рендеринга
+            // Добавление стрелок
             dot += edges.join('');
 
             dot += '}\n';
-            // console.log('Сгенерированный DOT-код:\n', dot); // Раскомментируйте для отладки
             return { dot, errors };
         }
 
@@ -237,7 +238,6 @@ edges.push(    ${source} -> ${id} [label="${label}", tailport=e, headport=w];\n)
                 const viz = new Viz();
                 viz.renderSVGElement(dot)
                     .then(function(element) {
-                        // Добавление маркера стрелки
                         const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
                         defs.innerHTML = 
                             <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
@@ -267,9 +267,11 @@ edges.push(    ${source} -> ${id} [label="${label}", tailport=e, headport=w];\n)
                 alert('Нет диаграммы для экспорта!');
                 return;
             }
-const serializer = new XMLSerializer();
+
+            const serializer = new XMLSerializer();
             const source = serializer.serializeToString(svg);
-            const blob = new Blob([source], { type: 'image/svg+xml;charset=utf-8' });
+
+const blob = new Blob([source], { type: 'image/svg+xml;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
