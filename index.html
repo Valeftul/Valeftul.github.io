@@ -28,11 +28,17 @@
             border: 1px solid #999;
             padding: 15px;
             width: 80%;
-            min-height: 400px;
+            min-height: 500px;
             background: white;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-éh
             overflow: auto;
+            display: flex;
+            justify-content: center;
+        }
+        #output svg {
+            max-width: 100%;
+            height: auto;
+            text-rendering: geometricPrecision; /* Чёткий текст */
         }
         #error {
             color: red;
@@ -65,11 +71,11 @@
             border-radius: 5px;
         }
         .idef0-box {
-            fill: #ffffff !important; /* Белый фон для чёткости */
+            fill: #ffffff !important;
             stroke: #000;
             stroke-width: 2;
-            font-family: Arial;
-            font-size: 12px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
         }
         .idef0-arrow {
             stroke: #000;
@@ -98,7 +104,7 @@
         - <code>input ID "Название" -> процесс</code> — вход (слева).<br>
         - <code>control ID "Название" -> процесс</code> — управление (сверху, пунктир).<br>
         - <code>output процесс -> ID "Название"</code> — выход (справа).<br>
-        - <code>output процесс -> процесс</code> — связь между процессами (без метки).<br>
+        - <code>output процесс -> процесс</code> — связь между процессами.<br>
         - <code>mechanism ID "Название" -> процесс</code> — механизм (снизу, мелкий пунктир).<br>
         <strong>Пример:</strong><br>
         <pre>
@@ -144,9 +150,9 @@ output A1 -> O2 "Результат"
             const lines = code.trim().split('\n').filter(line => line.trim());
             let dot = 'digraph IDEF0 {\n';
             dot += '    rankdir=TB;\n';
-            dot += '    node [shape=box, style=filled, fillcolor=white, width=2, height=0.8, class="idef0-box", fontname="Arial", fontsize=12];\n';
-            dot += '    edge [class="idef0-arrow"];\n';
-            dot += '    graph [splines=ortho, nodesep=1, ranksep=1];\n';
+            dot += '    node [shape=box, style=filled, fillcolor=white, width=2.5, height=1, class="idef0-box", fontname="Arial", fontsize=14];\n';
+            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=14];\n';
+            dot += '    graph [splines=ortho, nodesep=1.5, ranksep=1.5];\n';
 
             const processes = new Set();
             const errors = [];
@@ -182,7 +188,7 @@ output A1 -> O2 "Результат"
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(`Ошибка в строке ${index + 1}: метка "${label}" содержит недопустимые символы (разрешены буквы, цифры, пробелы)`);
                     nodes.add(id);
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
-                    edges.push(`    ${id} -> ${target} [label="${escapeDotLabel(label)}", tailport=e, headport=w];\n`);
+                    edges.push(`    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", tailport=e, headport=w, constraint=true];\n`);
                 } else if (controlMatch) {
                     const id = controlMatch[1];
                     const label = controlMatch[2];
@@ -192,7 +198,7 @@ output A1 -> O2 "Результат"
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(`Ошибка в строке ${index + 1}: метка "${label}" содержит недопустимые символы (разрешены буквы, цифры, пробелы)`);
                     nodes.add(id);
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
-                    edges.push(`    ${id} -> ${target} [label="${escapeDotLabel(label)}", class="idef0-control", constraint=false, tailport=s, headport=n];\n`);
+                    edges.push(`    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", class="idef0-control", tailport=s, headport=n, constraint=false];\n`);
                 } else if (outputMatch) {
                     const source = outputMatch[1];
                     const id = outputMatch[2];
@@ -202,13 +208,13 @@ output A1 -> O2 "Результат"
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(`Ошибка в строке ${index + 1}: метка "${label}" содержит недопустимые символы (разрешены буквы, цифры, пробелы)`);
                     nodes.add(id);
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
-                    edges.push(`    ${source} -> ${id} [label="${escapeDotLabel(label)}", tailport=e, headport=w];\n`);
+                    edges.push(`    ${source} -> ${id} [xlabel="${escapeDotLabel(label)}", tailport=e, headport=w, constraint=true];\n`);
                 } else if (outputProcessMatch) {
                     const source = outputProcessMatch[1];
                     const target = outputProcessMatch[2];
                     if (!processes.has(source)) errors.push(`Ошибка в строке ${index + 1}: процесс ${source} не определён`);
                     if (!processes.has(target)) errors.push(`Ошибка в строке ${index + 1}: процесс ${target} не определён`);
-                    edges.push(`    ${source} -> ${target} [label="Декомпозиция", tailport=e, headport=w];\n`);
+                    edges.push(`    ${source} -> ${target} [xlabel="Декомпозиция", tailport=e, headport=w, constraint=true];\n`);
                 } else if (mechanismMatch) {
                     const id = mechanismMatch[1];
                     const label = mechanismMatch[2];
@@ -218,7 +224,7 @@ output A1 -> O2 "Результат"
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(`Ошибка в строке ${index + 1}: метка "${label}" содержит недопустимые символы (разрешены буквы, цифры, пробелы)`);
                     nodes.add(id);
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
-                    edges.push(`    ${id} -> ${target} [label="${escapeDotLabel(label)}", class="idef0-mechanism", constraint=false, tailport=n, headport=s];\n`);
+                    edges.push(`    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", class="idef0-mechanism", tailport=n, headport=s, constraint=false];\n`);
                 } else {
                     errors.push(`Ошибка в строке ${index + 1}: неверный синтаксис. Ожидается команда process, input, control, output или mechanism`);
                 }
@@ -226,9 +232,7 @@ output A1 -> O2 "Результат"
 
             // Проверка правил IDEF0
             processes.forEach(proc => {
-                // Входы — только input, исключаем связи между процессами
-                const inputs = edges.filter(e => e.includes(`-> ${proc}`) && e.includes('headport=w') && !e.includes('label="Декомпозиция"'));
-                // Выходы — output, включая связи между процессами
+                const inputs = edges.filter(e => e.includes(`-> ${proc}`) && e.includes('headport=w') && !e.includes('xlabel="Декомпозиция"'));
                 const outputs = edges.filter(e => e.includes(`${proc} ->`) && e.includes('tailport=e'));
                 if (inputs.length === 0 && outputs.length > 0) errors.push(`Процесс ${proc} должен иметь хотя бы один вход`);
                 if (outputs.length === 0 && inputs.length > 0) errors.push(`Процесс ${proc} должен иметь хотя бы один выход`);
@@ -294,7 +298,7 @@ output A1 -> O2 "Результат"
 
             const serializer = new XMLSerializer();
             const source = serializer.serializeToString(svg);
-            const blob = new Blob([source], { type: 'image/svgSvg+xml;charset=utf-8' });
+            const blob = new Blob([source], { type: 'image/svg+xml;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
