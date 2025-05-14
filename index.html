@@ -229,7 +229,7 @@
             stroke: #000;
             stroke-width: 1.5;
             font-family: Arial, sans-serif;
-            font-size: 12px;
+            font-size: 10px;
         }
         .idef0-arrow {
             stroke: #000;
@@ -316,6 +316,10 @@
                 <option value="en">Английский</option>
             </select>
             <div class="editor-controls-right">
+                <select id="example-select" onchange="loadExample()">
+                    <option value="A0">Пример A0</option>
+                    <option value="A0A1">Пример A0 + A1</option>
+                </select>
                 <button id="clear-button" onclick="clearEditor()" title="Очистить редактор" class="secondary">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m-10 5v6a2 2 0 002 2h6a2 2 0 002-2v-6m-12 0h12"/>
@@ -436,11 +440,20 @@
 выход A0 -> O1 "Готовый продукт"
 механизм M1 "Рабочие" -> A0
 </pre>`,
-                exampleCode: `процесс A0 "Основной процесс"
+                exampleCodeA0: `процесс A0 "Основной процесс"
 вход I1 "Материалы" -> A0
 управление C1 "Правила" -> A0
 выход A0 -> O1 "Готовый продукт"
 механизм M1 "Рабочие" -> A0`,
+                exampleCodeA0A1: `процесс A0 "Основной процесс"
+вход I1 "Материалы" -> A0
+управление C1 "Правила" -> A0
+выход A0 -> A1
+процесс A1 "Подпроцесс"
+вход I2 "Дополнительные материалы" -> A1
+управление C2 "Дополнительные правила" -> A1
+выход A1 -> O1 "Готовый продукт"
+механизм M1 "Рабочие" -> A1`,
                 clearButton: 'Очистить',
                 dotButton: 'DOT-код',
                 splineLabel: 'Линии:',
@@ -449,6 +462,7 @@
                 formatOptions: ['SVG', 'JPG', 'PNG'],
                 saveButton: 'Сохранить',
                 generateButton: 'Сгенерировать',
+                exampleOptions: ['Пример A0', 'Пример A0 + A1'],
                 errors: {
                     duplicateId: 'Ошибка в строке {line}: идентификатор {id} уже используется',
                     processNotDefined: 'Ошибка в строке {line}: процесс {id} не определён',
@@ -481,11 +495,20 @@ control C1 "Instructions" -> A0
 output A0 -> O1 "Product"
 mechanism M1 "Machines" -> A0
 </pre>`,
-                exampleCode: `process A0 "Main Process"
+                exampleCodeA0: `process A0 "Main Process"
 input I1 "Materials" -> A0
 control C1 "Rules" -> A0
 output A0 -> O1 "Finished Product"
 mechanism M1 "Workers" -> A0`,
+                exampleCodeA0A1: `process A0 "Main Process"
+input I1 "Materials" -> A0
+control C1 "Rules" -> A0
+output A0 -> A1
+process A1 "Sub Process"
+input I2 "Additional Materials" -> A1
+control C2 "Additional Rules" -> A1
+output A1 -> O1 "Finished Product"
+mechanism M1 "Workers" -> A1`,
                 clearButton: 'Clear',
                 dotButton: 'DOT Code',
                 splineLabel: 'Lines:',
@@ -494,6 +517,7 @@ mechanism M1 "Workers" -> A0`,
                 formatOptions: ['SVG', 'JPG', 'PNG'],
                 saveButton: 'Save',
                 generateButton: 'Generate',
+                exampleOptions: ['Example A0', 'Example A0 + A1'],
                 errors: {
                     duplicateId: 'Error in line {line}: identifier {id} already used',
                     processNotDefined: 'Error in line {line}: process {id} not defined',
@@ -529,9 +553,25 @@ mechanism M1 "Workers" -> A0`,
             formatSelect.options[0].text = t.formatOptions[0];
             formatSelect.options[1].text = t.formatOptions[1];
             formatSelect.options[2].text = t.formatOptions[2];
-            editor.setValue(t.exampleCode);
+            const exampleSelect = document.getElementById('example-select');
+            exampleSelect.options[0].text = t.exampleOptions[0];
+            exampleSelect.options[1].text = t.exampleOptions[1];
+            loadExample(); // Загружаем пример при смене языка
             editor.getInputField().placeholder = t.placeholder;
             document.documentElement.lang = lang;
+        }
+
+        // Функция для загрузки примера
+        function loadExample() {
+            const lang = document.getElementById('language').value;
+            const t = translations[lang];
+            const example = document.getElementById('example-select').value;
+            if (example === 'A0') {
+                editor.setValue(t.exampleCodeA0);
+            } else {
+                editor.setValue(t.exampleCodeA0A1);
+            }
+            renderDiagram();
         }
 
         // Функция для переключения темы
@@ -556,11 +596,10 @@ mechanism M1 "Workers" -> A0`,
             const splineStyle = document.getElementById('spline-style').value;
             let dot = 'digraph IDEF0 {\n';
             dot += '    rankdir=TB;\n';
-            dot += '    node [shape=box, style=filled, fillcolor=white, width=2, height=0.8, class="idef0-box", fontname="Arial", fontsize=12];\n';
-            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=12, fontcolor=black, minlen=2, weight=1, labelloc=t, labelangle=0];\n';
-            dot += `    graph [splines=${splineStyle}, nodesep=1.5, ranksep=2, dpi=96];\n`;
+            dot += '    node [shape=box, style=filled, fillcolor=white, width=1.2, height=0.5, class="idef0-box", fontname="Arial", fontsize=10];\n';
+            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=8, fontcolor=black, minlen=2, weight=1, labelloc=t, labelangle=0];\n';
+            dot += `    graph [splines=${splineStyle}, nodesep=1, ranksep=1.5, dpi=96];\n`;
             dot += '    {rank=min; A0}\n';
-            dot += '    {rank=max; A1}\n';
 
             const processes = new Set();
             const errors = [];
@@ -709,7 +748,7 @@ mechanism M1 "Workers" -> A0`,
                         output.innerHTML = '';
                         output.appendChild(element);
 
-                        // Инициализация svg-pan-zoom с ограничением масштаба
+                        // Инициализация svg-pan-zoom с уменьшенным масштабом
                         if (panZoomInstance) {
                             panZoomInstance.destroy();
                         }
@@ -719,10 +758,10 @@ mechanism M1 "Workers" -> A0`,
                             controlIconsEnabled: true,
                             fit: true,
                             center: true,
-                            minZoom: 0.5,
+                            minZoom: 0.3,
                             maxZoom: 5,
                             zoomScaleSensitivity: 0.2,
-                            initialZoom: 1
+                            initialZoom: 0.7
                         });
                     })
                     .catch(error => {
@@ -756,19 +795,20 @@ mechanism M1 "Workers" -> A0`,
                 return;
             }
 
+            // Получаем реальные размеры графика через getBBox
+            const bbox = svg.getBBox();
+            const padding = 20; // Отступы
+            const width = bbox.width + 2 * padding;
+            const height = bbox.height + 2 * padding;
+
+            // Клонируем SVG для экспорта
+            const svgClone = svg.cloneNode(true);
+            svgClone.setAttribute('width', width);
+            svgClone.setAttribute('height', height);
+            svgClone.setAttribute('viewBox', `${bbox.x - padding} ${bbox.y - padding} ${width} ${height}`);
+
             const serializer = new XMLSerializer();
-            let svgString = serializer.serializeToString(svg);
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(svgString, 'image/svg+xml');
-            const svgElement = doc.documentElement;
-
-            // Устанавливаем размеры для экспорта
-            const outputWidth = output.clientWidth;
-            const outputHeight = output.clientHeight;
-            svgElement.setAttribute('width', outputWidth);
-            svgElement.setAttribute('height', outputHeight);
-
-            svgString = serializer.serializeToString(svgElement);
+            const svgString = serializer.serializeToString(svgClone);
 
             if (format === 'svg') {
                 const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
@@ -783,8 +823,8 @@ mechanism M1 "Workers" -> A0`,
             } else {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
-                canvas.width = outputWidth * 2; // Удваиваем разрешение
-                canvas.height = outputHeight * 2;
+                canvas.width = width * 2; // Удваиваем разрешение
+                canvas.height = height * 2;
                 ctx.fillStyle = '#ffffff';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 const img = new Image();
@@ -801,7 +841,6 @@ mechanism M1 "Workers" -> A0`,
                     document.body.removeChild(link);
                     URL.revokeObjectURL(img.src);
                 };
-                // Кодируем SVG с учётом UTF-8
                 const svgData = unescape(encodeURIComponent(svgString));
                 img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
             }
@@ -831,4 +870,4 @@ mechanism M1 "Workers" -> A0`,
         document.getElementById('spline-style').addEventListener('change', renderDiagram);
     </script>
 </body>
-        </html>
+    </html>
