@@ -383,81 +383,109 @@
         </svg>
     </button>
 
-    <!-- Подключение библиотек с улучшенной обработкой ошибок -->
-    <script async src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.js" onerror="loadLocalCodeMirror()"></script>
-    <script async src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js" onerror="loadLocalViz()"></script>
-    <script async src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js" onerror="loadLocalFullRender()"></script>
-    <script async src="https://unpkg.com/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js" onerror="loadLocalSvgPanZoom()"></script>
-    <script id="canvg-script" async src="https://cdn.jsdelivr.net/npm/canvg@3.0.10/dist/umd.js" onerror="handleCanvgError()"></script>
+    <!-- Подключение библиотек -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.js" onerror="loadLocalCodeMirror()"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js" onerror="loadLocalViz()"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js" onerror="loadLocalFullRender()"></script>
+    <script src="https://unpkg.com/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js" onerror="loadLocalSvgPanZoom()"></script>
+    <script id="canvg-script" src="https://cdn.jsdelivr.net/npm/canvg@3.0.10/dist/umd.js" onerror="handleCanvgError()"></script>
     <script>
-        // Локальные резервы (нужно скачать файлы и разместить в папке проекта, например, /libs/)
+        let librariesLoaded = {
+            codeMirror: false,
+            viz: false,
+            fullRender: false,
+            svgPanZoom: false,
+            canvg: false
+        };
+
+        // Локальные резервы
         function loadLocalCodeMirrorCSS() {
             console.error('Ошибка загрузки CodeMirror CSS с CDN');
             const link = document.createElement('link');
             link.rel = 'stylesheet';
-            link.href = 'libs/codemirror.min.css'; // Укажи путь к локальному файлу
-            link.onerror = () => alert('Не удалось загрузить CodeMirror CSS даже локально. Проверьте наличие файла.');
+            link.href = 'libs/codemirror.min.css';
+            link.onerror = () => alert('Не удалось загрузить CodeMirror CSS даже локально.');
+            link.onload = () => console.log('CodeMirror CSS загружен локально');
             document.head.appendChild(link);
         }
 
         function loadLocalCodeMirror() {
             console.error('Ошибка загрузки CodeMirror с CDN');
             const script = document.createElement('script');
-            script.src = 'libs/codemirror.min.js'; // Укажи путь к локальному файлу
-            script.onerror = () => alert('Не удалось загрузить CodeMirror даже локально. Проверьте наличие файла.');
+            script.src = 'libs/codemirror.min.js';
+            script.onerror = () => alert('Не удалось загрузить CodeMirror даже локально.');
+            script.onload = () => {
+                librariesLoaded.codeMirror = true;
+                checkAllLibrariesLoaded();
+                console.log('CodeMirror загружен локально');
+            };
             document.body.appendChild(script);
         }
 
         function loadLocalViz() {
             console.error('Ошибка загрузки Viz.js с CDN');
             const script = document.createElement('script');
-            script.src = 'libs/viz.js'; // Укажи путь к локальному файлу
-            script.onerror = () => alert('Не удалось загрузить Viz.js даже локально. Проверьте наличие файла.');
+            script.src = 'libs/viz.js';
+            script.onerror = () => alert('Не удалось загрузить Viz.js даже локально.');
+            script.onload = () => {
+                librariesLoaded.viz = true;
+                checkAllLibrariesLoaded();
+                console.log('Viz.js загружен локально');
+            };
             document.body.appendChild(script);
         }
 
         function loadLocalFullRender() {
             console.error('Ошибка загрузки full.render.js с CDN');
             const script = document.createElement('script');
-            script.src = 'libs/full.render.js'; // Укажи путь к локальному файлу
-            script.onerror = () => alert('Не удалось загрузить full.render.js даже локально. Проверьте наличие файла.');
+            script.src = 'libs/full.render.js';
+            script.onerror = () => alert('Не удалось загрузить full.render.js даже локально.');
+            script.onload = () => {
+                librariesLoaded.fullRender = true;
+                checkAllLibrariesLoaded();
+                console.log('full.render.js загружен локально');
+            };
             document.body.appendChild(script);
         }
 
         function loadLocalSvgPanZoom() {
             console.error('Ошибка загрузки svg-pan-zoom с CDN');
             const script = document.createElement('script');
-            script.src = 'libs/svg-pan-zoom.min.js'; // Укажи путь к локальному файлу
-            script.onerror = () => alert('Не удалось загрузить svg-pan-zoom даже локально. Проверьте наличие файла.');
+            script.src = 'libs/svg-pan-zoom.min.js';
+            script.onerror = () => alert('Не удалось загрузить svg-pan-zoom даже локально.');
+            script.onload = () => {
+                librariesLoaded.svgPanZoom = true;
+                checkAllLibrariesLoaded();
+                console.log('svg-pan-zoom загружен локально');
+            };
             document.body.appendChild(script);
         }
 
         function loadLocalCanvg() {
             console.error('Ошибка загрузки Canvg с запасного CDN');
             const script = document.createElement('script');
-            script.src = 'libs/canvg.min.js'; // Укажи путь к локальному файлу
+            script.src = 'libs/canvg.min.js';
             script.onerror = () => alert('Не удалось загрузить Canvg даже локально. Экспорт в JPG/PNG недоступен.');
-            script.onload = () => console.log('Canvg загружен локально');
+            script.onload = () => {
+                librariesLoaded.canvg = true;
+                console.log('Canvg загружен локально');
+            };
             document.body.appendChild(script);
         }
 
-        // Обработка ошибки загрузки Canvg
         function handleCanvgError() {
             const script = document.getElementById('canvg-script');
-            console.error('Ошибка загрузки Canvg с основного CDN: https://cdn.jsdelivr.net/npm/canvg@3.0.10/dist/umd.js');
-            script.onerror = null; // Сбрасываем обработчик
-            script.src = 'https://unpkg.com/canvg@3.0.10/dist/umd.js'; // Переключение на запасной источник
-            script.onload = () => console.log('Canvg загружен с запасного источника');
-            script.onerror = () => {
-                console.error('Ошибка загрузки Canvg с запасного CDN: https://unpkg.com/canvg@3.0.10/dist/umd.js');
-                loadLocalCanvg(); // Пробуем локальный резерв
+            console.error('Ошибка загрузки Canvg с основного CDN');
+            script.onerror = null;
+            script.src = 'https://unpkg.com/canvg@3.0.10/dist/umd.js';
+            script.onload = () => {
+                librariesLoaded.canvg = true;
+                console.log('Canvg загружен с запасного источника');
             };
-            setTimeout(() => {
-                if (typeof Canvg === 'undefined') {
-                    console.warn('Canvg не загружен после попыток. Экспорт в JPG/PNG отключён.');
-                    alert('Не удалось загрузить библиотеку Canvg. Экспорт в JPG/PNG недоступен. Проверьте интернет или наличие локального файла.');
-                }
-            }, 5000);
+            script.onerror = () => {
+                console.error('Ошибка загрузки Canvg с запасного CDN');
+                loadLocalCanvg();
+            };
         }
 
         // Проверка интернет-соединения
@@ -471,44 +499,47 @@
             const supportsCanvas = !!document.createElement('canvas').getContext;
             const supportsSVG = !!document.createElementNS && !!document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGRect;
             if (!supportsPromises || !supportsCanvas || !supportsSVG) {
-                alert('Ваш браузер устарел и не поддерживает необходимые функции (Promises, Canvas, SVG). Обновите браузер для корректной работы приложения.');
+                alert('Ваш браузер устарел и не поддерживает необходимые функции (Promises, Canvas, SVG). Обновите браузер.');
                 return false;
             }
             return true;
         }
 
-        // Проверка доступности библиотек
+        // Проверка загрузки библиотек
         function checkLibraries() {
             if (!checkOnline()) {
-                alert('Нет интернет-соединения. Попробуйте использовать локальные копии библиотек или подключитесь к сети.');
+                alert('Нет интернет-соединения. Попробуйте использовать локальные копии библиотек.');
                 return false;
             }
             const missingLibraries = [];
-            if (typeof CodeMirror === 'undefined') missingLibraries.push('CodeMirror');
-            if (typeof Viz === 'undefined') missingLibraries.push('Viz.js');
-            if (typeof svgPanZoom === 'undefined') missingLibraries.push('svg-pan-zoom');
+            if (!librariesLoaded.codeMirror) missingLibraries.push('CodeMirror');
+            if (!librariesLoaded.viz || !librariesLoaded.fullRender) missingLibraries.push('Viz.js');
+            if (!librariesLoaded.svgPanZoom) missingLibraries.push('svg-pan-zoom');
             if (missingLibraries.length > 0) {
-                alert(`Не удалось загрузить библиотеки: ${missingLibraries.join(', ')}. Проверьте консоль для деталей или перезагрузите страницу.`);
-                console.error('Отсутствуют библиотеки:', {
-                    CodeMirror: typeof CodeMirror,
-                    Viz: typeof Viz,
-                    svgPanZoom: typeof svgPanZoom,
-                    Canvg: typeof Canvg
-                });
+                console.error('Отсутствуют библиотеки:', missingLibraries);
                 return false;
             }
             return true;
         }
 
-        // Автоопределение языка и темы
-        const userLang = navigator.language.startsWith('ru') ? 'ru' : 'en';
-        const userTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        document.body.setAttribute('data-theme', userTheme);
-        document.getElementById('language').value = userLang;
+        // Ожидание загрузки всех библиотек
+        function checkAllLibrariesLoaded() {
+            librariesLoaded.codeMirror = typeof CodeMirror !== 'undefined';
+            librariesLoaded.viz = typeof Viz !== 'undefined';
+            librariesLoaded.fullRender = typeof Viz !== 'undefined';
+            librariesLoaded.svgPanZoom = typeof svgPanZoom !== 'undefined';
+            librariesLoaded.canvg = typeof Canvg !== 'undefined';
 
-        // Инициализация CodeMirror
+            if (librariesLoaded.codeMirror && librariesLoaded.viz && librariesLoaded.fullRender && librariesLoaded.svgPanZoom) {
+                initializeEditorAndRender();
+            }
+        }
+
+        // Инициализация редактора и рендеринга
         let editor;
-        if (checkBrowserSupport() && checkLibraries()) {
+        function initializeEditorAndRender() {
+            if (!checkBrowserSupport()) return;
+
             editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
                 lineNumbers: true,
                 mode: 'text/plain',
@@ -516,10 +547,7 @@
                 viewportMargin: Infinity
             });
             editor.setSize('100%', '200px');
-        }
 
-        // Подсветка синтаксиса IDEF0
-        if (typeof CodeMirror !== 'undefined') {
             CodeMirror.defineMode('idef0', function() {
                 return {
                     token: function(stream) {
@@ -541,7 +569,16 @@
                 };
             });
             editor.setOption('mode', 'idef0');
+
+            updateLanguage();
+            renderDiagram();
         }
+
+        // Автоопределение языка и темы
+        const userLang = navigator.language.startsWith('ru') ? 'ru' : 'en';
+        const userTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.body.setAttribute('data-theme', userTheme);
+        document.getElementById('language').value = userLang;
 
         // Переводы
         const translations = {
@@ -669,7 +706,6 @@ mechanism M1 "Workers" -> A1`,
             }
         };
 
-        // Функция для обновления языка
         function updateLanguage() {
             const lang = document.getElementById('language').value;
             const t = translations[lang];
@@ -698,7 +734,6 @@ mechanism M1 "Workers" -> A1`,
             document.documentElement.lang = lang;
         }
 
-        // Функция для загрузки примера
         function loadExample() {
             const lang = document.getElementById('language').value;
             const t = translations[lang];
@@ -715,17 +750,12 @@ mechanism M1 "Workers" -> A1`,
             }
         }
 
-        // Функция для переключения темы
         function toggleTheme() {
             const currentTheme = document.body.getAttribute('data-theme') || 'light';
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
             document.body.setAttribute('data-theme', newTheme);
         }
 
-        // Инициализация
-        updateLanguage();
-
-        // Функция для экранирования меток
         function escapeDotLabel(label) {
             return label.replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/</g, '\\<').replace(/>/g, '\\>');
         }
@@ -836,7 +866,10 @@ mechanism M1 "Workers" -> A1`,
         let panZoomInstance = null;
 
         function renderDiagram() {
-            if (!checkLibraries() || !editor) return;
+            if (!checkLibraries() || !editor) {
+                alert('Не все библиотеки загружены. Проверьте интернет-соединение или локальные копии.');
+                return;
+            }
 
             const lang = document.getElementById('language').value;
             const t = translations[lang];
@@ -951,7 +984,10 @@ mechanism M1 "Workers" -> A1`,
         }
 
         async function exportDiagram() {
-            if (!checkLibraries()) return;
+            if (!checkLibraries()) {
+                alert('Не все библиотеки загружены. Проверьте интернет-соединение или локальные копии.');
+                return;
+            }
 
             const lang = document.getElementById('language').value;
             const t = translations[lang];
@@ -963,9 +999,11 @@ mechanism M1 "Workers" -> A1`,
                 return;
             }
 
-            if (format !== 'svg' && typeof Canvg === 'undefined') {
-                alert('Библиотека Canvg не загружена. Экспорт в JPG/PNG недоступен. Попробуйте перезагрузить страницу или проверьте интернет.');
-                return;
+            if (format !== 'svg') {
+                if (!librariesLoaded.canvg || typeof Canvg === 'undefined') {
+                    alert('Библиотека Canvg не загружена. Экспорт в JPG/PNG недоступен.');
+                    return;
+                }
             }
 
             const bbox = svg.getBBox();
@@ -997,15 +1035,17 @@ mechanism M1 "Workers" -> A1`,
                     canvas.width = width * 2;
                     canvas.height = height * 2;
                     const ctx = canvas.getContext('2d');
+                    if (!ctx) {
+                        throw new Error('Не удалось создать контекст canvas');
+                    }
 
-                    const v = Canvg.from(ctx, svgString, {
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    const v = await Canvg.fromString(ctx, svgString, {
                         scaleWidth: canvas.width,
                         scaleHeight: canvas.height,
-                        ignoreDimensions: true,
-                        renderCallback: () => {
-                            ctx.fillStyle = '#ffffff';
-                            ctx.fillRect(0, 0, canvas.width, canvas.height);
-                        }
+                        ignoreDimensions: true
                     });
                     await v.render();
 
@@ -1021,7 +1061,7 @@ mechanism M1 "Workers" -> A1`,
                         link.click();
                         document.body.removeChild(link);
                     } else {
-                        alert('Ошибка при создании изображения: данные не сгенерированы.');
+                        throw new Error('Не удалось сгенерировать изображение');
                     }
                 } catch (error) {
                     console.error('Ошибка экспорта:', error);
@@ -1055,9 +1095,7 @@ mechanism M1 "Workers" -> A1`,
 
         // Инициализация при загрузке
         window.addEventListener('load', () => {
-            setTimeout(() => {
-                if (checkBrowserSupport() && checkLibraries() && editor) renderDiagram();
-            }, 100);
+            checkAllLibrariesLoaded();
         });
     </script>
 </body>
