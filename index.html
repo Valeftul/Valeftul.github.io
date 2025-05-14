@@ -13,16 +13,11 @@
             align-items: center;
             background-color: #f9f9f9;
         }
-        #editor {
+        #editor-container {
             width: 80%;
-            height: 250px;
             margin: 15px 0;
-            font-family: monospace;
-            font-size: 14px;
             border: 2px solid #ccc;
             border-radius: 5px;
-            padding: 10px;
-            resize: vertical;
         }
         #output {
             border: 1px solid #999;
@@ -39,6 +34,7 @@
             max-width: 100%;
             height: auto;
             text-rendering: geometricPrecision;
+            transition: transform 0.2s;
         }
         #error {
             color: red;
@@ -69,6 +65,28 @@
             background: #e9ecef;
             padding: 15px;
             border-radius: 5px;
+        }
+        .controls {
+            width: 80%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        #zoom-slider {
+            width: 150px;
+        }
+        #dot-preview {
+            width: 80%;
+            display: none;
+            background: #f0f0f0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
         }
         .idef0-box {
             fill: #ffffff !important;
@@ -101,65 +119,115 @@
             marker-end: url(#arrowhead);
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.css">
 </head>
 <body>
     <h1>Генератор диаграмм IDEF0</h1>
     <div id="help">
-        <strong>Инструкция:</strong> Введите код в формате IDEF0. Используйте команды:<br>
-        - <code>process ID "Название"</code> — процесс (например, A0).<br>
-        - <code>input ID "Название" -> процесс</code> — вход (слева).<br>
-        - <code>control ID "Название" -> процесс</code> — управление (сверху, пунктир).<br>
-        - <code>output процесс -> ID "Название"</code> — выход (справа).<br>
-        - <code>output процесс -> процесс</code> — декомпозиция (пунктирная стрелка).<br>
-        - <code>mechanism ID "Название" -> процесс</code> — механизм (снизу, мелкий пунктир).<br>
+        <strong>Инструкция:</strong> Введите код в формате IDEF0 на русском или английском. Команды:<br>
+        - <code>процесс</code> или <code>process ID "Название"</code> — процесс (например, A0).<br>
+        - <code>вход</code> или <code>input ID "Название" -> процесс</code> — вход (слева).<br>
+        - <code>управление</code> или <code>control ID "Название" -> процесс</code> — управление (сверху, пунктир).<br>
+        - <code>выход</code> или <code>output процесс -> ID "Название"</code> — выход (справа).<br>
+        - <code>выход</code> или <code>output процесс -> процесс</code> — декомпозиция (пунктир).<br>
+        - <code>механизм</code> или <code>mechanism ID "Название" -> процесс</code> — механизм (снизу, мелкий пунктир).<br>
         <strong>Пример:</strong><br>
         <pre>
-process A0 "Производство"
-input I1 "Сырьё" -> A0
-control C1 "Инструкции" -> A0
-output A0 -> O1 "Продукт"
-mechanism M1 "Станки" -> A0
-process A1 "Контроль"
-input I2 "Стандарты" -> A1
-output A0 -> A1
-output A1 -> O2 "Отчёт"
+процесс A0 "Производство"
+вход I1 "Сырьё" -> A0
+управление C1 "Инструкции" -> A0
+выход A0 -> O1 "Продукт"
+механизм M1 "Станки" -> A0
+процесс A1 "Контроль"
+вход I2 "Стандарты" -> A1
+выход A0 -> A1
+выход A1 -> O2 "Отчёт"
         </pre>
         Нажмите "Сгенерировать" или "Экспорт SVG".
     </div>
-    <textarea id="editor" placeholder="Введите код IDEF0...">
-process A0 "Основной процесс"
-input I1 "Материалы" -> A0
-control C1 "Правила" -> A0
-output A0 -> O1 "Готовый продукт"
-mechanism M1 "Рабочие" -> A0
-process A1 "Подпроцесс"
-input I2 "Данные" -> A1
-output A0 -> A1
-output A1 -> O2 "Результат"
-    </textarea>
-    <div>
-        <button onclick="renderDiagram()">Сгенерировать диаграмму</button>
+    <div id="editor-container">
+        <textarea id="editor" placeholder="Введите код IDEF0...">
+процесс A0 "Основной процесс"
+вход I1 "Материалы" -> A0
+управление C1 "Правила" -> A0
+выход A0 -> O1 "Готовый продукт"
+механизм M1 "Рабочие" -> A0
+процесс A1 "Подпроцесс"
+вход I2 "Данные" -> A1
+выход A0 -> A1
+выход A1 -> O2 "Результат"
+        </textarea>
+    </div>
+    <div class="controls">
+        <button onclick="renderDiagram()">Сгенерировать</button>
         <button onclick="exportSVG()">Экспорт SVG</button>
+        <button onclick="clearEditor()">Очистить</button>
+        <button onclick="saveCode()">Сохранить</button>
+        <button onclick="loadCode()">Загрузить</button>
+        <button onclick="toggleDotPreview()">Показать DOT</button>
+        <label>Масштаб:</label>
+        <input type="range" id="zoom-slider" min="0.5" max="2" step="0.1" value="1">
+        <label>Стиль линий:</label>
+        <select id="spline-style">
+            <option value="ortho">Ортогональные</option>
+            <option value="polyline">Прямые</option>
+        </select>
     </div>
     <div id="error"></div>
+    <div id="dot-preview"></div>
     <div id="output"></div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js"></script>
     <script>
-        // Функция для экранирования специальных символов в метках
+        // Инициализация CodeMirror
+        const editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+            lineNumbers: true,
+            mode: 'text/plain',
+            theme: 'default',
+            viewportMargin: Infinity
+        });
+        editor.setSize('100%', '250px');
+
+        // Подсветка синтаксиса IDEF0
+        CodeMirror.defineMode('idef0', function() {
+            return {
+                token: function(stream) {
+                    if (stream.match(/^(процесс|вход|управление|выход|механизм|process|input|control|output|mechanism)\b/)) {
+                        return 'keyword';
+                    }
+                    if (stream.match(/[A-Za-z0-9]+/)) {
+                        return 'variable';
+                    }
+                    if (stream.match(/"[^"]*"/)) {
+                        return 'string';
+                    }
+                    if (stream.match(/->/)) {
+                        return 'operator';
+                    }
+                    stream.next();
+                    return null;
+                }
+            };
+        });
+        editor.setOption('mode', 'idef0');
+
+        // Функция для экранирования меток
         function escapeDotLabel(label) {
             return label.replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/</g, '\\<').replace(/>/g, '\\>');
         }
 
         function validateAndConvertToDot(code) {
             const lines = code.trim().split('\n').filter(line => line.trim());
+            const splineStyle = document.getElementById('spline-style').value;
             let dot = 'digraph IDEF0 {\n';
             dot += '    rankdir=TB;\n';
             dot += '    node [shape=box, style=filled, fillcolor=white, width=3, height=1.2, class="idef0-box", fontname="Arial", fontsize=16];\n';
             dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=14, fontcolor=black, labelloc=t];\n';
-            dot += '    graph [splines=ortho, nodesep=2, ranksep=2, concentrate=true, dpi=96];\n';
-            dot += '    {rank=same; ' + [...new Set(lines.filter(l => l.match(/^process/)).map(l => l.match(/([A-Za-z0-9]+)/)[1]))].join(' ') + '}\n';
+            dot += `    graph [splines=${splineStyle}, nodesep=2, ranksep=3, concentrate=true, dpi=96];\n`;
+            dot += '    {rank=min; A0}\n';
+            dot += '    {rank=max; A1}\n';
 
             const processes = new Set();
             const errors = [];
@@ -170,26 +238,26 @@ output A1 -> O2 "Результат"
                 line = line.trim();
                 if (!line) return;
 
-                // Парсинг команд IDEF0
-                const processMatch = line.match(/^process\s+([A-Za-z0-9]+)\s+"([^"]+)"/);
-                const inputMatch = line.match(/^input\s+([A-Za-z0-9]+)\s+"([^"]+)"\s+->\s+([A-Za-z0-9]+)/);
-                const controlMatch = line.match(/^control\s+([A-Za-z0-9]+)\s+"([^"]+)"\s+->\s+([A-Za-z0-9]+)/);
-                const outputMatch = line.match(/^output\s+([A-Za-z0-9]+)\s+->\s+([A-Za-z0-9]+)\s+"([^"]+)"/);
-                const outputProcessMatch = line.match(/^output\s+([A-Za-z0-9]+)\s+->\s+([A-Za-z0-9]+)/);
-                const mechanismMatch = line.match(/^mechanism\s+([A-Za-z0-9]+)\s+"([^"]+)"\s+->\s+([A-Za-z0-9]+)/);
+                // Парсинг команд на русском и английском
+                const processMatch = line.match(/^(процесс|process)\s+([A-Za-z0-9]+)\s+"([^"]+)"/);
+                const inputMatch = line.match(/^(вход|input)\s+([A-Za-z0-9]+)\s+"([^"]+)"\s+->\s+([A-Za-z0-9]+)/);
+                const controlMatch = line.match(/^(управление|control)\s+([A-Za-z0-9]+)\s+"([^"]+)"\s+->\s+([A-Za-z0-9]+)/);
+                const outputMatch = line.match(/^(выход|output)\s+([A-Za-z0-9]+)\s+->\s+([A-Za-z0-9]+)\s+"([^"]+)"/);
+                const outputProcessMatch = line.match(/^(выход|output)\s+([A-Za-z0-9]+)\s+->\s+([A-Za-z0-9]+)/);
+                const mechanismMatch = line.match(/^(механизм|mechanism)\s+([A-Za-z0-9]+)\s+"([^"]+)"\s+->\s+([A-Za-z0-9]+)/);
 
                 if (processMatch) {
-                    const id = processMatch[1];
-                    const label = processMatch[2];
+                    const id = processMatch[2];
+                    const label = processMatch[3];
                     if (nodes.has(id)) errors.push(`Ошибка в строке ${index + 1}: идентификатор ${id} уже используется`);
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(`Ошибка в строке ${index + 1}: метка "${label}" содержит недопустимые символы (разрешены буквы, цифры, пробелы)`);
                     processes.add(id);
                     nodes.add(id);
                     dot += `    ${id} [label="${escapeDotLabel(label)}\\n${id}", fillcolor=white, style=filled];\n`;
                 } else if (inputMatch) {
-                    const id = inputMatch[1];
-                    const label = inputMatch[2];
-                    const target = inputMatch[3];
+                    const id = inputMatch[2];
+                    const label = inputMatch[3];
+                    const target = inputMatch[4];
                     if (!processes.has(target)) errors.push(`Ошибка в строке ${index + 1}: процесс ${target} не определён`);
                     if (nodes.has(id)) errors.push(`Ошибка в строке ${index + 1}: идентификатор ${id} уже используется`);
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(`Ошибка в строке ${index + 1}: метка "${label}" содержит недопустимые символы (разрешены буквы, цифры, пробелы)`);
@@ -197,9 +265,9 @@ output A1 -> O2 "Результат"
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
                     edges.push(`    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", tailport=e, headport=w, constraint=true];\n`);
                 } else if (controlMatch) {
-                    const id = controlMatch[1];
-                    const label = controlMatch[2];
-                    const target = controlMatch[3];
+                    const id = controlMatch[2];
+                    const label = controlMatch[3];
+                    const target = controlMatch[4];
                     if (!processes.has(target)) errors.push(`Ошибка в строке ${index + 1}: процесс ${target} не определён`);
                     if (nodes.has(id)) errors.push(`Ошибка в строке ${index + 1}: идентификатор ${id} уже используется`);
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(`Ошибка в строке ${index + 1}: метка "${label}" содержит недопустимые символы (разрешены буквы, цифры, пробелы)`);
@@ -207,9 +275,9 @@ output A1 -> O2 "Результат"
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
                     edges.push(`    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", class="idef0-control", tailport=s, headport=n, constraint=false];\n`);
                 } else if (outputMatch) {
-                    const source = outputMatch[1];
-                    const id = outputMatch[2];
-                    const label = outputMatch[3];
+                    const source = outputMatch[2];
+                    const id = outputMatch[3];
+                    const label = outputMatch[4];
                     if (!processes.has(source)) errors.push(`Ошибка в строке ${index + 1}: процесс ${source} не определён`);
                     if (nodes.has(id)) errors.push(`Ошибка в строке ${index + 1}: идентификатор ${id} уже используется`);
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(`Ошибка в строке ${index + 1}: метка "${label}" содержит недопустимые символы (разрешены буквы, цифры, пробелы)`);
@@ -217,15 +285,15 @@ output A1 -> O2 "Результат"
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
                     edges.push(`    ${source} -> ${id} [xlabel="${escapeDotLabel(label)}", tailport=e, headport=w, constraint=true];\n`);
                 } else if (outputProcessMatch) {
-                    const source = outputProcessMatch[1];
-                    const target = outputProcessMatch[2];
+                    const source = outputProcessMatch[2];
+                    const target = outputProcessMatch[3];
                     if (!processes.has(source)) errors.push(`Ошибка в строке ${index + 1}: процесс ${source} не определён`);
                     if (!processes.has(target)) errors.push(`Ошибка в строке ${index + 1}: процесс ${target} не определён`);
                     edges.push(`    ${source} -> ${target} [xlabel="Декомпозиция", class="idef0-decomposition", tailport=e, headport=w, constraint=true];\n`);
                 } else if (mechanismMatch) {
-                    const id = mechanismMatch[1];
-                    const label = mechanismMatch[2];
-                    const target = mechanismMatch[3];
+                    const id = mechanismMatch[2];
+                    const label = mechanismMatch[3];
+                    const target = mechanismMatch[4];
                     if (!processes.has(target)) errors.push(`Ошибка в строке ${index + 1}: процесс ${target} не определён`);
                     if (nodes.has(id)) errors.push(`Ошибка в строке ${index + 1}: идентификатор ${id} уже используется`);
                     if (!/^[\w\s\u0400-\u04FF]+$/.test(label)) errors.push(`Ошибка в строке ${index + 1}: метка "${label}" содержит недопустимые символы (разрешены буквы, цифры, пробелы)`);
@@ -233,7 +301,7 @@ output A1 -> O2 "Результат"
                     dot += `    ${id} [shape=none, label="${escapeDotLabel(label)}"];\n`;
                     edges.push(`    ${id} -> ${target} [xlabel="${escapeDotLabel(label)}", class="idef0-mechanism", tailport=n, headport=s, constraint=false];\n`);
                 } else {
-                    errors.push(`Ошибка в строке ${index + 1}: неверный синтаксис. Ожидается команда process, input, control, output или mechanism`);
+                    errors.push(`Ошибка в строке ${index + 1}: неверный синтаксис. Ожидается команда процесс/process, вход/input, управление/control, выход/output или механизм/mechanism`);
                 }
             });
 
@@ -249,14 +317,14 @@ output A1 -> O2 "Результат"
             dot += edges.join('');
 
             dot += '}\n';
-            // console.log('Сгенерированный DOT-код:\n', dot); // Раскомментируйте для отладки
             return { dot, errors };
         }
 
         function renderDiagram() {
-            const code = document.getElementById('editor').value;
+            const code = editor.getValue();
             const output = document.getElementById('output');
             const errorDiv = document.getElementById('error');
+            const dotPreview = document.getElementById('dot-preview');
 
             const { dot, errors } = validateAndConvertToDot(code);
 
@@ -264,10 +332,15 @@ output A1 -> O2 "Результат"
                 errorDiv.style.display = 'block';
                 errorDiv.innerHTML = errors.join('<br>');
                 output.innerHTML = '';
+                dotPreview.style.display = 'none';
                 return;
             }
 
             errorDiv.style.display = 'none';
+            dotPreview.innerHTML = dot;
+            if (dotPreview.style.display === 'block') {
+                dotPreview.scrollIntoView({ behavior: 'smooth' });
+            }
 
             try {
                 const viz = new Viz();
@@ -282,6 +355,7 @@ output A1 -> O2 "Результат"
                         element.prepend(defs);
                         output.innerHTML = '';
                         output.appendChild(element);
+                        updateZoom();
                     })
                     .catch(error => {
                         errorDiv.style.display = 'block';
@@ -315,6 +389,51 @@ output A1 -> O2 "Результат"
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
         }
+
+        function clearEditor() {
+            editor.setValue('');
+            document.getElementById('output').innerHTML = '';
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('dot-preview').style.display = 'none';
+        }
+
+        function saveCode() {
+            const code = editor.getValue();
+            localStorage.setItem('idef0_code', code);
+            alert('Код сохранён!');
+        }
+
+        function loadCode() {
+            const code = localStorage.getItem('idef0_code');
+            if (code) {
+                editor.setValue(code);
+                renderDiagram();
+            } else {
+                alert('Нет сохранённого кода!');
+            }
+        }
+
+        function toggleDotPreview() {
+            const dotPreview = document.getElementById('dot-preview');
+            if (dotPreview.style.display === 'none') {
+                renderDiagram();
+                dotPreview.style.display = 'block';
+            } else {
+                dotPreview.style.display = 'none';
+            }
+        }
+
+        function updateZoom() {
+            const svg = document.querySelector('#output svg');
+            if (svg) {
+                const zoom = document.getElementById('zoom-slider').value;
+                svg.style.transform = `scale(${zoom})`;
+                svg.style.transformOrigin = 'center';
+            }
+        }
+
+        document.getElementById('zoom-slider').addEventListener('input', updateZoom);
+        document.getElementById('spline-style').addEventListener('change', renderDiagram);
     </script>
 </body>
 </html>
