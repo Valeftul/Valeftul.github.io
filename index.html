@@ -150,30 +150,30 @@
         .idef0-box {
             fill: #ffffff !important;
             stroke: #000;
-            stroke-width: 1;
+            stroke-width: 1.5;
             font-family: Arial, sans-serif;
             font-size: 16px;
         }
         .idef0-arrow {
             stroke: #000;
-            stroke-width: 1;
+            stroke-width: 1.5;
             marker-end: url(#arrowhead);
         }
         .idef0-control {
             stroke: #000;
-            stroke-width: 1;
+            stroke-width: 1.5;
             stroke-dasharray: 5,5;
             marker-end: url(#arrowhead);
         }
         .idef0-mechanism {
             stroke: #000;
-            stroke-width: 1;
+            stroke-width: 1.5;
             stroke-dasharray: 2,2;
             marker-end: url(#arrowhead);
         }
         .idef0-decomposition {
             stroke: #000;
-            stroke-width: 1;
+            stroke-width: 1.5;
             stroke-dasharray: 3,3;
             marker-end: url(#arrowhead);
         }
@@ -459,7 +459,7 @@ mechanism M2 "Analysts" -> A1`,
             dot += '    rankdir=TB;\n';
             dot += '    node [shape=box, style=filled, fillcolor=white, width=2.5, height=1, class="idef0-box", fontname="Arial", fontsize=16];\n';
             dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=16, fontcolor=black, labelloc=t, labeldistance=3, labelangle=30];\n';
-            dot += `    graph [splines=${splineStyle}, nodesep=2, ranksep=3, dpi=120];\n`;
+            dot += `    graph [splines=${splineStyle}, nodesep=1.5, ranksep=2.5, dpi=120];\n`;
             dot += '    {rank=min; A0}\n';
             dot += '    {rank=max; A1}\n';
 
