@@ -319,6 +319,7 @@
                 <select id="example-select" onchange="loadExample()">
                     <option value="A0">Пример A0</option>
                     <option value="A0A1">Пример A0 + A1</option>
+                    <option value="A1">Пример A1</option>
                 </select>
                 <button id="clear-button" onclick="clearEditor()" title="Очистить редактор" class="secondary">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -446,10 +447,15 @@
 выход A0 -> O1 "Готовый продукт"
 механизм M1 "Рабочие" -> A0`,
                 exampleCodeA0A1: `процесс A0 "Основной процесс"
+процесс A1 "Подпроцесс"
 вход I1 "Материалы" -> A0
 управление C1 "Правила" -> A0
 выход A0 -> A1
-процесс A1 "Подпроцесс"
+вход I2 "Дополнительные материалы" -> A1
+управление C2 "Дополнительные правила" -> A1
+выход A1 -> O1 "Готовый продукт"
+механизм M1 "Рабочие" -> A1`,
+                exampleCodeA1: `процесс A1 "Подпроцесс"
 вход I2 "Дополнительные материалы" -> A1
 управление C2 "Дополнительные правила" -> A1
 выход A1 -> O1 "Готовый продукт"
@@ -462,7 +468,7 @@
                 formatOptions: ['SVG', 'JPG', 'PNG'],
                 saveButton: 'Сохранить',
                 generateButton: 'Сгенерировать',
-                exampleOptions: ['Пример A0', 'Пример A0 + A1'],
+                exampleOptions: ['Пример A0', 'Пример A0 + A1', 'Пример A1'],
                 errors: {
                     duplicateId: 'Ошибка в строке {line}: идентификатор {id} уже используется',
                     processNotDefined: 'Ошибка в строке {line}: процесс {id} не определён',
@@ -501,10 +507,15 @@ control C1 "Rules" -> A0
 output A0 -> O1 "Finished Product"
 mechanism M1 "Workers" -> A0`,
                 exampleCodeA0A1: `process A0 "Main Process"
+process A1 "Sub Process"
 input I1 "Materials" -> A0
 control C1 "Rules" -> A0
 output A0 -> A1
-process A1 "Sub Process"
+input I2 "Additional Materials" -> A1
+control C2 "Additional Rules" -> A1
+output A1 -> O1 "Finished Product"
+mechanism M1 "Workers" -> A1`,
+                exampleCodeA1: `process A1 "Sub Process"
 input I2 "Additional Materials" -> A1
 control C2 "Additional Rules" -> A1
 output A1 -> O1 "Finished Product"
@@ -517,7 +528,7 @@ mechanism M1 "Workers" -> A1`,
                 formatOptions: ['SVG', 'JPG', 'PNG'],
                 saveButton: 'Save',
                 generateButton: 'Generate',
-                exampleOptions: ['Example A0', 'Example A0 + A1'],
+                exampleOptions: ['Example A0', 'Example A0 + A1', 'Example A1'],
                 errors: {
                     duplicateId: 'Error in line {line}: identifier {id} already used',
                     processNotDefined: 'Error in line {line}: process {id} not defined',
@@ -556,6 +567,7 @@ mechanism M1 "Workers" -> A1`,
             const exampleSelect = document.getElementById('example-select');
             exampleSelect.options[0].text = t.exampleOptions[0];
             exampleSelect.options[1].text = t.exampleOptions[1];
+            exampleSelect.options[2].text = t.exampleOptions[2];
             loadExample(); // Загружаем пример при смене языка
             editor.getInputField().placeholder = t.placeholder;
             document.documentElement.lang = lang;
@@ -568,8 +580,10 @@ mechanism M1 "Workers" -> A1`,
             const example = document.getElementById('example-select').value;
             if (example === 'A0') {
                 editor.setValue(t.exampleCodeA0);
-            } else {
+            } else if (example === 'A0A1') {
                 editor.setValue(t.exampleCodeA0A1);
+            } else if (example === 'A1') {
+                editor.setValue(t.exampleCodeA1);
             }
             renderDiagram();
         }
@@ -599,7 +613,6 @@ mechanism M1 "Workers" -> A1`,
             dot += '    node [shape=box, style=filled, fillcolor=white, width=1.2, height=0.5, class="idef0-box", fontname="Arial", fontsize=10];\n';
             dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=8, fontcolor=black, minlen=2, weight=1, labelloc=t, labelangle=0];\n';
             dot += `    graph [splines=${splineStyle}, nodesep=1, ranksep=1.5, dpi=96];\n`;
-            dot += '    {rank=min; A0}\n';
 
             const processes = new Set();
             const errors = [];
@@ -870,4 +883,4 @@ mechanism M1 "Workers" -> A1`,
         document.getElementById('spline-style').addEventListener('change', renderDiagram);
     </script>
 </body>
-    </html>
+</html>
