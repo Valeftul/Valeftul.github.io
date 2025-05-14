@@ -39,7 +39,7 @@
             transition: background-color 0.3s, color 0.3s;
         }
         #editor-container {
-            width: 100%;
+            width: 90%;
             max-width: 800px;
             margin: 10px 0;
             border: 1px solid var(--border-color);
@@ -58,22 +58,23 @@
         }
         .CodeMirror {
             height: 200px !important;
-            font-size: 14px !important;
+            font-size: 13px !important;
             background: var(--editor-bg) !important;
             color: var(--text-color) !important;
             border-bottom: 1px solid var(--border-color);
         }
         #output {
-            width: 100%;
-            max-width: 1200px;
-            min-height: 1500px;
+            width: 90%;
+            max-width: 1000px;
+            min-height: 800px;
             height: auto;
             background: var(--output-bg);
             box-shadow: var(--shadow);
-            overflow: auto;
+            overflow: visible;
             border-radius: 12px;
-            padding: 30px;
+            padding: 20px;
             margin: 10px 0;
+            text-align: center;
             -webkit-overflow-scrolling: touch;
         }
         #output svg {
@@ -81,20 +82,19 @@
             height: auto;
             max-width: none;
             text-rendering: geometricPrecision;
-            display: block;
-            margin: 0 auto;
+            display: inline-block;
         }
         #error {
             color: #ef4444;
             font-size: 12px;
             margin: 10px 0;
             display: none;
-            width: 100%;
+            width: 90%;
             max-width: 800px;
             text-align: left;
         }
         button {
-            padding: 12px 24px;
+            padding: 10px 20px;
             font-size: 14px;
             background-color: var(--button-bg);
             color: white;
@@ -120,13 +120,13 @@
         }
         .main-button {
             background: var(--button-gradient);
-            padding: 14px 30px;
-            font-size: 16px;
+            padding: 10px 20px;
+            font-size: 14px;
             font-weight: 600;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
         details {
-            width: 100%;
+            width: 90%;
             max-width: 800px;
             font-size: 12px;
             margin: 10px 0;
@@ -141,17 +141,18 @@
             color: var(--text-color);
         }
         .controls {
-            width: 100%;
+            width: 90%;
             max-width: 800px;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             margin: 10px 0;
+            justify-content: center;
         }
         select {
             padding: 10px;
-            font-size: 12px;
+            font-size: 14px;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             background: var(--editor-bg);
@@ -165,7 +166,7 @@
             outline: none;
         }
         #dot-preview {
-            width: 100%;
+            width: 90%;
             max-width: 800px;
             display: none;
             background: var(--editor-bg);
@@ -209,7 +210,7 @@
             stroke: #000;
             stroke-width: 1.5;
             font-family: Arial, sans-serif;
-            font-size: 18px;
+            font-size: 16px;
         }
         .idef0-arrow {
             stroke: #000;
@@ -244,27 +245,27 @@
                 min-width: 80px;
             }
             .main-button {
-                padding: 10px 20px;
-                font-size: 14px;
+                padding: 8px 16px;
+                font-size: 12px;
             }
             .CodeMirror {
-                font-size: 12px !important;
+                font-size: 11px !important;
             }
             details, #error, #dot-preview {
                 font-size: 10px;
             }
             #output {
-                min-height: 1000px;
+                min-height: 600px;
             }
             #output svg {
-                width: 90%;
+                width: 85%;
             }
             select {
-                font-size: 10px;
+                font-size: 12px;
                 padding: 8px;
             }
             #title {
-                font-size: 22px !important;
+                font-size: 20px !important;
             }
             #theme-toggle {
                 padding: 8px 16px;
@@ -277,7 +278,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.css">
 </head>
 <body>
-    <h1 style="font-size: 26px; margin: 12px; font-weight: 700; color: var(--text-color);" id="title">IDEF0 Forge</h1>
+    <h1 style="font-size: 24px; margin: 12px; font-weight: 700; color: var(--text-color);" id="title">IDEF0 Forge</h1>
     <details>
         <summary id="instructions-summary">Инструкция</summary>
         <div id="instructions"></div>
@@ -288,26 +289,26 @@
                 <option value="ru" selected>Русский</option>
                 <option value="en">Английский</option>
             </select>
-            <button id="clear-button" onclick="clearEditor()" title="Очистить редактор">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m-10 5v6a2 2 0 002 2h6a2 2 0 002-2v-6m-12 0h12"/>
-                </svg>
-                <span>Очистить</span>
-            </button>
-            <button id="dot-button" onclick="toggleDotPreview()" title="Показать DOT-код">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                    <polyline points="14 2 14 8 20 8"/>
-                    <line x1="16" y1="13" x2="8" y2="13"/>
-                    <line x1="16" y1="17" x2="8" y2="17"/>
-                    <polyline points="10 9 9 9 8 9"/>
-                </svg>
-                <span>DOT-код</span>
-            </button>
         </div>
         <textarea id="editor" placeholder="Введите код IDEF0..."></textarea>
     </div>
     <div class="controls">
+        <button id="clear-button" onclick="clearEditor()" title="Очистить редактор">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m-10 5v6a2 2 0 002 2h6a2 2 0 002-2v-6m-12 0h12"/>
+            </svg>
+            <span>Очистить</span>
+        </button>
+        <button id="dot-button" onclick="toggleDotPreview()" title="Показать DOT-код">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+                <polyline points="10 9 9 9 8 9"/>
+            </svg>
+            <span>DOT-код</span>
+        </button>
         <label id="spline-label">Линии:</label>
         <select id="spline-style">
             <option value="ortho" selected>Ортогональные</option>
@@ -332,7 +333,7 @@
                 <polyline points="17 21 17 13 7 13 7 21"/>
                 <polyline points="7 3 7 8 15 8"/>
             </svg>
-            <span>Сохранить график</span>
+            <span>Сохранить</span>
         </button>
         <button id="generate-button" onclick="renderDiagram()" class="main-button" title="Сгенерировать диаграмму">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -354,6 +355,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js"></script>
+    <script src="https://unpkg.com/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
     <script>
         // Инициализация CodeMirror
         const editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
@@ -429,7 +431,7 @@
                 formatLabel: 'Формат:',
                 formatOptions: ['SVG', 'JPG', 'PNG'],
                 fitButton: 'Подогнать',
-                saveButton: 'Сохранить график',
+                saveButton: 'Сохранить',
                 generateButton: 'Сгенерировать',
                 themeLabel: ['Светлая', 'Тёмная'],
                 errors: {
@@ -485,7 +487,7 @@ mechanism M2 "Analysts" -> A1`,
                 formatLabel: 'Format:',
                 formatOptions: ['SVG', 'JPG', 'PNG'],
                 fitButton: 'Fit',
-                saveButton: 'Save Diagram',
+                saveButton: 'Save',
                 generateButton: 'Generate',
                 themeLabel: ['Light', 'Dark'],
                 errors: {
@@ -561,9 +563,9 @@ mechanism M2 "Analysts" -> A1`,
             const splineStyle = document.getElementById('spline-style').value;
             let dot = 'digraph IDEF0 {\n';
             dot += '    rankdir=TB;\n';
-            dot += '    node [shape=box, style=filled, fillcolor=white, width=3, height=1.2, class="idef0-box", fontname="Arial", fontsize=18];\n';
-            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=18, fontcolor=black];\n';
-            dot += `    graph [splines=${splineStyle}, nodesep=2, ranksep=3, dpi=96];\n`;
+            dot += '    node [shape=box, style=filled, fillcolor=white, width=2.5, height=1, class="idef0-box", fontname="Arial", fontsize=16];\n';
+            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=16, fontcolor=black];\n';
+            dot += `    graph [splines=${splineStyle}, nodesep=1.5, ranksep=2, dpi=96];\n`;
             dot += '    {rank=min; A0}\n';
             dot += '    {rank=max; A1}\n';
 
@@ -654,6 +656,8 @@ mechanism M2 "Analysts" -> A1`,
             return { dot, errors };
         }
 
+        let panZoomInstance = null;
+
         function renderDiagram() {
             const lang = document.getElementById('language').value;
             const t = translations[lang];
@@ -670,6 +674,10 @@ mechanism M2 "Analysts" -> A1`,
                 errorDiv.innerHTML = errors.join('<br>');
                 output.innerHTML = '';
                 dotPreview.style.display = 'none';
+                if (panZoomInstance) {
+                    panZoomInstance.destroy();
+                    panZoomInstance = null;
+                }
                 return;
             }
 
@@ -697,41 +705,57 @@ mechanism M2 "Analysts" -> A1`,
                         element.prepend(defs);
 
                         // Корректировка viewBox и размеров
-                        element.setAttribute('viewBox', `${bbox.x-50} ${bbox.y-50} ${bbox.width+100} ${bbox.height+100}`);
+                        element.setAttribute('viewBox', `${bbox.x-30} ${bbox.y-30} ${bbox.width+60} ${bbox.height+60}`);
                         element.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-                        element.setAttribute('width', Math.min(bbox.width + 100, 1200));
-                        element.setAttribute('height', Math.min(bbox.height + 100, 1500));
+                        element.setAttribute('width', Math.min(bbox.width + 60, 1000));
+                        element.setAttribute('height', Math.min(bbox.height + 60, 800));
 
                         output.innerHTML = '';
                         output.appendChild(element);
+
+                        // Инициализация svg-pan-zoom
+                        if (panZoomInstance) {
+                            panZoomInstance.destroy();
+                        }
+                        panZoomInstance = svgPanZoom(element, {
+                            zoomEnabled: true,
+                            panEnabled: true,
+                            controlIconsEnabled: true,
+                            fit: true,
+                            center: true,
+                            minZoom: 0.5,
+                            maxZoom: 5,
+                            zoomScaleSensitivity: 0.2
+                        });
+
+                        fitDiagram();
                     })
                     .catch(error => {
                         errorDiv.style.display = 'block';
                         errorDiv.innerHTML = t.errors.renderError.replace('{message}', error.message).replace('{dot}', dot);
                         output.innerHTML = '';
+                        if (panZoomInstance) {
+                            panZoomInstance.destroy();
+                            panZoomInstance = null;
+                        }
                     });
             } catch (error) {
                 errorDiv.style.display = 'block';
                 errorDiv.innerHTML = t.errors.generalError.replace('{message}', error.message);
                 output.innerHTML = '';
+                if (panZoomInstance) {
+                    panZoomInstance.destroy();
+                    panZoomInstance = null;
+                }
             }
         }
 
         function fitDiagram() {
-            const output = document.getElementById('output');
-            const svg = output.querySelector('svg');
-            if (!svg) return;
-
-            const bbox = svg.getBBox();
-            const outputWidth = output.clientWidth - 60; // Учитываем padding
-            const outputHeight = output.clientHeight - 60;
-            const scaleX = outputWidth / (bbox.width + 100);
-            const scaleY = outputHeight / (bbox.height + 100);
-            const scale = Math.min(scaleX, scaleY, 1);
-
-            svg.style.transform = `scale(${scale})`;
-            svg.style.transformOrigin = 'center top';
-            console.log('Fit Scale:', scale); // Отладка масштаба
+            if (panZoomInstance) {
+                panZoomInstance.fit();
+                panZoomInstance.center();
+                console.log('Fit and centered'); // Отладка
+            }
         }
 
         function exportDiagram() {
@@ -791,6 +815,10 @@ mechanism M2 "Analysts" -> A1`,
             document.getElementById('output').innerHTML = '';
             document.getElementById('error').style.display = 'none';
             document.getElementById('dot-preview').style.display = 'none';
+            if (panZoomInstance) {
+                panZoomInstance.destroy();
+                panZoomInstance = null;
+            }
         }
 
         function toggleDotPreview() {
@@ -803,35 +831,7 @@ mechanism M2 "Analysts" -> A1`,
             }
         }
 
-        // Сенсорное масштабирование
-        let scale = 1;
-        let startDistance = 0;
-        const output = document.getElementById('output');
-        output.addEventListener('touchstart', function(e) {
-            if (e.touches.length === 2) {
-                startDistance = Math.hypot(
-                    e.touches[0].pageX - e.touches[1].pageX,
-                    e.touches[0].pageY - e.touches[1].pageY
-                );
-            }
-        });
-        output.addEventListener('touchmove', function(e) {
-            if (e.touches.length === 2) {
-                const currentDistance = Math.hypot(
-                    e.touches[0].pageX - e.touches[1].pageX,
-                    e.touches[0].pageY - e.touches[1].pageY
-                );
-                scale = Math.max(0.5, Math.min(5, scale * (currentDistance / startDistance)));
-                const svg = output.querySelector('svg');
-                if (svg) {
-                    svg.style.transform = `scale(${scale})`;
-                }
-                startDistance = currentDistance;
-                e.preventDefault();
-            }
-        });
-
         document.getElementById('spline-style').addEventListener('change', renderDiagram);
     </script>
 </body>
-</html>
+    </html>
