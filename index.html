@@ -39,7 +39,7 @@
             transition: background-color 0.3s, color 0.3s;
         }
         #editor-container {
-            width: 90%;
+            width: 100%;
             max-width: 800px;
             margin: 10px 0;
             border: 1px solid var(--border-color);
@@ -50,11 +50,17 @@
         }
         .editor-controls {
             display: flex;
+            justify-content: space-between;
+            align-items: center;
             gap: 10px;
             padding: 10px;
             background: var(--editor-bg);
             border-bottom: 1px solid var(--border-color);
             flex-wrap: wrap;
+        }
+        .editor-controls-right {
+            display: flex;
+            gap: 10px;
         }
         .CodeMirror {
             height: 200px !important;
@@ -64,32 +70,33 @@
             border-bottom: 1px solid var(--border-color);
         }
         #output {
-            width: 90%;
-            max-width: 1000px;
-            min-height: 800px;
-            height: auto;
+            width: 100%;
+            max-width: 1200px;
+            height: 800px;
             background: var(--output-bg);
             box-shadow: var(--shadow);
-            overflow: visible;
+            overflow: auto;
             border-radius: 12px;
             padding: 20px;
             margin: 10px 0;
-            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             -webkit-overflow-scrolling: touch;
         }
         #output svg {
             width: 100%;
-            height: auto;
+            height: 100%;
             max-width: none;
+            max-height: none;
             text-rendering: geometricPrecision;
-            display: inline-block;
         }
         #error {
             color: #ef4444;
             font-size: 12px;
             margin: 10px 0;
             display: none;
-            width: 90%;
+            width: 100%;
             max-width: 800px;
             text-align: left;
         }
@@ -120,13 +127,19 @@
         }
         .main-button {
             background: var(--button-gradient);
-            padding: 10px 20px;
-            font-size: 14px;
             font-weight: 600;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        button.secondary {
+            background: #6b7280;
+            padding: 8px 12px;
+            font-size: 12px;
+            min-width: 80px;
+        }
+        button.secondary:hover {
+            background: #4b5563;
         }
         details {
-            width: 90%;
+            width: 100%;
             max-width: 800px;
             font-size: 12px;
             margin: 10px 0;
@@ -141,7 +154,7 @@
             color: var(--text-color);
         }
         .controls {
-            width: 90%;
+            width: 100%;
             max-width: 800px;
             display: flex;
             flex-wrap: wrap;
@@ -166,7 +179,7 @@
             outline: none;
         }
         #dot-preview {
-            width: 90%;
+            width: 100%;
             max-width: 800px;
             display: none;
             background: var(--editor-bg);
@@ -185,7 +198,7 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            padding: 10px 20px;
+            padding: 10px;
             background: var(--button-gradient);
             color: white;
             border: none;
@@ -193,8 +206,6 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 14px;
             box-shadow: var(--shadow);
             transition: transform 0.2s, box-shadow 0.2s;
             z-index: 1000;
@@ -210,7 +221,7 @@
             stroke: #000;
             stroke-width: 1.5;
             font-family: Arial, sans-serif;
-            font-size: 16px;
+            font-size: 14px;
         }
         .idef0-arrow {
             stroke: #000;
@@ -244,6 +255,10 @@
                 font-size: 12px;
                 min-width: 80px;
             }
+            button.secondary {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
             .main-button {
                 padding: 8px 16px;
                 font-size: 12px;
@@ -255,10 +270,7 @@
                 font-size: 10px;
             }
             #output {
-                min-height: 600px;
-            }
-            #output svg {
-                width: 85%;
+                height: 600px;
             }
             select {
                 font-size: 12px;
@@ -268,8 +280,7 @@
                 font-size: 20px !important;
             }
             #theme-toggle {
-                padding: 8px 16px;
-                font-size: 12px;
+                padding: 8px;
                 bottom: 10px;
                 right: 10px;
             }
@@ -286,29 +297,31 @@
     <div id="editor-container">
         <div class="editor-controls">
             <select id="language" onchange="updateLanguage()">
-                <option value="ru" selected>Русский</option>
+                <option value="ru">Русский</option>
                 <option value="en">Английский</option>
             </select>
+            <div class="editor-controls-right">
+                <button id="clear-button" onclick="clearEditor()" title="Очистить редактор" class="secondary">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m-10 5v6a2 2 0 002 2h6a2 2 0 002-2v-6m-12 0h12"/>
+                    </svg>
+                    <span>Очистить</span>
+                </button>
+                <button id="dot-button" onclick="toggleDotPreview()" title="Показать DOT-код" class="secondary">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                        <polyline points="10 9 9 9 8 9"/>
+                    </svg>
+                    <span>DOT-код</span>
+                </button>
+            </div>
         </div>
         <textarea id="editor" placeholder="Введите код IDEF0..."></textarea>
     </div>
     <div class="controls">
-        <button id="clear-button" onclick="clearEditor()" title="Очистить редактор">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m-10 5v6a2 2 0 002 2h6a2 2 0 002-2v-6m-12 0h12"/>
-            </svg>
-            <span>Очистить</span>
-        </button>
-        <button id="dot-button" onclick="toggleDotPreview()" title="Показать DOT-код">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                <polyline points="14 2 14 8 20 8"/>
-                <line x1="16" y1="13" x2="8" y2="13"/>
-                <line x1="16" y1="17" x2="8" y2="17"/>
-                <polyline points="10 9 9 9 8 9"/>
-            </svg>
-            <span>DOT-код</span>
-        </button>
         <label id="spline-label">Линии:</label>
         <select id="spline-style">
             <option value="ortho" selected>Ортогональные</option>
@@ -320,13 +333,6 @@
             <option value="jpg">JPG</option>
             <option value="png">PNG</option>
         </select>
-        <button id="fit-button" onclick="fitDiagram()" title="Подогнать масштаб">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 4h16v16H4z"/>
-                <path d="M8 8h8v8H8z"/>
-            </svg>
-            <span>Подогнать</span>
-        </button>
         <button id="save-button" onclick="exportDiagram()" title="Сохранить график">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
@@ -345,18 +351,22 @@
     <div id="error"></div>
     <div id="dot-preview"></div>
     <div id="output"></div>
-    <button id="theme-toggle" onclick="toggleTheme()">
+    <button id="theme-toggle" onclick="toggleTheme()" title="Переключить тему">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
         </svg>
-        <span id="theme-label">Тёмная</span>
     </button>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js"></script>
-    <script src="https://unpkg.com/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
     <script>
+        // Автоопределение языка и темы
+        const userLang = navigator.language.startsWith('ru') ? 'ru' : 'en';
+        const userTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.body.setAttribute('data-theme', userTheme);
+        document.getElementById('language').value = userLang;
+
         // Инициализация CodeMirror
         const editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
             lineNumbers: true,
@@ -430,10 +440,8 @@
                 splineOptions: ['Ортогональные', 'Прямые'],
                 formatLabel: 'Формат:',
                 formatOptions: ['SVG', 'JPG', 'PNG'],
-                fitButton: 'Подогнать',
                 saveButton: 'Сохранить',
                 generateButton: 'Сгенерировать',
-                themeLabel: ['Светлая', 'Тёмная'],
                 errors: {
                     duplicateId: 'Ошибка в строке {line}: идентификатор {id} уже используется',
                     processNotDefined: 'Ошибка в строке {line}: процесс {id} не определён',
@@ -486,10 +494,8 @@ mechanism M2 "Analysts" -> A1`,
                 splineOptions: ['Orthogonal', 'Straight'],
                 formatLabel: 'Format:',
                 formatOptions: ['SVG', 'JPG', 'PNG'],
-                fitButton: 'Fit',
                 saveButton: 'Save',
                 generateButton: 'Generate',
-                themeLabel: ['Light', 'Dark'],
                 errors: {
                     duplicateId: 'Error in line {line}: identifier {id} already used',
                     processNotDefined: 'Error in line {line}: process {id} not defined',
@@ -516,7 +522,6 @@ mechanism M2 "Analysts" -> A1`,
             document.getElementById('dot-button').querySelector('span').textContent = t.dotButton;
             document.getElementById('spline-label').textContent = t.splineLabel;
             document.getElementById('format-label').textContent = t.formatLabel;
-            document.getElementById('fit-button').querySelector('span').textContent = t.fitButton;
             document.getElementById('save-button').querySelector('span').textContent = t.saveButton;
             document.getElementById('generate-button').querySelector('span').textContent = t.generateButton;
             const splineSelect = document.getElementById('spline-style');
@@ -528,7 +533,6 @@ mechanism M2 "Analysts" -> A1`,
             formatSelect.options[2].text = t.formatOptions[2];
             editor.setValue(t.exampleCode);
             editor.getInputField().placeholder = t.placeholder;
-            updateThemeLabel();
             document.documentElement.lang = lang;
         }
 
@@ -537,15 +541,6 @@ mechanism M2 "Analysts" -> A1`,
             const currentTheme = document.body.getAttribute('data-theme') || 'light';
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
             document.body.setAttribute('data-theme', newTheme);
-            updateThemeLabel();
-        }
-
-        // Функция для обновления метки темы
-        function updateThemeLabel() {
-            const lang = document.getElementById('language').value;
-            const t = translations[lang];
-            const currentTheme = document.body.getAttribute('data-theme') || 'light';
-            document.getElementById('theme-label').textContent = t.themeLabel[currentTheme === 'light' ? 1 : 0];
         }
 
         // Инициализация
@@ -563,9 +558,9 @@ mechanism M2 "Analysts" -> A1`,
             const splineStyle = document.getElementById('spline-style').value;
             let dot = 'digraph IDEF0 {\n';
             dot += '    rankdir=TB;\n';
-            dot += '    node [shape=box, style=filled, fillcolor=white, width=2.5, height=1, class="idef0-box", fontname="Arial", fontsize=16];\n';
-            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=16, fontcolor=black];\n';
-            dot += `    graph [splines=${splineStyle}, nodesep=1.5, ranksep=2, dpi=96];\n`;
+            dot += '    node [shape=box, style=filled, fillcolor=white, width=2, height=0.8, class="idef0-box", fontname="Arial", fontsize=14];\n';
+            dot += '    edge [class="idef0-arrow", fontname="Arial", fontsize=14, fontcolor=black];\n';
+            dot += `    graph [splines=${splineStyle}, nodesep=1.2, ranksep=1.8, dpi=96];\n`;
             dot += '    {rank=min; A0}\n';
             dot += '    {rank=max; A1}\n';
 
@@ -656,8 +651,6 @@ mechanism M2 "Analysts" -> A1`,
             return { dot, errors };
         }
 
-        let panZoomInstance = null;
-
         function renderDiagram() {
             const lang = document.getElementById('language').value;
             const t = translations[lang];
@@ -674,10 +667,6 @@ mechanism M2 "Analysts" -> A1`,
                 errorDiv.innerHTML = errors.join('<br>');
                 output.innerHTML = '';
                 dotPreview.style.display = 'none';
-                if (panZoomInstance) {
-                    panZoomInstance.destroy();
-                    panZoomInstance = null;
-                }
                 return;
             }
 
@@ -704,57 +693,22 @@ mechanism M2 "Analysts" -> A1`,
                         `;
                         element.prepend(defs);
 
-                        // Корректировка viewBox и размеров
-                        element.setAttribute('viewBox', `${bbox.x-30} ${bbox.y-30} ${bbox.width+60} ${bbox.height+60}`);
+                        // Корректировка viewBox
+                        element.setAttribute('viewBox', `${bbox.x-20} ${bbox.y-20} ${bbox.width+40} ${bbox.height+40}`);
                         element.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-                        element.setAttribute('width', Math.min(bbox.width + 60, 1000));
-                        element.setAttribute('height', Math.min(bbox.height + 60, 800));
 
                         output.innerHTML = '';
                         output.appendChild(element);
-
-                        // Инициализация svg-pan-zoom
-                        if (panZoomInstance) {
-                            panZoomInstance.destroy();
-                        }
-                        panZoomInstance = svgPanZoom(element, {
-                            zoomEnabled: true,
-                            panEnabled: true,
-                            controlIconsEnabled: true,
-                            fit: true,
-                            center: true,
-                            minZoom: 0.5,
-                            maxZoom: 5,
-                            zoomScaleSensitivity: 0.2
-                        });
-
-                        fitDiagram();
                     })
                     .catch(error => {
                         errorDiv.style.display = 'block';
                         errorDiv.innerHTML = t.errors.renderError.replace('{message}', error.message).replace('{dot}', dot);
                         output.innerHTML = '';
-                        if (panZoomInstance) {
-                            panZoomInstance.destroy();
-                            panZoomInstance = null;
-                        }
                     });
             } catch (error) {
                 errorDiv.style.display = 'block';
                 errorDiv.innerHTML = t.errors.generalError.replace('{message}', error.message);
                 output.innerHTML = '';
-                if (panZoomInstance) {
-                    panZoomInstance.destroy();
-                    panZoomInstance = null;
-                }
-            }
-        }
-
-        function fitDiagram() {
-            if (panZoomInstance) {
-                panZoomInstance.fit();
-                panZoomInstance.center();
-                console.log('Fit and centered'); // Отладка
             }
         }
 
@@ -815,10 +769,6 @@ mechanism M2 "Analysts" -> A1`,
             document.getElementById('output').innerHTML = '';
             document.getElementById('error').style.display = 'none';
             document.getElementById('dot-preview').style.display = 'none';
-            if (panZoomInstance) {
-                panZoomInstance.destroy();
-                panZoomInstance = null;
-            }
         }
 
         function toggleDotPreview() {
@@ -834,4 +784,4 @@ mechanism M2 "Analysts" -> A1`,
         document.getElementById('spline-style').addEventListener('change', renderDiagram);
     </script>
 </body>
-    </html>
+</html>
