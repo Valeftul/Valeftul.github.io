@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IDEF0 Диаграмма из DOT</title>
+    <title>Генератор IDEF0</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,32 +11,59 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            background-color: #f5f5f5;
         }
         #editor {
             width: 80%;
-            height: 200px;
-            margin-bottom: 20px;
+            height: 250px;
+            margin: 10px 0;
             font-family: monospace;
             font-size: 14px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
         }
         #output {
-            border: 1px solid #ccc;
-            padding: 10px;
+            border: 1px solid #999;
+            padding: 15px;
             width: 80%;
             min-height: 400px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
             overflow: auto;
+        }
+        #error {
+            color: red;
+            font-size: 14px;
+            margin: 10px 0;
+            display: none;
         }
         button {
             padding: 10px 20px;
             font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #help {
+            width: 80%;
+            font-size: 14px;
+            color: #333;
+            margin: 10px 0;
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
         }
         .idef0-box {
-            fill: #f0f0f0;
+            fill: #e6e6e6;
             stroke: #000;
             stroke-width: 2;
-        }
-        .idef0-label {
             font-family: Arial;
             font-size: 12px;
         }
@@ -44,54 +71,166 @@
             stroke: #000;
             stroke-width: 2;
         }
+        .idef0-control {
+            stroke: #000;
+            stroke-width: 2;
+            stroke-dasharray: 5,5;
+        }
+        .idef0-mechanism {
+            stroke: #000;
+            stroke-width: 2;
+            stroke-dasharray: 2,2;
+        }
     </style>
 </head>
 <body>
-    <h1>Генератор IDEF0 диаграмм</h1>
-    <textarea id="editor" placeholder="Введите DOT-подобный код для IDEF0...">
-digraph IDEF0 {
-    rankdir=LR;
-    node [shape=box, style=filled, fillcolor=lightgrey, width=2, height=1];
-    edge [arrowhead=vee];
-
-    A0 [label="Процесс A0"];
-    Input [shape=none, label="Вход"];
-    Control [shape=none, label="Управление"];
-    Output [shape=none, label="Выход"];
-    Mechanism [shape=none, label="Механизм"];
-
-    Input -> A0 [label="Входной поток"];
-    Control -> A0 [label="Управляющий поток", constraint=false];
-    A0 -> Output [label="Выходной поток"];
-    Mechanism -> A0 [label="Механизм", constraint=false, style=dashed];
-}
+    <h1>Генератор диаграмм IDEF0</h1>
+    <div id="help">
+        <strong>Как использовать:</strong> Введите код в формате IDEF0 ниже. Пример синтаксиса:<br>
+        <pre>
+process A0 "Основной процесс"
+input I1 "Сырьё" -> A0
+control C1 "Правила" -> A0
+output A0 -> O1 "Продукт"
+mechanism M1 "Оборудование" -> A0
+        </pre>
+        Используйте <code>process</code>, <code>input</code>, <code>control</code>, <code>output</code>, <code>mechanism</code>. Нажмите "Сгенерировать" для отображения или "Экспорт SVG" для скачивания.
+    </div>
+    <textarea id="editor" placeholder="Введите код IDEF0...">
+process A0 "Основной процесс"
+input I1 "Материалы" -> A0
+control C1 "Инструкции" -> A0
+output A0 -> O1 "Готовый продукт"
+mechanism M1 "Рабочие" -> A0
+process A1 "Подпроцесс"
+output A0 -> A1
     </textarea>
-    <button onclick="renderDiagram()">Сгенерировать диаграмму</button>
+    <div>
+        <button onclick="renderDiagram()">Сгенерировать диаграмму</button>
+        <button onclick="exportSVG()">Экспорт SVG</button>
+    </div>
+    <div id="error"></div>
     <div id="output"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js"></script>
     <script>
+        function validateAndConvertToDot(code) {
+            const lines = code.trim().split('\n');
+            let dot = 'digraph IDEF0 {\n';
+            dot += '    rankdir=LR;\n';
+            dot += '    node [shape=box, style=filled, fillcolor=lightgrey, width=2, height=1, class="idef0-box"];\n';
+            dot += '    edge [arrowhead=vee, class="idef0-arrow"];\n';
+
+            const processes = new Set();
+            const errors = [];
+
+            lines.forEach((line, index) => {
+                line = line.trim();
+                if (!line) return;
+// Парсинг строки
+                const processMatch = line.match(/^process\s+([A-Za-z0-9]+)\s+"([^"]+)"/);
+                const inputMatch = line.match(/^input\s+([A-Za-z0-9]+)\s+"([^"]+)"\s+->\s+([A-Za-z0-9]+)/);
+                const controlMatch = line.match(/^control\s+([A-Za-z0-9]+)\s+"([^"]+)"\s+->\s+([A-Za-z0-9]+)/);
+                const outputMatch = line.match(/^output\s+([A-Za-z0-9]+)\s+->\s+([A-Za-z0-9]+)\s+"([^"]+)"/);
+                const mechanismMatch = line.match(/^mechanism\s+([A-Za-z0-9]+)\s+"([^"]+)"\s+->\s+([A-Za-z0-9]+)/);
+
+                if (processMatch) {
+                    const id = processMatch[1];
+                    const label = processMatch[2];
+                    processes.add(id);
+                    dot +=     ${id} [label="${label}"];\n;
+                } else if (inputMatch) {
+                    const id = inputMatch[1];
+                    const label = inputMatch[2];
+                    const target = inputMatch[3];
+                    if (!processes.has(target)) errors.push(Ошибка в строке ${index + 1}: процесс ${target} не определён);
+                    dot +=     ${id} [shape=none, label="${label}"];\n;
+                    dot +=     ${id} -> ${target} [label="${label}"];\n;
+                } else if (controlMatch) {
+                    const id = controlMatch[1];
+                    const label = controlMatch[2];
+                    const target = controlMatch[3];
+                    if (!processes.has(target)) errors.push(Ошибка в строке ${index + 1}: процесс ${target} не определён);
+                    dot +=     ${id} [shape=none, label="${label}"];\n;
+                    dot +=     ${id} -> ${target} [label="${label}", constraint=false, class="idef0-control"];\n;
+                } else if (outputMatch) {
+                    const source = outputMatch[1];
+                    const id = outputMatch[2];
+                    const label = outputMatch[3];
+                    if (!processes.has(source)) errors.push(Ошибка в строке ${index + 1}: процесс ${source} не определён);
+                    dot +=     ${id} [shape=none, label="${label}"];\n;
+                    dot +=     ${source} -> ${id} [label="${label}"];\n;
+                } else if (mechanismMatch) {
+                    const id = mechanismMatch[1];
+                    const label = mechanismMatch[2];
+                    const target = mechanismMatch[3];
+                    if (!processes.has(target)) errors.push(Ошибка в строке ${index + 1}: процесс ${target} не определён);
+                    dot +=     ${id} [shape=none, label="${label}"];\n;
+                    dot +=     ${id} -> ${target} [label="${label}", constraint=false, class="idef0-mechanism"];\n;
+                } else {
+                    errors.push(Ошибка в строке ${index + 1}: неверный синтаксис);
+                }
+            });
+
+            dot += '}';
+            return { dot, errors };
+        }
+
         function renderDiagram() {
-            const dot = document.getElementById('editor').value;
+            const code = document.getElementById('editor').value;
             const output = document.getElementById('output');
-            
+            const errorDiv = document.getElementById('error');
+
+            const { dot, errors } = validateAndConvertToDot(code);
+
+            if (errors.length > 0) {
+                errorDiv.style.display = 'block';
+                errorDiv.innerHTML = errors.join('<br>');
+                output.innerHTML = '';
+                return;
+            }
+
+            errorDiv.style.display = 'none';
+
             try {
                 const viz = new Viz();
                 viz.renderSVGElement(dot)
                     .then(function(element) {
-                        // Очистка предыдущего вывода
                         output.innerHTML = '';
-                        // Добавление SVG в output
                         output.appendChild(element);
                     })
-                    .catch(error => {
-                        console.error(error);
-                        output.innerHTML = '<p style="color: red;">Ошибка при генерации диаграммы: ' + error.message + '</p>';
+.catch(error => {
+                        errorDiv.style.display = 'block';
+                        errorDiv.innerHTML = 'Ошибка рендеринга: ' + error.message;
+                        output.innerHTML = '';
                     });
             } catch (error) {
-                output.innerHTML = '<p style="color: red;">Ошибка: ' + error.message + '</p>';
+                errorDiv.style.display = 'block';
+                errorDiv.innerHTML = 'Ошибка: ' + error.message;
+                output.innerHTML = '';
             }
+        }
+
+        function exportSVG() {
+            const output = document.getElementById('output');
+            const svg = output.querySelector('svg');
+            if (!svg) {
+                alert('Нет диаграммы для экспорта!');
+                return;
+            }
+
+            const serializer = new XMLSerializer();
+            const source = serializer.serializeToString(svg);
+            const blob = new Blob([source], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'idef0_diagram.svg';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
         }
     </script>
 </body>
