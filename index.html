@@ -11,17 +11,18 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            background-color: #f5f5f5;
+            background-color: #f9f9f9;
         }
         #editor {
             width: 80%;
             height: 250px;
-            margin: 10px 0;
+            margin: 15px 0;
             font-family: monospace;
             font-size: 14px;
             border: 2px solid #ccc;
             border-radius: 5px;
             padding: 10px;
+            resize: vertical;
         }
         #output {
             border: 1px solid #999;
@@ -29,7 +30,7 @@
             width: 80%;
             min-height: 400px;
             background: white;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             overflow: auto;
         }
         #error {
@@ -37,11 +38,13 @@
             font-size: 14px;
             margin: 10px 0;
             display: none;
+            width: 80%;
+            text-align: left;
         }
         button {
             padding: 10px 20px;
             font-size: 16px;
-            background-color: #007bff;
+            background-color: #28a745;
             color: white;
             border: none;
             border-radius: 5px;
@@ -49,7 +52,7 @@
             margin: 5px;
         }
         button:hover {
-            background-color: #0056b3;
+            background-color: #218838;
         }
         #help {
             width: 80%;
@@ -57,11 +60,11 @@
             color: #333;
             margin: 10px 0;
             background: #e9ecef;
-            padding: 10px;
+            padding: 15px;
             border-radius: 5px;
         }
         .idef0-box {
-            fill: #e6e6e6;
+            fill: #f0f0f0;
             stroke: #000;
             stroke-width: 2;
             font-family: Arial;
@@ -70,36 +73,47 @@
         .idef0-arrow {
             stroke: #000;
             stroke-width: 2;
+            marker-end: url(#arrowhead);
         }
         .idef0-control {
             stroke: #000;
             stroke-width: 2;
             stroke-dasharray: 5,5;
+            marker-end: url(#arrowhead);
         }
         .idef0-mechanism {
             stroke: #000;
             stroke-width: 2;
             stroke-dasharray: 2,2;
+            marker-end: url(#arrowhead);
         }
     </style>
 </head>
 <body>
     <h1>Генератор диаграмм IDEF0</h1>
     <div id="help">
-        <strong>Как использовать:</strong> Введите код в формате IDEF0 ниже. Пример синтаксиса:<br>
+        <strong>Инструкция:</strong> Введите код в формате IDEF0. Используйте команды:<br>
+        - <code>process ID "Название"</code> — процесс (например, A0).<br>
+        - <code>input ID "Название" -> процесс</code> — вход (слева).<br>
+        - <code>control ID "Название" -> процесс</code> — управление (сверху, пунктир).<br>
+        - <code>output процесс -> ID "Название"</code> — выход (справа).<br>
+        - <code>mechanism ID "Название" -> процесс</code> — механизм (снизу, мелкий пунктир).<br>
+        <strong>Пример:</strong><br>
         <pre>
-process A0 "Основной процесс"
+process A0 "Производство"
 input I1 "Сырьё" -> A0
-control C1 "Правила" -> A0
+control C1 "Инструкции" -> A0
 output A0 -> O1 "Продукт"
-mechanism M1 "Оборудование" -> A0
+mechanism M1 "Станки" -> A0
+process A1 "Контроль"
+output A0 -> A1
         </pre>
-        Используйте <code>process</code>, <code>input</code>, <code>control</code>, <code>output</code>, <code>mechanism</code>. Нажмите "Сгенерировать" для отображения или "Экспорт SVG" для скачивания.
+        Нажмите "Сгенерировать" для отображения или "Экспорт SVG" для скачивания.
     </div>
     <textarea id="editor" placeholder="Введите код IDEF0...">
 process A0 "Основной процесс"
 input I1 "Материалы" -> A0
-control C1 "Инструкции" -> A0
+control C1 "Правила" -> A0
 output A0 -> O1 "Готовый продукт"
 mechanism M1 "Рабочие" -> A0
 process A1 "Подпроцесс"
@@ -113,67 +127,93 @@ output A0 -> A1
     <div id="output"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js"></script>
     <script>
         function validateAndConvertToDot(code) {
-            const lines = code.trim().split('\n');
+            const lines = code.trim().split('\n').filter(line => line.trim());
             let dot = 'digraph IDEF0 {\n';
-            dot += '    rankdir=LR;\n';
-            dot += '    node [shape=box, style=filled, fillcolor=lightgrey, width=2, height=1, class="idef0-box"];\n';
-            dot += '    edge [arrowhead=vee, class="idef0-arrow"];\n';
+            dot += '    rankdir=TB;\n'; // Вертикальная ориентация для лучшего соответствия IDEF0
+            dot += '    node [shape=box, style=filled, fillcolor=f0f0f0, width=2, height=0.8, class="idef0-box", fontname="Arial", fontsize=12];\n';
+            dot += '    edge [class="idef0-arrow"];\n';
+            dot += '    graph [splines=ortho, nodesep=1, ranksep=1];\n'; // Ортогональные линии и расстояния
 
             const processes = new Set();
             const errors = [];
+            const nodes = new Set();
+            const edges = [];
 
             lines.forEach((line, index) => {
                 line = line.trim();
                 if (!line) return;
-// Парсинг строки
+
+                // Парсинг команд IDEF0
                 const processMatch = line.match(/^process\s+([A-Za-z0-9]+)\s+"([^"]+)"/);
                 const inputMatch = line.match(/^input\s+([A-Za-z0-9]+)\s+"([^"]+)"\s+->\s+([A-Za-z0-9]+)/);
-                const controlMatch = line.match(/^control\s+([A-Za-z0-9]+)\s+"([^"]+)"\s+->\s+([A-Za-z0-9]+)/);
+                const controlMatch = line.match(/^control\s+([A-Za-z0-9]+)\s+" map:([^"]+)"\s+->\s+([A-Za-z0-9]+)/);
                 const outputMatch = line.match(/^output\s+([A-Za-z0-9]+)\s+->\s+([A-Za-z0-9]+)\s+"([^"]+)"/);
                 const mechanismMatch = line.match(/^mechanism\s+([A-Za-z0-9]+)\s+"([^"]+)"\s+->\s+([A-Za-z0-9]+)/);
 
                 if (processMatch) {
                     const id = processMatch[1];
                     const label = processMatch[2];
+                    if (nodes.has(id)) errors.push(Ошибка в строке ${index + 1}: идентификатор ${id} уже используется);
                     processes.add(id);
-                    dot +=     ${id} [label="${label}"];\n;
+                    nodes.add(id);
+                    dot +=     ${id} [label="${label}\\n${id}"];\n;
                 } else if (inputMatch) {
                     const id = inputMatch[1];
                     const label = inputMatch[2];
                     const target = inputMatch[3];
                     if (!processes.has(target)) errors.push(Ошибка в строке ${index + 1}: процесс ${target} не определён);
+                    if (nodes.has(id)) errors.push(Ошибка в строке ${index + 1}: идентификатор ${id} уже используется);
+                    nodes.add(id);
                     dot +=     ${id} [shape=none, label="${label}"];\n;
-                    dot +=     ${id} -> ${target} [label="${label}"];\n;
+                    edges.push(    ${id} -> ${target} [label="${label}", tailport=e, headport=w];\n);
                 } else if (controlMatch) {
                     const id = controlMatch[1];
                     const label = controlMatch[2];
                     const target = controlMatch[3];
                     if (!processes.has(target)) errors.push(Ошибка в строке ${index + 1}: процесс ${target} не определён);
+                    if (nodes.has(id)) errors.push(Ошибка в строке ${index + 1}: идентификатор ${id} уже используется);
+                    nodes.add(id);
                     dot +=     ${id} [shape=none, label="${label}"];\n;
-                    dot +=     ${id} -> ${target} [label="${label}", constraint=false, class="idef0-control"];\n;
+                    edges.push(    ${id} -> ${target} [label="${label}", class="idef0-control", constraint=false, tailport=s, headport=n];\n);
                 } else if (outputMatch) {
                     const source = outputMatch[1];
                     const id = outputMatch[2];
                     const label = outputMatch[3];
                     if (!processes.has(source)) errors.push(Ошибка в строке ${index + 1}: процесс ${source} не определён);
+                    if (nodes.has(id)) errors.push(Ошибка в строке ${index + 1}: идентификатор ${id} уже используется);
+                    nodes.add(id);
                     dot +=     ${id} [shape=none, label="${label}"];\n;
-                    dot +=     ${source} -> ${id} [label="${label}"];\n;
+edges.push(    ${source} -> ${id} [label="${label}", tailport=e, headport=w];\n);
                 } else if (mechanismMatch) {
                     const id = mechanismMatch[1];
                     const label = mechanismMatch[2];
                     const target = mechanismMatch[3];
                     if (!processes.has(target)) errors.push(Ошибка в строке ${index + 1}: процесс ${target} не определён);
+                    if (nodes.has(id)) errors.push(Ошибка в строке ${index + 1}: идентификатор ${id} уже используется);
+                    nodes.add(id);
                     dot +=     ${id} [shape=none, label="${label}"];\n;
-                    dot +=     ${id} -> ${target} [label="${label}", constraint=false, class="idef0-mechanism"];\n;
+                    edges.push(    ${id} -> ${target} [label="${label}", class="idef0-mechanism", constraint=false, tailport=n, headport=s];\n);
                 } else {
                     errors.push(Ошибка в строке ${index + 1}: неверный синтаксис);
                 }
             });
 
-            dot += '}';
+            // Проверка правил IDEF0
+            processes.forEach(proc => {
+                const inputs = edges.filter(e => e.includes(-> ${proc}) && !e.includes('class="idef0-control"') && !e.includes('class="idef0-mechanism"'));
+                const outputs = edges.filter(e => e.includes(${proc} ->) && !e.includes('class="idef0-control"') && !e.includes('class="idef0-mechanism"'));
+                if (inputs.length === 0 && outputs.length > 0) errors.push(Процесс ${proc} должен иметь хотя бы один вход);
+                if (outputs.length === 0 && inputs.length > 0) errors.push(Процесс ${proc} должен иметь хотя бы один выход);
+            });
+
+            // Добавление стрелок после узлов для корректного рендеринга
+            dot += edges.join('');
+
+            dot += '}\n';
+            // console.log('Сгенерированный DOT-код:\n', dot); // Раскомментируйте для отладки
             return { dot, errors };
         }
 
@@ -197,17 +237,25 @@ output A0 -> A1
                 const viz = new Viz();
                 viz.renderSVGElement(dot)
                     .then(function(element) {
+                        // Добавление маркера стрелки
+                        const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+                        defs.innerHTML = 
+                            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="black" />
+                            </marker>
+                        ;
+                        element.prepend(defs);
                         output.innerHTML = '';
                         output.appendChild(element);
                     })
-.catch(error => {
+                    .catch(error => {
                         errorDiv.style.display = 'block';
-                        errorDiv.innerHTML = 'Ошибка рендеринга: ' + error.message;
+                        errorDiv.innerHTML = 'Ошибка рендеринга: ' + error.message + '<br>DOT-код:<pre>' + dot + '</pre>';
                         output.innerHTML = '';
                     });
             } catch (error) {
                 errorDiv.style.display = 'block';
-                errorDiv.innerHTML = 'Ошибка: ' + error.message;
+                errorDiv.innerHTML = 'Общая ошибка: ' + error.message;
                 output.innerHTML = '';
             }
         }
@@ -219,8 +267,7 @@ output A0 -> A1
                 alert('Нет диаграммы для экспорта!');
                 return;
             }
-
-            const serializer = new XMLSerializer();
+const serializer = new XMLSerializer();
             const source = serializer.serializeToString(svg);
             const blob = new Blob([source], { type: 'image/svg+xml;charset=utf-8' });
             const url = URL.createObjectURL(blob);
