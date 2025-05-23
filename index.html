@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CalmFlow 4.0 - Изысканная гармония</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lora:wght@400;500&display=swap" rel="stylesheet">
     <style>
         /* Основные стили */
         body {
-            background: #0a0a0a;
+            background: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%);
             color: #f5f5f5;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Lora', sans-serif;
             margin: 0;
             min-height: 100vh;
             display: flex;
@@ -23,15 +23,28 @@
 
         /* Контейнер */
         .container {
-            max-width: 800px;
+            max-width: 900px;
             width: 90%;
-            padding: 40px;
-            background: rgba(20, 20, 20, 0.85);
-            border-radius: 24px;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+            padding: 50px;
+            background: linear-gradient(145deg, rgba(30, 30, 30, 0.95), rgba(20, 20, 20, 0.85));
+            border: 2px solid #f4c7a6;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.7);
             text-align: center;
+            position: relative;
+            overflow: hidden;
             animation: fadeIn 1s ease-in;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, transparent, #f4c7a6, transparent);
         }
 
         @keyframes fadeIn {
@@ -44,47 +57,54 @@
             position: relative;
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 20px;
             margin-bottom: 30px;
-            padding: 15px;
-            background: radial-gradient(circle at center, rgba(243, 232, 214, 0.1), transparent);
-            border-radius: 50px;
+            padding: 12px;
+            background: rgba(20, 20, 20, 0.9);
+            border: 1px solid #f4c7a6;
+            border-radius: 12px;
         }
 
         .stage-nav span {
-            font-size: 13px;
-            color: #9ca3af;
-            padding: 10px 15px;
+            font-family: 'Lora', sans-serif;
+            font-size: 14warden: #9ca3af;
+            color: #d4c9a8;
+            padding: 12px 20px;
             cursor: pointer;
-            transition: color 0.3s, transform 0.3s;
+            transition: all 0.3s;
+            border-radius: 8px;
         }
 
         .stage-nav span:hover {
             color: #f3e8d6;
+            background: rgba(244, 199, 166, 0.15);
             transform: scale(1.1);
         }
 
         .stage-nav span.active {
-            color: #f4c7a6;
-            background: rgba(244, 199, 166, 0.2);
-            border-radius: 12px;
+            color: #0a0a0a;
+            background: #f4c7a6;
+            font-weight: 500;
             transform: scale(1.15);
         }
 
         /* Заголовки */
         h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 36px;
-            color: #f5f5f5;
-            margin: 0 0 15px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            font-size: 40px;
+            color: #f3e8d6;
+            margin: 0 0 20px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+            letter-spacing: 1px;
         }
 
         h2 {
             font-family: 'Playfair Display', serif;
-            font-size: 24px;
+            font-size: 26px;
             color: #f3e8d6;
-            margin: 25px 0 15px;
+            margin: 30px 0 20px;
+            border-bottom: 1px solid #f4c7a6;
+            padding-bottom: 10px;
         }
 
         /* Сообщения */
@@ -100,32 +120,33 @@
         button {
             background: linear-gradient(135deg, #f3e8d6, #f4c7a6);
             color: #0a0a0a;
-            border: none;
-            padding: 12px 28px;
+            border: 1px solid #d4c9a8;
+            padding: 12px 30px;
             cursor: pointer;
-            border-radius: 16px;
-            font-family: 'Inter', sans-serif;
+            border-radius: 8px;
+            font-family: 'Lora', sans-serif;
             font-size: 14px;
             font-weight: 500;
-            margin: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s, box-shadow 0.3s;
+            margin: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
         }
 
         button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(244, 199, 166, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(244, 199, 166, 0.5);
+            background: linear-gradient(135deg, #f4c7a6, #f3e8d6);
         }
 
         button.primary {
-            padding: 14px 32px;
+            padding: 14px 35px;
             font-size: 16px;
-            border-radius: 20px;
         }
 
         button.secondary {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(244, 199, 166, 0.1);
             color: #f3e8d6;
+            border: 1px solid #f4c7a6;
             padding: 10px 20px;
             font-size: 13px;
         }
@@ -139,16 +160,18 @@
         }
 
         .tabs button {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 10px 20px;
-            font-size: 14px;
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #f3e8d6;
+            border: 1px solid #d4c9a8;
+            padding: 10px 25px;
+            border-radius: 8px;
             margin: 0;
         }
 
         .tabs button.active {
             background: #f4c7a6;
             color: #0a0a0a;
+            border: 1px solid #d4c9a8;
         }
 
         /* Поля ввода */
@@ -156,18 +179,19 @@
             width: 100%;
             padding: 14px;
             margin: 12px 0;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.08);
             color: #f5f5f5;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
+            border: 1px solid #d4c9a8;
+            border-radius: 8px;
             font-size: 15px;
             box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Lora', sans-serif;
             transition: border 0.3s;
         }
 
         input:focus, textarea:focus, select:focus {
-            border-color: #f4c7a6;
+            border-color: #f3e8d6;
+            box-shadow: 0 0 8px rgba(244, 199, 166, 0.3);
             outline: none;
         }
 
@@ -189,10 +213,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 14px;
+            padding: 15px;
             margin: 8px 0;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
+            background: rgba(40, 40, 40, 0.9);
+            border: 1px solid #d4c9a8;
+            border-radius: 8px;
             transition: transform 0.3s;
         }
 
@@ -200,9 +225,9 @@
             transform: translateX(8px);
         }
 
-        #task-list li.low { border-left: 5px solid #4caf50; }
+        #task-list li.low { border-left: 5px solid #81c784; }
         #task-list li.medium { border-left: 5px solid #ffca28; }
-        #task-list li.high { border-left: 5px solid #f44336; }
+        #task-list li.high { border-left: 5px solid #e57373; }
 
         /* Чек-лист */
         .checklist {
@@ -234,9 +259,10 @@
         }
 
         .modal-content {
-            background: rgba(20, 20, 20, 0.9);
-            padding: 25px;
-            border-radius: 16px;
+            background: rgba(30, 30, 30, 0.95);
+            padding: 30px;
+            border: 2px solid #f4c7a6;
+            border-radius: 12px;
             width: 90%;
             max-width: 550px;
             max-height: 85vh;
@@ -273,9 +299,11 @@
         }
 
         .note-card {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(40, 40, 40, 0.9);
             padding: 15px;
-            border-radius: 12px;
+            border: 1px solid #d4c9a8;
+            border-left: 4px solid #f4c7a6;
+            border-radius: 8px;
             cursor: pointer;
             transition: transform 0.3s, box-shadow 0.3s;
         }
@@ -285,9 +313,9 @@
             box-shadow: 0 5px 15px rgba(244, 199, 166, 0.3);
         }
 
-        .note-card.red { background: rgba(244, 67, 54, 0.2); }
-        .note-card.green { background: rgba(76, 175, 80, 0.2); }
-        .note-card.blue { background: rgba(33, 150, 243, 0.2); }
+        .note-card.red { border-left-color: #e57373; }
+        .note-card.green { border-left-color: #81c784; }
+        .note-card.blue { border-left-color: #64b5f6; }
 
         /* SVG-анимации упражнений */
         .exercise-animation {
@@ -417,16 +445,16 @@
             }
 
             .stage-nav span {
-                font-size: 11px;
-                padding: 8px;
+                font-size: 12px;
+                padding: 8px 15px;
             }
 
             h1 {
-                font-size: 28px;
+                font-size: 32px;
             }
 
             h2 {
-                font-size: 20px;
+                font-size: 22px;
             }
 
             button {
@@ -464,11 +492,11 @@
 
         @media (max-width: 400px) {
             h1 {
-                font-size: 24px;
+                font-size: 28px;
             }
 
             h2 {
-                font-size: 18px;
+                font-size: 20px;
             }
         }
     </style>
@@ -787,7 +815,7 @@
                 li.className = 'medium';
                 li.innerHTML = `
                     <span>${task.text}</span>
-                    <button class="secondary" onclick="deleteKeyTask(${index})"><i class="fas fa-trash"></i></button>
+                    <button class="secondary" style="color: #f3e8d6;" onclick="deleteKeyTask(${index})"><i class="fas fa-trash"></i></button>
                 `;
                 taskList.appendChild(li);
             });
@@ -800,7 +828,7 @@
         }
 
         function saveKeyTasks() {
-            localStorage.setItem('key-tasks', JSON.stringify(keyTasks));
+            localStorage.setИtem('key-tasks', JSON.stringify(keyTasks));
         }
 
         // Задачи
@@ -828,8 +856,8 @@
                 li.innerHTML = `
                     <span>${task.text}</span>
                     <div>
-                        <button class="secondary" onclick="toggleTask(${index})">${task.completed ? '<i class="fas fa-undo"></i>' : '<i class="fas fa-check"></i>'}</button>
-                        <button class="secondary" onclick="deleteTask(${index})"><i class="fas fa-trash"></i></button>
+                        <button class="secondary" style="color: #f3e8d6;" onclick="toggleTask(${index})">${task.completed ? '<i class="fas fa-undo"></i>' : '<i class="fas fa-check"></i>'}</button>
+                        <button class="secondary" style="color: #f3e8d6;" onclick="deleteTask(${index})"><i class="fas fa-trash"></i></button>
                     </div>
                 `;
                 li.draggable = true;
@@ -981,8 +1009,8 @@
                         <p>${note.text.substring(0, 50)}${note.text.length > 50 ? '...' : ''}</p>
                         <div class="tags">${note.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>
                         <small>${note.date}</small>
-                        <button class="secondary" onclick="openNoteModal('edit', ${index})"><i class="fas fa-edit"></i></button>
-                        <button class="secondary" onclick="deleteNote(${index})"><i class="fas fa-trash"></i></button>
+                        <button class="secondary" style="color: #f3e8d6;" onclick="openNoteModal('edit', ${index})"><i class="fas fa-edit"></i></button>
+                        <button class="secondary" style="color: #f3e8d6;" onclick="deleteNote(${index})"><i class="fas fa-trash"></i></button>
                     `;
                     notesList.appendChild(div);
                 });
@@ -1092,56 +1120,75 @@
             const game = document.getElementById('relax-game').value;
             const tracker = document.getElementById('relax-tracker');
             tracker.innerHTML = '';
+
             if (game === 'stars') {
                 tracker.innerHTML = 'Собери звёзды за 15 секунд!';
-                const stars = document.querySelectorAll('.star');
+                const starsContainer = document.getElementById('stars');
                 let count = 0;
+                const stars = Array.from(document.querySelectorAll('.star'));
+
+                // Enable star clicking
                 stars.forEach(star => {
                     star.style.pointerEvents = 'auto';
                     star.style.transition = 'transform 0.5s';
-                    star.addEventListener('click', () => {
+                    const clickHandler = () => {
                         star.style.transform = 'scale(0)';
                         count++;
-                        setTimeout(() => (star.style.display = 'none'), 500);
-                    });
+                        setTimeout(() => {
+                            star.style.display = 'none';
+                        }, 500);
+                    };
+                    star.addEventListener('click', clickHandler);
+                    star.dataset.clickHandler = clickHandler; // Store for cleanup
                 });
+
                 setTimeout(() => {
                     tracker.innerHTML = `Собрано звёзд: ${count}. Ты звезда!`;
                     stars.forEach(star => {
                         star.style.display = 'block';
                         star.style.transform = 'scale(1)';
+                        star.style.pointerEvents = 'none';
+                        star.removeEventListener('click', star.dataset.clickHandler);
                     });
                 }, 15000);
+
             } else if (game === 'puzzle') {
                 tracker.innerHTML = 'Собери пазл за 15 секунд!';
                 const puzzle = document.createElement('div');
                 puzzle.innerHTML = `
                     <style>
-                        .puzzle-container { display: grid; grid-template-columns: repeat(2, 50px); gap: 5px; }
-                        .puzzle-piece { width: 50px; height: 50px; background: #f3e8d6; cursor: pointer; border-radius: 8px; }
-                        .puzzle-piece.correct { background: #4caf50; }
+                        .puzzle-container { display: grid; grid-template-columns: repeat(2, 50px); gap: 5px; margin: 10px auto; }
+                        .puzzle-piece { width: 50px; height: 50px; background: #f3e8d6; cursor: pointer; border-radius: 8px; border: 1px solid #d4c9a8; }
+                        .puzzle-piece.correct { background: #81c784; }
                     </style>
                     <div class="puzzle-container">
-                        <div class="puzzle-piece" onclick="checkPuzzle(0)"></div>
-                        <div class="puzzle-piece" onclick="checkPuzzle(1)"></div>
-                        <div class="puzzle-piece" onclick="checkPuzzle(2)"></div>
-                        <div class="puzzle-piece" onclick="checkPuzzle(3)"></div>
+                        <div class="puzzle-piece" data-index="0"></div>
+                        <div class="puzzle-piece" data-index="1"></div>
+                        <div class="puzzle-piece" data-index="2"></div>
+                        <div class="puzzle-piece" data-index="3"></div>
                     </div>
                 `;
                 tracker.appendChild(puzzle);
                 let correct = [false, false, false, false];
-                window.checkPuzzle = (index) => {
-                    correct[index] = !correct[index];
-                    puzzle.children[0].children[index].classList.toggle('correct');
-                };
+
+                // Add click handlers to puzzle pieces
+                puzzle.querySelectorAll('.puzzle-piece').forEach(piece => {
+                    piece.addEventListener('click', () => {
+                        const index = parseInt(piece.dataset.index);
+                        correct[index] = !correct[index];
+                        piece.classList.toggle('correct');
+                    });
+                });
+
                 setTimeout(() => {
                     tracker.innerHTML = `Пазл собран: ${correct.filter(c => c).length}/4. Отлично!`;
                 }, 15000);
+
             } else if (game === 'maze') {
                 tracker.innerHTML = 'Проведи шарик через лабиринт!';
                 const maze = document.createElement('canvas');
-                maze.width = 200;
-                maze.height = 200;
+                maze.width = 200 spends on maze.height = 200;
+                maze.style.border = '1px solid #f4c7a6';
                 tracker.appendChild(maze);
                 const ctx = maze.getContext('2d');
                 const ball = { x: 20, y: 20, r: 5 };
@@ -1163,18 +1210,33 @@
                     ctx.fill();
                     ctx.beginPath();
                     ctx.arc(target.x, target.y, target.r, 0, Math.PI * 2);
-                    ctx.fillStyle = '#4caf50';
+                    ctx.fillStyle = '#81c784';
                     ctx.fill();
                 }
 
-                maze.addEventListener('mousedown', () => (moving = true));
-                maze.addEventListener('mouseup', () => (moving = false));
+                maze.addEventListener('mousedown', (e) => {
+                    const rect = maze.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    if (Math.hypot(x - ball.x, y - ball.y) < ball.r) {
+                        moving = true;
+                    }
+                });
+
+                maze.addEventListener('mouseup', () => {
+                    moving = false;
+                });
+
                 maze.addEventListener('mousemove', (e) => {
                     if (moving) {
                         const rect = maze.getBoundingClientRect();
                         const newX = e.clientX - rect.left;
                         const newY = e.clientY - rect.top;
-                        if (!walls.some(wall => newX > wall.x && newX < wall.x + wall.w && newY > wall.y && newY < wall.y + wall.h)) {
+                        const collision = walls.some(wall => 
+                            newX - ball.r > wall.x && newX + ball.r < wall.x + wall.w &&
+                            newY - ball.r > wall.y && newY + ball.r < wall.y + wall.h
+                        );
+                        if (!collision) {
                             ball.x = newX;
                             ball.y = newY;
                         }
@@ -1212,7 +1274,7 @@
             if (activity === 'relations') {
                 tracker.innerHTML = relationTips[Math.floor(Math.random() * relationTips.length)];
             } else {
-                startRelax(); // Используем те же игры
+                startRelax();
             }
         }
 
