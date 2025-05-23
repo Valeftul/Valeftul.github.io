@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CalmFlow 4.0 - Элегантная гармония</title>
+    <title>CalmFlow 4.0 - Изысканная гармония</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        /* Основные стили для элегантного чёрного дизайна */
+        /* Основные стили для изящного дизайна */
         body {
             background: #0a0a0a;
             color: #f5f5f5;
@@ -21,7 +21,7 @@
             font-size: 16px;
         }
 
-        /* Контейнер приложения */
+        /* Контейнер */
         .container {
             max-width: 700px;
             width: 90%;
@@ -39,33 +39,56 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Навигатор этапов */
+        .stage-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .stage-nav span {
+            font-size: 12px;
+            color: #6b7280;
+            padding: 8px;
+            cursor: default;
+        }
+
+        .stage-nav span.active {
+            color: #f5f5f5;
+            background: rgba(107, 114, 128, 0.3);
+            border-radius: 8px;
+        }
+
         /* Заголовки */
         h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 36px;
-            color: #d4a017;
+            font-size: 32px;
+            color: #f5f5f5;
             margin: 0 0 10px;
         }
 
         h2 {
             font-family: 'Playfair Display', serif;
-            font-size: 24px;
+            font-size: 22px;
             color: #f5f5f5;
             margin: 20px 0 10px;
         }
 
-        /* Мотивационные сообщения */
+        /* Сообщения */
         .motivation, .exercise-instructions {
             font-size: 14px;
-            color: #b0b0b0;
+            color: #9ca3af;
             line-height: 1.5;
             margin: 10px 0;
         }
 
         /* Кнопки */
         button {
-            background: #d4a017;
-            color: #0a0a0a;
+            background: #6b7280;
+            color: #f5f5f5;
             border: none;
             padding: 12px 24px;
             cursor: pointer;
@@ -73,14 +96,30 @@
             font-family: 'Inter', sans-serif;
             font-size: 14px;
             font-weight: 500;
-            transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
-            margin: 5px;
+            transition: background 0.3s, transform 0.2s;
         }
 
         button:hover {
-            background: #e0b030;
+            background: #9ca3af;
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(212, 160, 23, 0.3);
+        }
+
+        /* Вкладки */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .tabs button {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+
+        .tabs button.active {
+            background: #6b7280;
         }
 
         /* Поля ввода */
@@ -104,14 +143,14 @@
         }
 
         /* Список задач */
-        #task-list {
+        #task-list, #key-task-list {
             list-style: none;
             padding: 0;
             max-height: 250px;
             overflow-y: auto;
         }
 
-        #task-list li {
+        #task-list li, #key-task-list li {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -122,7 +161,7 @@
             transition: transform 0.2s;
         }
 
-        #task-list li:hover {
+        #task-list li:hover, #key-task-list li:hover {
             transform: translateX(5px);
         }
 
@@ -142,13 +181,47 @@
             gap: 10px;
             margin: 8px 0;
             font-size: 14px;
-            color: #b0b0b0;
+            color: #9ca3af;
+        }
+
+        /* Круговое меню часов */
+        .clock-menu {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 20px auto;
+        }
+
+        .clock-circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .clock-hand {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 60px;
+            height: 2px;
+            background: #6b7280;
+            transform-origin: 0 50%;
+            transition: transform 0.3s;
+        }
+
+        .clock-labels div {
+            position: absolute;
+            font-size: 12px;
+            color: #9ca3af;
         }
 
         /* CSS-дерево */
         .tree-icon {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             margin: 20px auto;
             position: relative;
         }
@@ -156,12 +229,12 @@
         .tree-icon::before {
             content: '';
             position: absolute;
-            top: 40px;
+            top: 35px;
             left: 50%;
             transform: translateX(-50%);
-            width: 10px;
-            height: 20px;
-            background: #4a2c0b;
+            width: 8px;
+            height: 15px;
+            background: #4a4a4a;
             border-radius: 2px;
         }
 
@@ -171,11 +244,11 @@
             top: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 40px;
-            height: 40px;
-            background: radial-gradient(circle, #d4a017 40%, #8b6f1e 70%);
+            width: 35px;
+            height: 35px;
+            background: radial-gradient(circle, #6b7280 40%, #4b5563 70%);
             border-radius: 50%;
-            box-shadow: 0 0 15px rgba(212, 160, 23, 0.5);
+            box-shadow: 0 0 10px rgba(107, 114, 128, 0.3);
             animation: treeGlow 3s ease-in-out infinite;
         }
 
@@ -204,7 +277,7 @@
 
         @keyframes twinkle {
             0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.8; }
+            50% { opacity: 0.7; }
         }
 
         /* Прогресс и дыхание */
@@ -214,12 +287,12 @@
         }
 
         /* Анимация этапов */
-        .stage {
+        .stage, .tab-content {
             display: none;
             animation: slideIn 0.5s ease-in;
         }
 
-        .stage.active {
+        .stage.active, .tab-content.active {
             display: block;
         }
 
@@ -235,8 +308,18 @@
                 padding: 20px;
             }
 
+            .stage-nav {
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            .stage-nav span {
+                font-size: 10px;
+                padding: 6px;
+            }
+
             h1 {
-                font-size: 28px;
+                font-size: 26px;
             }
 
             h2 {
@@ -249,17 +332,32 @@
                 font-size: 14px;
             }
 
+            .tabs button {
+                width: auto;
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+
             input[type="text"], textarea, select {
                 font-size: 14px;
                 padding: 10px;
             }
 
-            #task-list {
+            #task-list, #key-task-list {
                 max-height: 200px;
             }
 
             textarea {
                 min-height: 80px;
+            }
+
+            .clock-menu {
+                width: 120px;
+                height: 120px;
+            }
+
+            .clock-hand {
+                width: 50px;
             }
 
             .tree-icon {
@@ -290,7 +388,7 @@
 
         @media (max-width: 400px) {
             h1 {
-                font-size: 24px;
+                font-size: 22px;
             }
 
             h2 {
@@ -305,50 +403,91 @@
 
     <!-- Контейнер приложения -->
     <div class="container">
+        <!-- Навигатор этапов -->
+        <div class="stage-nav">
+            <span id="nav-start">Старт</span>
+            <span id="nav-setup">Настройка</span>
+            <span id="nav-work">Работа</span>
+            <span id="nav-break">Перерыв</span>
+            <span id="nav-end-shift">Завершение</span>
+            <span id="nav-family">Семья</span>
+        </div>
+
         <!-- Старт смены -->
         <div id="start-stage" class="stage active">
             <div class="tree-icon"></div>
             <h1>CalmFlow 4.0</h1>
-            <p class="motivation">Начни свой день с элегантной продуктивности</p>
+            <p class="motivation">Начни свой день с изысканной продуктивности</p>
             <button onclick="showStage('setup')">Начать смену</button>
         </div>
 
         <!-- Настройка работы -->
         <div id="setup-stage" class="stage">
-            <h2>Настройка рабочего процесса</h2>
-            <p class="exercise-instructions">Выбери длительность смены и ключевые задачи.</p>
-            <select id="shift-duration">
-                <option value="60">1 час</option>
-                <option value="120" selected>2 часа</option>
-                <option value="240">4 часа</option>
-            </select>
-            <select id="pomodoro-duration">
-                <option value="25" selected>25 минут</option>
-                <option value="50">50 минут</option>
-            </select>
-            <input type="text" id="key-task" placeholder="Ключевая задача дня">
-            <button onclick="addKeyTask()">Добавить задачу</button>
-            <ul id="key-task-list"></ul>
+            <h2>Настройка работы</h2>
+            <p class="exercise-instructions">Подготовься к продуктивному дню.</p>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab('setup-duration', this)">Длительность</button>
+                <button class="tab-btn" onclick="showTab('setup-tasks', this)">Задачи</button>
+            </div>
+            <div id="setup-duration" class="tab-content active">
+                <p>Выбери время смены и Pomodoro</p>
+                <div class="clock-menu" id="shift-clock">
+                    <div class="clock-circle"></div>
+                    <div class="clock-hand" id="shift-hand"></div>
+                    <div class="clock-labels">
+                        <div style="top: 0; left: 50%; transform: translateX(-50%)">8ч</div>
+                        <div style="top: 25%; right: 10%; transform: translateY(-50%)">6ч</div>
+                        <div style="top: 75%; right: 10%; transform: translateY(-50%)">4ч</div>
+                        <div style="bottom: 0; left: 50%; transform: translateX(-50%)">2ч</div>
+                    </div>
+                </div>
+                <div class="clock-menu" id="pomodoro-clock">
+                    <div class="clock-circle"></div>
+                    <div class="clock-hand" id="pomodoro-hand"></div>
+                    <div class="clock-labels">
+                        <div style="top: 0; left: 50%; transform: translateX(-50%)">60м</div>
+                        <div style="top: 25%; right: 10%; transform: translateY(-50%)">45м</div>
+                        <div style="top: 75%; right: 10%; transform: translateY(-50%)">30м</div>
+                        <div style="bottom: 0; left: 50%; transform: translateX(-50%)">15м</div>
+                    </div>
+                </div>
+            </div>
+            <div id="setup-tasks" class="tab-content">
+                <input type="text" id="key-task" placeholder="Ключевая задача дня">
+                <button onclick="addKeyTask()">Добавить задачу</button>
+                <ul id="key-task-list"></ul>
+            </div>
             <button onclick="showStage('work')">Начать работу</button>
         </div>
 
         <!-- Выполнение работы -->
         <div id="work-stage" class="stage">
             <h2>Рабочая зона</h2>
-            <p class="exercise-instructions">Сосредоточься на задачах и делай заметки.</p>
-            <input type="text" id="task" placeholder="Новая задача (Ctrl+Enter)">
-            <select id="priority">
-                <option value="low">Низкий</option>
-                <option value="medium">Средний</option>
-                <option value="high">Высокий</option>
-            </select>
-            <button onclick="addTask()">Добавить задачу</button>
-            <ul id="task-list" class="sortable"></ul>
-            <button onclick="startPomodoro()">Старт Pomodoro (Space)</button>
-            <p id="timer">25:00</p>
-            <canvas id="progress-circle" width="120" height="120"></canvas>
-            <textarea id="code-notes" placeholder="Заметки по коду или мыслям"></textarea>
-            <button onclick="saveNotes()">Сохранить заметки</button>
+            <p class="exercise-instructions">Сосредоточься на задачах.</p>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab('work-tasks', this)">Задачи</button>
+                <button class="tab-btn" onclick="showTab('work-pomodoro', this)">Pomodoro</button>
+                <button class="tab-btn" onclick="showTab('work-notes', this)">Заметки</button>
+            </div>
+            <div id="work-tasks" class="tab-content active">
+                <input type="text" id="task" placeholder="Новая задача (Ctrl+Enter)">
+                <select id="priority">
+                    <option value="low">Низкий</option>
+                    <option value="medium">Средний</option>
+                    <option value="high">Высокий</option>
+                </select>
+                <button onclick="addTask()">Добавить задачу</button>
+                <ul id="task-list" class="sortable"></ul>
+            </div>
+            <div id="work-pomodoro" class="tab-content">
+                <button onclick="startPomodoro()">Старт Pomodoro (Space)</button>
+                <p id="timer">25:00</p>
+                <canvas id="progress-circle" width="120" height="120"></canvas>
+            </div>
+            <div id="work-notes" class="tab-content">
+                <textarea id="code-notes" placeholder="Заметки по коду или мыслям"></textarea>
+                <button onclick="saveNotes()">Сохранить заметки</button>
+            </div>
             <button onclick="showStage('break')">Перерыв</button>
             <button onclick="showStage('end-shift')">Завершить смену</button>
         </div>
@@ -356,56 +495,89 @@
         <!-- Перерывы -->
         <div id="break-stage" class="stage">
             <h2>Перерыв</h2>
-            <p class="exercise-instructions">Расслабься с коротким упражнением.</p>
-            <select id="break-exercise">
-                <option value="breathing">Дыхательное упражнение</option>
-                <option value="eyes">Упражнение для глаз</option>
-                <option value="body">Упражнение для тела</option>
-            </select>
-            <button onclick="startBreakExercise()">Начать</button>
-            <div id="exercise-tracker"></div>
-            <canvas id="breathing-circle" width="120" height="120"></canvas>
+            <p class="exercise-instructions">Расслабься и восстанови силы.</p>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab('break-exercise', this)">Упражнения</button>
+                <button class="tab-btn" onclick="showTab('break-relax', this)">Расслабление</button>
+            </div>
+            <div id="break-exercise" class="tab-content active">
+                <select id="break-exercise">
+                    <option value="breathing">Дыхательное упражнение</option>
+                    <option value="eyes">Упражнение для глаз</option>
+                    <option value="body">Упражнение для тела</option>
+                </select>
+                <button onclick="startBreakExercise()">Начать</button>
+                <div id="exercise-tracker"></div>
+                <canvas id="breathing-circle" width="120" height="120"></canvas>
+            </div>
+            <div id="break-relax" class="tab-content">
+                <button onclick="startRelax()">Мини-игра: Звёзды</button>
+                <div id="relax-tracker"></div>
+            </div>
             <button onclick="showStage('work')">Вернуться к работе</button>
         </div>
 
         <!-- Завершение смены -->
         <div id="end-shift-stage" class="stage">
             <h2>Завершение смены</h2>
-            <p class="exercise-instructions">Оставь работу позади и подведи итоги.</p>
-            <div id="results"></div>
-            <div class="checklist">
-                <label><input type="checkbox" class="end-checklist"> Закрыть рабочие вкладки</label>
-                <label><input type="checkbox" class="end-checklist"> Проверить почту последний раз</label>
-                <label><input type="checkbox" class="end-checklist"> Записать планы на завтра</label>
+            <p class="exercise-instructions">Оставь работу позади.</p>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab('end-results', this)">Итоги</button>
+                <button class="tab-btn" onclick="showTab('end-ritual', this)">Ритуал</button>
+                <button class="tab-btn" onclick="showTab('end-plans', this)">Планы</button>
             </div>
-            <textarea id="tomorrow-plan" placeholder="Планы на завтра..."></textarea>
-            <button onclick="saveTomorrowPlan()">Сохранить план</button>
-            <button onclick="startBreathing()">Дыхательное упражнение</button>
-            <button onclick="exportResults()">Экспортировать результаты</button>
+            <div id="end-results" class="tab-content active">
+                <div id="results"></div>
+                <button onclick="exportResults()">Экспортировать результаты</button>
+            </div>
+            <div id="end-ritual" class="tab-content">
+                <div class="checklist">
+                    <label><input type="checkbox" class="end-checklist"> Закрыть рабочие вкладки</label>
+                    <label><input type="checkbox" class="end-checklist"> Проверить почту последний раз</label>
+                    <label><input type="checkbox" class="end-checklist"> Убрать рабочие материалы</label>
+                </div>
+                <button onclick="startBreathing()">Дыхательное упражнение</button>
+            </div>
+            <div id="end-plans" class="tab-content">
+                <textarea id="tomorrow-plan" placeholder="Планы на завтра..."></textarea>
+                <button onclick="saveTomorrowPlan()">Сохранить план</button>
+            </div>
             <button onclick="showStage('family')">Подготовка к семье</button>
         </div>
 
         <!-- Подготовка к семье -->
         <div id="family-stage" class="stage">
             <h2>Время для семьи</h2>
-            <p class="exercise-instructions">Расслабься и настройся на общение с близкими.</p>
-            <select id="family-activity">
-                <option value="relations">Совет для общения</option>
-                <option value="stargame">Мини-игра: Звёздное небо</option>
-            </select>
-            <button onclick="startFamilyActivity()">Начать</button>
-            <div id="family-tracker"></div>
-            <textarea id="mood-tracker" placeholder="Как ты себя чувствуешь? Запиши мысли..."></textarea>
-            <button onclick="saveMood()">Сохранить настроение</button>
-            <canvas id="weekly-stats" width="200" height="100"></canvas>
-            <p id="family-tip" class="motivation"></p>
-            <button onclick="showStage('start')">Завершить день</button>
+            <p class="exercise-instructions" id="family-tip">Настройся на общение с близкими.</p>
+            <div id="family-prepare" class="tab-content active">
+                <select id="family-activity">
+                    <option value="relations">Совет для общения</option>
+                    <option value="stargame">Мини-игра: Звёздное небо</option>
+                </select>
+                <button onclick="startFamilyActivity()">Начать</button>
+                <div id="family-tracker"></div>
+                <button onclick="showFamilyStep('mood')">Сохранить настроение</button>
+            </div>
+            <div id="family-mood" class="tab-content">
+                <textarea id="mood-tracker" placeholder="Как ты себя чувствуешь?"></textarea>
+                <button onclick="saveMood()">Сохранить</button>
+                <button onclick="showFamilyStep('export')">Экспортировать данные</button>
+            </div>
+            <div id="family-export" class="tab-content">
+                <p>Сохрани итоги дня</p>
+                <button onclick="exportFamilyData()">Экспортировать</button>
+                <button onclick="showFamilyStep('complete')">Завершить</button>
+            </div>
+            <div id="family-complete" class="tab-content">
+                <p class="motivation">Отличный день! Наслаждайся временем дома.</p>
+                <button onclick="showStage('start')">Завершить день</button>
+            </div>
         </div>
     </div>
 
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <script>
-        // Инициализация звёздного фона
+        // Инициализация звёзд
         function initStars() {
             const starsContainer = document.getElementById('stars');
             for (let i = 0; i < 80; i++) {
@@ -424,9 +596,65 @@
         function showStage(stage) {
             document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
             document.getElementById(`${stage}-stage`).classList.add('active');
+            document.querySelectorAll('.stage-nav span').forEach(s => s.classList.remove('active'));
+            document.getElementById(`nav-${stage}`).classList.add('active');
             if (stage === 'family') {
-                document.getElementById('family-tip').textContent = 'Ты дома! Пора насладиться временем с близкими.';
+                showFamilyStep('prepare');
             }
+        }
+
+        // Переключение вкладок
+        function showTab(tab, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        // Переключение шагов семьи
+        function showFamilyStep(step) {
+            document.querySelectorAll('#family-stage .tab-content').forEach(t => t.classList.remove('active'));
+            document.getElementById(`family-${step}`).classList.add('active');
+            if (step === 'prepare') {
+                document.getElementById('family-tip').textContent = 'Настройся на общение с близкими.';
+            } else if (step === 'mood') {
+                document.getElementById('family-tip').textContent = 'Запиши свои эмоции, чтобы завершить день.';
+            } else if (step === 'export') {
+                document.getElementById('family-tip').textContent = 'Сохрани итоги дня перед завершением.';
+            } else if (step === 'complete') {
+                document.getElementById('family-tip').textContent = 'Отличный день! Наслаждайся временем дома.';
+            }
+        }
+
+        // Круговое меню часов
+        let shiftDuration = 120; // минут
+        let pomodoroDuration = 25; // минут
+
+        function initClockMenus() {
+            const shiftClock = document.getElementById('shift-clock');
+            const pomodoroClock = document.getElementById('pomodoro-clock');
+            const shiftHand = document.getElementById('shift-hand');
+            const pomodoroHand = document.getElementById('pomodoro-hand');
+
+            shiftClock.addEventListener('click', (e) => {
+                const rect = shiftClock.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                const angle = Math.atan2(y, x) * 180 / Math.PI + 90;
+                const normalizedAngle = (angle + 360) % 360;
+                shiftDuration = Math.round(120 + (normalizedAngle / 360) * 360); // 2-8 часов
+                shiftHand.style.transform = `rotate(${normalizedAngle}deg)`;
+            });
+
+            pomodoroClock.addEventListener('click', (e) => {
+                const rect = pomodoroClock.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                const angle = Math.atan2(y, x) * 180 / Math.PI + 90;
+                const normalizedAngle = (angle + 360) % 360;
+                pomodoroDuration = Math.round(15 + (normalizedAngle / 360) * 45); // 15-60 минут
+                pomodoroHand.style.transform = `rotate(${normalizedAngle}deg)`;
+            });
         }
 
         // Управление ключевыми задачами
@@ -539,7 +767,7 @@
 
         function startPomodoro() {
             if (!isPomodoroRunning) {
-                pomodoroTime = parseInt(document.getElementById('pomodoro-duration').value) * 60;
+                pomodoroTime = pomodoroDuration * 60;
                 isPomodoroRunning = true;
                 pomodoroInterval = setInterval(() => {
                     pomodoroTime--;
@@ -548,9 +776,9 @@
                     if (pomodoroTime <= 0) {
                         clearInterval(pomodoroInterval);
                         isPomodoroRunning = false;
-                        pomodoroTime = parseInt(document.getElementById('pomodoro-duration').value) * 60;
+                        pomodoroTime = pomodoroDuration * 60;
                         updateTimer();
-                        alert('Pomodoro завершён! Сделай паузу.');
+                        alert('Pomodoro завершён! Время для перерыва.');
                         showStage('break');
                     }
                 }, 1000);
@@ -572,7 +800,7 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.beginPath();
             ctx.arc(60, 60, 50, -Math.PI / 2, (2 * Math.PI * progress) - Math.PI / 2);
-            ctx.strokeStyle = '#d4a017';
+            ctx.strokeStyle = '#6b7280';
             ctx.lineWidth = 8;
             ctx.stroke();
         }
@@ -595,7 +823,7 @@
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.beginPath();
                 ctx.arc(60, 60, 40 + (phase % 8), 0, 2 * Math.PI);
-                ctx.fillStyle = 'rgba(212, 160, 23, 0.5)';
+                ctx.fillStyle = 'rgba(107, 114, 128, 0.5)';
                 ctx.fill();
                 phase++;
                 if (phase < 4) tracker.innerHTML = 'Вдохни...';
@@ -604,7 +832,7 @@
                 else if (phase < 16) tracker.innerHTML = 'Задержи...';
                 else {
                     clearInterval(interval);
-                    tracker.innerHTML = 'Отлично! Ты готов к следующему этапу.';
+                    tracker.innerHTML = 'Отлично! Ты готов к следующему шагу.';
                 }
             }, 1000);
         }
@@ -620,6 +848,25 @@
             } else if (exercise === 'body') {
                 tracker.innerHTML = 'Потяни руки вверх, затем в стороны. Сделай 3 подхода.';
             }
+        }
+
+        // Расслабление
+        function startRelax() {
+            const tracker = document.getElementById('relax-tracker');
+            tracker.innerHTML = 'Кликни по звёздам, чтобы собрать их! (5 секунд)';
+            const stars = document.querySelectorAll('.star');
+            let count = 0;
+            stars.forEach(star => {
+                star.style.pointerEvents = 'auto';
+                star.addEventListener('click', () => {
+                    star.style.display = 'none';
+                    count++;
+                });
+            });
+            setTimeout(() => {
+                tracker.innerHTML = `Собрано звёзд: ${count}. Ты расслабился!`;
+                stars.forEach(star => star.style.display = 'block');
+            }, 5000);
         }
 
         // Активности для семьи
@@ -660,18 +907,19 @@
             let stats = JSON.parse(localStorage.getItem('family-stats')) || Array(7).fill(0);
             stats[new Date().getDay()]++;
             localStorage.setItem('family-stats', JSON.stringify(stats));
-            updateWeeklyStats();
             alert('Настроение сохранено!');
+            showFamilyStep('export');
         }
 
         // Статистика недели
         function updateWeeklyStats() {
             const canvas = document.getElementById('weekly-stats');
+            if (!canvas) return;
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             const stats = JSON.parse(localStorage.getItem('family-stats')) || Array(7).fill(0);
             for (let i = 0; i < 7; i++) {
-                ctx.fillStyle = '#d4a017';
+                ctx.fillStyle = '#6b7280';
                 ctx.fillRect(i * 28, 100 - stats[i] * 10, 20, stats[i] * 10);
             }
         }
@@ -685,7 +933,7 @@
             `;
         }
 
-        // Экспорт
+        // Экспорт результатов
         function exportResults() {
             const results = `CalmFlow 4.0 - Итоги дня\nЗадач выполнено: ${completedTasks}/${tasks.length}\nПрогресс: ${Math.round((completedTasks / tasks.length) * 100) || 0}%\nЗаметки:\n${localStorage.getItem('work-notes') || 'Нет заметок'}\nПлан на завтра:\n${localStorage.getItem('tomorrow-plan') || 'Нет плана'}`;
             const blob = new Blob([results], { type: 'text/plain' });
@@ -695,6 +943,21 @@
             a.download = 'CalmFlow_Results.txt';
             a.click();
             URL.revokeObjectURL(url);
+        }
+
+        // Экспорт семейных данных
+        function exportFamilyData() {
+            const mood = localStorage.getItem('family-mood') || 'Нет записей';
+            const stats = JSON.parse(localStorage.getItem('family-stats')) || Array(7).fill(0);
+            const data = `CalmFlow 4.0 - Семейные итоги\nНастроение: ${mood}\nАктивность за неделю: ${stats.join(', ')}`;
+            const blob = new Blob([data], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'CalmFlow_Family.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+            showFamilyStep('complete');
         }
 
         // Горячие клавиши
@@ -710,6 +973,7 @@
 
         // Инициализация
         initStars();
+        initClockMenus();
         renderKeyTasks();
         renderTasks();
         updateWeeklyStats();
@@ -719,4 +983,4 @@
         document.getElementById('tomorrow-plan').value = localStorage.getItem('tomorrow-plan') || '';
     </script>
 </body>
-</html>
+                </html>
