@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CalmFlow 4.0 - Изысканная гармония</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+    <title>CalmFlow 4.0 - Разделяя работу и продуктивность</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
     <style>
         /* Основные стили */
         body {
             background: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%);
             color: #f5f5f5;
-            font-family: 'Lora', sans-serif;
+            font-family: 'Inter', sans-serif;
             margin: 0;
             min-height: 100vh;
             display: flex;
@@ -23,28 +23,17 @@
 
         /* Контейнер */
         .container {
-            max-width: 900px;
+            max-width: 800px;
             width: 90%;
-            padding: 50px;
-            background: linear-gradient(145deg, rgba(30, 30, 30, 0.95), rgba(20, 20, 20, 0.85));
-            border: 2px solid #f4c7a6;
-            border-radius: 16px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            background: rgba(20, 20, 20, 0.95);
+            border: 1px solid #f3e8d6;
+            border-radius: 12px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
             text-align: center;
             position: relative;
-            overflow: hidden;
             animation: fadeIn 1s ease-in;
-        }
-
-        .container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(to right, transparent, #f4c7a6, transparent);
         }
 
         @keyframes fadeIn {
@@ -54,100 +43,93 @@
 
         /* Полукруглый навигатор */
         .stage-nav {
-            position: relative;
             display: flex;
             justify-content: center;
-            gap: 20px;
-            margin-bottom: 30px;
-            padding: 12px;
-            background: rgba(20, 20, 20, 0.9);
-            border: 1px solid #f4c7a6;
-            border-radius: 12px;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding: 10px;
+            background: rgba(30, 30, 30, 0.9);
+            border-radius: 10px;
         }
 
         .stage-nav span {
-            font-family: 'Lora', sans-serif;
-            font-size: 14warden: #9ca3af;
-            color: #d4c9a8;
-            padding: 12px 20px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: #b0b8c1;
+            padding: 10px 18px;
             cursor: pointer;
             transition: all 0.3s;
-            border-radius: 8px;
+            border-radius: 6px;
         }
 
         .stage-nav span:hover {
             color: #f3e8d6;
-            background: rgba(244, 199, 166, 0.15);
-            transform: scale(1.1);
+            background: rgba(243, 232, 214, 0.1);
+            transform: scale(1.05);
         }
 
         .stage-nav span.active {
             color: #0a0a0a;
-            background: #f4c7a6;
+            background: #f3e8d6;
             font-weight: 500;
-            transform: scale(1.15);
         }
 
         /* Заголовки */
         h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 40px;
+            font-size: 36px;
             color: #f3e8d6;
-            margin: 0 0 20px;
-            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
-            letter-spacing: 1px;
+            margin: 0 0 15px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
 
         h2 {
             font-family: 'Playfair Display', serif;
-            font-size: 26px;
+            font-size: 24px;
             color: #f3e8d6;
-            margin: 30px 0 20px;
-            border-bottom: 1px solid #f4c7a6;
-            padding-bottom: 10px;
+            margin: 25px 0 15px;
         }
 
         /* Сообщения */
         .motivation, .exercise-instructions {
-            font-size: 15px;
+            font-size: 14px;
             color: #b0b8c1;
-            line-height: 1.6;
-            margin: 15px 0;
+            line-height: 1.5;
+            margin: 10px 0;
             font-style: italic;
         }
 
         /* Кнопки */
         button {
-            background: linear-gradient(135deg, #f3e8d6, #f4c7a6);
+            background: linear-gradient(135deg, #f3e8d6, #e0d4b8);
             color: #0a0a0a;
-            border: 1px solid #d4c9a8;
-            padding: 12px 30px;
+            border: none;
+            padding: 10px 25px;
             cursor: pointer;
-            border-radius: 8px;
-            font-family: 'Lora', sans-serif;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
             font-size: 14px;
             font-weight: 500;
-            margin: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            margin: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
         }
 
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(244, 199, 166, 0.5);
-            background: linear-gradient(135deg, #f4c7a6, #f3e8d6);
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(243, 232, 214, 0.4);
         }
 
         button.primary {
-            padding: 14px 35px;
-            font-size: 16px;
+            padding: 12px 30px;
+            font-size: 15px;
         }
 
         button.secondary {
-            background: rgba(244, 199, 166, 0.1);
+            background: rgba(243, 232, 214, 0.1);
             color: #f3e8d6;
-            border: 1px solid #f4c7a6;
-            padding: 10px 20px;
+            border: 1px solid #f3e8d6;
+            padding: 8px 15px;
             font-size: 13px;
         }
 
@@ -155,48 +137,48 @@
         .tabs {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            margin: 25px 0;
+            gap: 15px;
+            margin: 20px 0;
         }
 
         .tabs button {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.05);
             color: #f3e8d6;
-            border: 1px solid #d4c9a8;
-            padding: 10px 25px;
-            border-radius: 8px;
+            border: 1px solid #b0b8c1;
+            padding: 8px 20px;
+            border-radius: 6px;
             margin: 0;
         }
 
         .tabs button.active {
-            background: #f4c7a6;
+            background: #f3e8d6;
             color: #0a0a0a;
-            border: 1px solid #d4c9a8;
+            border: 1px solid #f3e8d6;
         }
 
         /* Поля ввода */
         input[type="text"], input[type="time"], textarea, select {
             width: 100%;
-            padding: 14px;
-            margin: 12px 0;
-            background: rgba(255, 255, 255, 0.08);
+            padding: 12px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.05);
             color: #f5f5f5;
-            border: 1px solid #d4c9a8;
-            border-radius: 8px;
-            font-size: 15px;
+            border: 1px solid #b0b8c1;
+            border-radius: 6px;
+            font-size: 14px;
             box-sizing: border-box;
-            font-family: 'Lora', sans-serif;
+            font-family: 'Inter', sans-serif;
             transition: border 0.3s;
         }
 
         input:focus, textarea:focus, select:focus {
             border-color: #f3e8d6;
-            box-shadow: 0 0 8px rgba(244, 199, 166, 0.3);
+            box-shadow: 0 0 6px rgba(243, 232, 214, 0.2);
             outline: none;
         }
 
         textarea {
-            min-height: 120px;
+            min-height: 100px;
             resize: vertical;
             font-family: 'Courier New', monospace;
         }
@@ -205,7 +187,7 @@
         #task-list, #key-task-list {
             list-style: none;
             padding: 0;
-            max-height: 300px;
+            max-height: 250px;
             overflow-y: auto;
         }
 
@@ -213,34 +195,34 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px;
-            margin: 8px 0;
+            padding: 12px;
+            margin: 6px 0;
             background: rgba(40, 40, 40, 0.9);
-            border: 1px solid #d4c9a8;
-            border-radius: 8px;
+            border: 1px solid #b0b8c1;
+            border-radius: 6px;
             transition: transform 0.3s;
         }
 
         #task-list li:hover, #key-task-list li:hover {
-            transform: translateX(8px);
+            transform: translateX(5px);
         }
 
-        #task-list li.low { border-left: 5px solid #81c784; }
-        #task-list li.medium { border-left: 5px solid #ffca28; }
-        #task-list li.high { border-left: 5px solid #e57373; }
+        #task-list li.low { border-left: 4px solid #81c784; }
+        #task-list li.medium { border-left: 4px solid #ffca28; }
+        #task-list li.high { border-left: 4px solid #e57373; }
 
         /* Чек-лист */
         .checklist {
             text-align: left;
-            margin: 20px 0;
+            margin: 15px 0;
         }
 
         .checklist label {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin: 10px 0;
-            font-size: 15px;
+            gap: 10px;
+            margin: 8px 0;
+            font-size: 14px;
             color: #b0b8c1;
         }
 
@@ -252,7 +234,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.75);
+            background: rgba(0, 0, 0, 0.7);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -260,57 +242,57 @@
 
         .modal-content {
             background: rgba(30, 30, 30, 0.95);
-            padding: 30px;
-            border: 2px solid #f4c7a6;
-            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid #f3e8d6;
+            border-radius: 10px;
             width: 90%;
-            max-width: 550px;
-            max-height: 85vh;
+            max-width: 500px;
+            max-height: 80vh;
             overflow-y: auto;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
         }
 
         .modal-content textarea {
             width: 100%;
-            min-height: 200px;
+            min-height: 150px;
         }
 
         .modal-content .tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin: 10px 0;
+            gap: 6px;
+            margin: 8px 0;
         }
 
         .modal-content .tag {
-            background: #f4c7a6;
+            background: #f3e8d6;
             color: #0a0a0a;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 13px;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 12px;
         }
 
         /* Заметки */
         .notes-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+            margin: 15px 0;
         }
 
         .note-card {
             background: rgba(40, 40, 40, 0.9);
-            padding: 15px;
-            border: 1px solid #d4c9a8;
-            border-left: 4px solid #f4c7a6;
-            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid #b0b8c1;
+            border-left: 4px solid #f3e8d6;
+            border-radius: 6px;
             cursor: pointer;
             transition: transform 0.3s, box-shadow 0.3s;
         }
 
         .note-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(244, 199, 166, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(243, 232, 214, 0.2);
         }
 
         .note-card.red { border-left-color: #e57373; }
@@ -319,60 +301,60 @@
 
         /* SVG-анимации упражнений */
         .exercise-animation {
-            width: 120px;
-            height: 120px;
-            margin: 25px auto;
+            width: 100px;
+            height: 100px;
+            margin: 20px auto;
         }
 
         /* Дневник настроения */
         .mood-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 12px;
             justify-content: center;
-            margin: 20px 0;
+            margin: 15px 0;
         }
 
         .mood-emoji {
-            font-size: 24px;
+            font-size: 22px;
             cursor: pointer;
-            padding: 10px;
-            border-radius: 12px;
+            padding: 8px;
+            border-radius: 10px;
             transition: transform 0.3s;
         }
 
         .mood-emoji:hover {
-            transform: scale(1.2);
+            transform: scale(1.15);
         }
 
         .mood-emoji.selected {
-            background: #f4c7a6;
+            background: #f3e8d6;
         }
 
         /* Графики */
         canvas {
             display: block;
-            margin: 25px auto;
+            margin: 20px auto;
         }
 
-        /* CSS-дерево */
+        /* Дерево */
         .tree-icon {
-            width: 60px;
-            height: 60px;
-            margin: 25px auto;
+            width: 50px;
+            height: 50px;
+            margin: 20px auto;
             position: relative;
         }
 
         .tree-icon::before {
             content: '';
             position: absolute;
-            top: 40px;
+            top: 35px;
             left: 50%;
             transform: translateX(-50%);
-            width: 10px;
-            height: 20px;
+            width: 8px;
+            height: 15px;
             background: #4a4a4a;
-            border-radius: 3px;
+            border-radius: 2px;
         }
 
         .tree-icon::after {
@@ -381,17 +363,17 @@
             top: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 40px;
-            height: 40px;
-            background: radial-gradient(circle, #f4c7a6 40%, #d4c9a8 70%);
+            width: 35px;
+            height: 35px;
+            background: radial-gradient(circle, #f3e8d6 40%, #b0b8c1 70%);
             border-radius: 50%;
-            box-shadow: 0 0 15px rgba(244, 199, 166, 0.4);
-            animation: treeGlow 3.5s ease-in-out infinite;
+            box-shadow: 0 0 10px rgba(243, 232, 214, 0.3);
+            animation: treeGlow 3s ease-in-out infinite;
         }
 
         @keyframes treeGlow {
             0%, 100% { transform: translateX(-50%) scale(1); }
-            50% { transform: translateX(-50%) scale(1.15); }
+            50% { transform: translateX(-50%) scale(1.1); }
         }
 
         /* Звёздный фон */
@@ -401,7 +383,6 @@
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
             z-index: -1;
         }
 
@@ -409,12 +390,13 @@
             position: absolute;
             background: #f5f5f5;
             border-radius: 50%;
-            animation: twinkle 5s infinite;
+            animation: twinkle 4s infinite;
+            pointer-events: auto; /* Для игры со звездами */
         }
 
         @keyframes twinkle {
-            0%, 100% { opacity: 0.2; }
-            50% { opacity: 0.8; }
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.9; }
         }
 
         /* Анимация этапов */
@@ -428,7 +410,7 @@
         }
 
         @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-20px); }
+            from { opacity: 0; transform: translateX(-15px); }
             to { opacity: 1; transform: translateX(0); }
         }
 
@@ -436,67 +418,67 @@
         @media (max-width: 600px) {
             .container {
                 width: 95%;
-                padding: 25px;
+                padding: 20px;
             }
 
             .stage-nav {
                 flex-wrap: wrap;
-                gap: 10px;
+                gap: 8px;
             }
 
             .stage-nav span {
                 font-size: 12px;
-                padding: 8px 15px;
+                padding: 6px 12px;
             }
 
-            h1 {
-                font-size: 32px;
-            }
-
-            h2 {
-                font-size: 22px;
-            }
-
-            button {
-                margin: 8px;
-            }
-
-            button.primary {
-                padding: 12px 28px;
-                font-size: 14px;
-            }
-
-            .tabs {
-                flex-wrap: wrap;
-                gap: 15px;
-            }
-
-            .notes-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            }
-
-            .exercise-animation, canvas {
-                width: 100px !important;
-                height: 100px !important;
-            }
-
-            .modal-content {
-                width: 95%;
-                padding: 20px;
-            }
-
-            .motivation, .exercise-instructions {
-                font-size: 13px;
-            }
-        }
-
-        @media (max-width: 400px) {
             h1 {
                 font-size: 28px;
             }
 
             h2 {
                 font-size: 20px;
+            }
+
+            button {
+                margin: 6px;
+            }
+
+            button.primary {
+                padding: 10px 25px;
+                font-size: 14px;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .notes-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+
+            .exercise-animation, canvas {
+                width: 80px !important;
+                height: 80px !important;
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: 15px;
+            }
+
+            .motivation, .exercise-instructions {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            h1 {
+                font-size: 24px;
+            }
+
+            h2 {
+                font-size: 18px;
             }
         }
     </style>
@@ -711,14 +693,15 @@
         // Инициализация звёзд
         function initStars() {
             const starsContainer = document.getElementById('stars');
+            starsContainer.innerHTML = ''; // Очистка для избежания дублирования
             for (let i = 0; i < 100; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
-                star.style.width = `${Math.random() * 1.8}px`;
+                star.style.width = `${Math.random() * 1.5 + 0.5}px`;
                 star.style.height = star.style.width;
                 star.style.left = `${Math.random() * 100}%`;
                 star.style.top = `${Math.random() * 100}%`;
-                star.style.animationDelay = `${Math.random() * 5}s`;
+                star.style.animationDelay = `${Math.random() * 4}s`;
                 starsContainer.appendChild(star);
             }
         }
@@ -726,9 +709,18 @@
         // Переключение этапов
         function showStage(stage) {
             document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
-            document.getElementById(`${stage}-stage`).classList.add('active');
+            const stageElement = document.getElementById(`${stage}-stage`);
+            if (stageElement) {
+                stageElement.classList.add('active');
+            } else {
+                console.error(`Stage ${stage} not found`);
+                return;
+            }
             document.querySelectorAll('.stage-nav span').forEach(s => s.classList.remove('active'));
-            document.getElementById(`nav-${stage}`).classList.add('active');
+            const navElement = document.getElementById(`nav-${stage}`);
+            if (navElement) {
+                navElement.classList.add('active');
+            }
             if (stage === 'family') {
                 showFamilyStep('prepare');
             }
@@ -828,7 +820,7 @@
         }
 
         function saveKeyTasks() {
-            localStorage.setИtem('key-tasks', JSON.stringify(keyTasks));
+            localStorage.setItem('key-tasks', JSON.stringify(keyTasks));
         }
 
         // Задачи
@@ -937,8 +929,8 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.beginPath();
             ctx.arc(60, 60, 50, -Math.PI / 2, (2 * Math.PI * progress) - Math.PI / 2);
-            ctx.strokeStyle = '#f4c7a6';
-            ctx.lineWidth = 10;
+            ctx.strokeStyle = '#f3e8d6';
+            ctx.lineWidth = 8;
             ctx.stroke();
         }
 
@@ -1034,11 +1026,11 @@
             svg.innerHTML = '';
             if (exercise === 'breathing') {
                 tracker.innerHTML = 'Вдохни (4 сек)...';
-                svg.innerHTML = `<circle cx="60" cy="60" r="40" fill="rgba(244, 199, 166, 0.5)"></circle>`;
+                svg.innerHTML = `<circle cx="50" cy="50" r="30" fill="rgba(243, 232, 214, 0.5)"></circle>`;
                 let phase = 0;
                 const interval = setInterval(() => {
-                    const r = 40 + Math.sin(phase / 4) * 10;
-                    svg.innerHTML = `<circle cx="60" cy="60" r="${r}" fill="rgba(244, 199, 166, 0.5)"></circle>`;
+                    const r = 30 + Math.sin(phase / 4) * 8;
+                    svg.innerHTML = `<circle cx="50" cy="50" r="${r}" fill="rgba(243, 232, 214, 0.5)"></circle>`;
                     phase++;
                     if (phase < 4) tracker.innerHTML = 'Вдохни...';
                     else if (phase < 8) tracker.innerHTML = 'Задержи...';
@@ -1051,15 +1043,15 @@
                 }, 1000);
             } else if (exercise === 'eyes') {
                 tracker.innerHTML = 'Посмотри влево, вправо, вверх, вниз (5 раз).';
-                svg.innerHTML = `<circle cx="60" cy="60" r="20" fill="#f5f5f5"></circle>`;
-                let x = 60, y = 60, dir = 0, count = 0;
+                svg.innerHTML = `<circle cx="50" cy="50" r="15" fill="#f5f5f5"></circle>`;
+                let x = 50, y = 50, dir = 0, count = 0;
                 const interval = setInterval(() => {
-                    if (dir === 0) x += 10;
-                    else if (dir === 1) x -= 10;
-                    else if (dir === 2) y -= 10;
-                    else if (dir === 3) y += 10;
-                    svg.innerHTML = `<circle cx="${x}" cy="${y}" r="20" fill="#f5f5f5"></circle>`;
-                    if (x >= 80 || x <= 40 || y <= 40 || y >= 80) {
+                    if (dir === 0) x += 8;
+                    else if (dir === 1) x -= 8;
+                    else if (dir === 2) y -= 8;
+                    else if (dir === 3) y += 8;
+                    svg.innerHTML = `<circle cx="${x}" cy="${y}" r="15" fill="#f5f5f5"></circle>`;
+                    if (x >= 65 || x <= 35 || y <= 35 || y >= 65) {
                         dir = (dir + 1) % 4;
                         if (dir === 0) count++;
                     }
@@ -1070,11 +1062,11 @@
                 }, 400);
             } else if (exercise === 'body') {
                 tracker.innerHTML = 'Потяни руки вверх, затем в стороны (3 подхода).';
-                svg.innerHTML = `<rect x="50" y="20" width="20" height="80" fill="#f5f5f5"></rect>`;
+                svg.innerHTML = `<rect x="45" y="20" width="10" height="60" fill="#f5f5f5"></rect>`;
                 let angle = 0, count = 0;
                 const interval = setInterval(() => {
-                    angle = Math.sin(count / 10) * 45;
-                    svg.innerHTML = `<rect x="50" y="20" width="20" height="80" fill="#f5f5f5" transform="rotate(${angle}, 60, 60)"></rect>`;
+                    angle = Math.sin(count / 10) * 40;
+                    svg.innerHTML = `<rect x="45" y="20" width="10" height="60" fill="#f5f5f5" transform="rotate(${angle}, 50, 50)"></rect>`;
                     count++;
                     if (count % 20 === 0) {
                         count++;
@@ -1086,11 +1078,11 @@
                 }, 200);
             } else if (exercise === 'neck') {
                 tracker.innerHTML = 'Поверни голову влево, вправо, наклони (4 раза).';
-                svg.innerHTML = `<circle cx="60" cy="60" r="30" fill="#f5f5f5"></circle>`;
+                svg.innerHTML = `<circle cx="50" cy="50" r="25" fill="#f5f5f5"></circle>`;
                 let angle = 0, count = 0;
                 const interval = setInterval(() => {
-                    angle = Math.sin(count / 10) * 30;
-                    svg.innerHTML = `<circle cx="60" cy="60" r="30" fill="#f5f5f5" transform="rotate(${angle}, 60, 60)"></circle>`;
+                    angle = Math.sin(count / 10) * 25;
+                    svg.innerHTML = `<circle cx="50" cy="50" r="25" fill="#f5f5f5" transform="rotate(${angle}, 50, 50)"></circle>`;
                     count++;
                     if (count % 20 === 0) {
                         count++;
@@ -1102,11 +1094,11 @@
                 }, 300);
             } else if (exercise === 'wrists') {
                 tracker.innerHTML = 'Вращай запястья по и против часовой (10 сек).';
-                svg.innerHTML = `<rect x="55" y="30" width="10" height="60" fill="#f5f5f5"></rect>`;
+                svg.innerHTML = `<rect x="45" y="25" width="10" height="50" fill="#f5f5f5"></rect>`;
                 let angle = 0;
                 const interval = setInterval(() => {
                     angle = (angle + 20) % 360;
-                    svg.innerHTML = `<rect x="55" y="30" width="10" height="60" fill="#f5f5f5" transform="rotate(${angle}, 60, 60)"></rect>`;
+                    svg.innerHTML = `<rect x="45" y="25" width="10" height="50" fill="#f5f5f5" transform="rotate(${angle}, 50, 50)"></rect>`;
                 }, 150);
                 setTimeout(() => {
                     clearInterval(interval);
@@ -1123,11 +1115,9 @@
 
             if (game === 'stars') {
                 tracker.innerHTML = 'Собери звёзды за 15 секунд!';
-                const starsContainer = document.getElementById('stars');
-                let count = 0;
                 const stars = Array.from(document.querySelectorAll('.star'));
+                let count = 0;
 
-                // Enable star clicking
                 stars.forEach(star => {
                     star.style.pointerEvents = 'auto';
                     star.style.transition = 'transform 0.5s';
@@ -1139,7 +1129,7 @@
                         }, 500);
                     };
                     star.addEventListener('click', clickHandler);
-                    star.dataset.clickHandler = clickHandler; // Store for cleanup
+                    star.dataset.clickHandler = clickHandler.toString();
                 });
 
                 setTimeout(() => {
@@ -1148,7 +1138,7 @@
                         star.style.display = 'block';
                         star.style.transform = 'scale(1)';
                         star.style.pointerEvents = 'none';
-                        star.removeEventListener('click', star.dataset.clickHandler);
+                        star.removeEventListener('click', eval(star.dataset.clickHandler));
                     });
                 }, 15000);
 
@@ -1157,8 +1147,8 @@
                 const puzzle = document.createElement('div');
                 puzzle.innerHTML = `
                     <style>
-                        .puzzle-container { display: grid; grid-template-columns: repeat(2, 50px); gap: 5px; margin: 10px auto; }
-                        .puzzle-piece { width: 50px; height: 50px; background: #f3e8d6; cursor: pointer; border-radius: 8px; border: 1px solid #d4c9a8; }
+                        .puzzle-container { display: grid; grid-template-columns: repeat(2, 40px); gap: 4px; margin: 8px auto; }
+                        .puzzle-piece { width: 40px; height: 40px; background: #f3e8d6; cursor: pointer; border-radius: 6px; border: 1px solid #b0b8c1; }
                         .puzzle-piece.correct { background: #81c784; }
                     </style>
                     <div class="puzzle-container">
@@ -1171,7 +1161,6 @@
                 tracker.appendChild(puzzle);
                 let correct = [false, false, false, false];
 
-                // Add click handlers to puzzle pieces
                 puzzle.querySelectorAll('.puzzle-piece').forEach(piece => {
                     piece.addEventListener('click', () => {
                         const index = parseInt(piece.dataset.index);
@@ -1187,16 +1176,17 @@
             } else if (game === 'maze') {
                 tracker.innerHTML = 'Проведи шарик через лабиринт!';
                 const maze = document.createElement('canvas');
-                maze.width = 200 spends on maze.height = 200;
-                maze.style.border = '1px solid #f4c7a6';
+                maze.width = 180;
+                maze.height = 180;
+                maze.style.border = '1px solid #f3e8d6';
                 tracker.appendChild(maze);
                 const ctx = maze.getContext('2d');
-                const ball = { x: 20, y: 20, r: 5 };
-                const target = { x: 180, y: 180, r: 5 };
+                const ball = { x: 15, y: 15, r: 4 };
+                const target = { x: 165, y: 165, r: 4 };
                 const walls = [
-                    { x: 0, y: 50, w: 150, h: 10 },
-                    { x: 50, y: 100, w: 150, h: 10 },
-                    { x: 0, y: 150, w: 150, h: 10 }
+                    { x: 0, y: 40, w: 120, h: 8 },
+                    { x: 40, y: 80, w: 120, h: 8 },
+                    { x: 0, y: 120, w: 120, h: 8 }
                 ];
                 let moving = false;
 
@@ -1206,7 +1196,7 @@
                     walls.forEach(wall => ctx.fillRect(wall.x, wall.y, wall.w, wall.h));
                     ctx.beginPath();
                     ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
-                    ctx.fillStyle = '#f4c7a6';
+                    ctx.fillStyle = '#f3e8d6';
                     ctx.fill();
                     ctx.beginPath();
                     ctx.arc(target.x, target.y, target.r, 0, Math.PI * 2);
@@ -1241,7 +1231,7 @@
                             ball.y = newY;
                         }
                         drawMaze();
-                        if (Math.hypot(ball.x - target.x, ball.y - target.y) < 10) {
+                        if (Math.hypot(ball.x - target.x, ball.y - target.y) < 8) {
                             tracker.innerHTML = 'Лабиринт пройден!';
                             moving = false;
                         }
@@ -1250,7 +1240,7 @@
 
                 drawMaze();
                 setTimeout(() => {
-                    if (Math.hypot(ball.x - target.x, ball.y - target.y) >= 10) {
+                    if (Math.hypot(ball.x - target.x, ball.y - target.y) >= 8) {
                         tracker.innerHTML = 'Попробуй ещё раз!';
                     }
                 }, 20000);
@@ -1318,11 +1308,11 @@
             const tracker = document.getElementById('exercise-tracker') || document.getElementById('family-tracker');
             const svg = document.getElementById('exercise-svg');
             tracker.innerHTML = 'Вдохни (4 сек)...';
-            svg.innerHTML = `<circle cx="60" cy="60" r="40" fill="rgba(244, 199, 166, 0.5)"></circle>`;
+            svg.innerHTML = `<circle cx="50" cy="50" r="30" fill="rgba(243, 232, 214, 0.5)"></circle>`;
             let phase = 0;
             const interval = setInterval(() => {
-                const r = 40 + Math.sin(phase / 4) * 10;
-                svg.innerHTML = `<circle cx="60" cy="60" r="${r}" fill="rgba(244, 199, 166, 0.5)"></circle>`;
+                const r = 30 + Math.sin(phase / 4) * 8;
+                svg.innerHTML = `<circle cx="50" cy="50" r="${r}" fill="rgba(243, 232, 214, 0.5)"></circle>`;
                 phase++;
                 if (phase < 4) tracker.innerHTML = 'Вдохни...';
                 else if (phase < 8) tracker.innerHTML = 'Задержи...';
@@ -1384,8 +1374,8 @@
                 const y = canvas.height - ((grouped[date].completed / grouped[date].total || 0) / maxY) * canvas.height;
                 ctx.lineTo(x, y);
             });
-            ctx.strokeStyle = '#f4c7a6';
-            ctx.lineWidth = 3;
+            ctx.strokeStyle = '#f3e8d6';
+            ctx.lineWidth = 2;
             ctx.stroke();
         }
 
@@ -1457,22 +1447,27 @@
         });
 
         // Инициализация
-        initStars();
-        const timeSettings = JSON.parse(localStorage.getItem('work-time'));
-        if (timeSettings) {
-            document.getElementById('work-start').value = timeSettings.start;
-            document.getElementById('work-end').value = timeSettings.end;
-            document.getElementById('break-interval').value = timeSettings.break;
-            workStart = timeSettings.start;
-            workEnd = timeSettings.end;
-            breakInterval = timeSettings.break;
-            updateTimeRemaining();
+        try {
+            initStars();
+            const timeSettings = JSON.parse(localStorage.getItem('work-time'));
+            if (timeSettings) {
+                document.getElementById('work-start').value = timeSettings.start;
+                document.getElementById('work-end').value = timeSettings.end;
+                document.getElementById('break-interval').value = timeSettings.break;
+                workStart = timeSettings.start;
+                workEnd = timeSettings.end;
+                breakInterval = timeSettings.break;
+                updateTimeRemaining();
+            }
+            renderKeyTasks();
+            renderTasks();
+            renderNotes();
+            updateResults();
+            document.getElementById('tomorrow-plan').value = localStorage.getItem('tomorrow-plan') || '';
+        } catch (error) {
+            console.error('Initialization error:', error);
+            alert('Ошибка инициализации приложения. Проверьте консоль для деталей.');
         }
-        renderKeyTasks();
-        renderTasks();
-        renderNotes();
-        updateResults();
-        document.getElementById('tomorrow-plan').value = localStorage.getItem('tomorrow-plan') || '';
     </script>
 </body>
-    </html>
+                                           </html>
