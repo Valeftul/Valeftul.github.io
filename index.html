@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CalmFlow 4.0 - Разделяя работу и продуктивность</title>
+    <title>CalmFlow 4.0 - Гармония и продуктивность</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
     <style>
         /* Основные стили */
@@ -127,7 +127,7 @@
 
         button.secondary {
             background: rgba(243, 232, 214, 0.1);
-            color: #f3e8d6;
+            color: #f3e8d6 !important;
             border: 1px solid #f3e8d6;
             padding: 8px 15px;
             font-size: 13px;
@@ -180,7 +180,7 @@
         textarea {
             min-height: 100px;
             resize: vertical;
-            font-family: 'Courier New', monospace;
+            font-family: 'Inter', sans-serif;
         }
 
         /* Список задач */
@@ -272,22 +272,23 @@
             font-size: 12px;
         }
 
-        /* Заметки */
+        /* Заметки в стиле Google Keep */
         .notes-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
             margin: 15px 0;
         }
 
         .note-card {
             background: rgba(40, 40, 40, 0.9);
-            padding: 12px;
+            padding: 15px;
             border: 1px solid #b0b8c1;
-            border-left: 4px solid #f3e8d6;
-            border-radius: 6px;
+            border-left: 5px solid #f3e8d6;
+            border-radius: 8px;
             cursor: pointer;
             transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
         }
 
         .note-card:hover {
@@ -298,6 +299,21 @@
         .note-card.red { border-left-color: #e57373; }
         .note-card.green { border-left-color: #81c784; }
         .note-card.blue { border-left-color: #64b5f6; }
+
+        .note-card p {
+            margin: 0 0 10px;
+            font-size: 14px;
+            color: #f5f5f5;
+        }
+
+        .note-card .tags {
+            margin-top: 10px;
+        }
+
+        .note-card small {
+            color: #b0b8c1;
+            font-size: 12px;
+        }
 
         /* SVG-анимации упражнений */
         .exercise-animation {
@@ -391,7 +407,6 @@
             background: #f5f5f5;
             border-radius: 50%;
             animation: twinkle 4s infinite;
-            pointer-events: auto; /* Для игры со звездами */
         }
 
         @keyframes twinkle {
@@ -454,7 +469,7 @@
             }
 
             .notes-grid {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
             }
 
             .exercise-animation, canvas {
@@ -582,7 +597,7 @@
                 </select>
                 <button class="primary" onclick="startBreakExercise()"><i class="fas fa-play"></i> Начать</button>
                 <div id="exercise-tracker"></div>
-                <svg class="exercise-animation" id="exercise-svg"></svg>
+                <svg class="exercise-animation" viewBox="0 0 100 100" id="exercise-svg"></svg>
             </div>
             <div id="break-relax" class="tab-content">
                 <select id="relax-game">
@@ -693,7 +708,7 @@
         // Инициализация звёзд
         function initStars() {
             const starsContainer = document.getElementById('stars');
-            starsContainer.innerHTML = ''; // Очистка для избежания дублирования
+            starsContainer.innerHTML = '';
             for (let i = 0; i < 100; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
@@ -708,21 +723,17 @@
 
         // Переключение этапов
         function showStage(stage) {
-            document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
-            const stageElement = document.getElementById(`${stage}-stage`);
-            if (stageElement) {
+            try {
+                document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
+                const stageElement = document.getElementById(`${stage}-stage`);
+                if (!stageElement) throw new Error(`Stage ${stage} not found`);
                 stageElement.classList.add('active');
-            } else {
-                console.error(`Stage ${stage} not found`);
-                return;
-            }
-            document.querySelectorAll('.stage-nav span').forEach(s => s.classList.remove('active'));
-            const navElement = document.getElementById(`nav-${stage}`);
-            if (navElement) {
-                navElement.classList.add('active');
-            }
-            if (stage === 'family') {
-                showFamilyStep('prepare');
+                document.querySelectorAll('.stage-nav span').forEach(s => s.classList.remove('active'));
+                document.getElementById(`nav-${stage}`).classList.add('active');
+                if (stage === 'family') showFamilyStep('prepare');
+            } catch (error) {
+                console.error(error);
+                alert('Ошибка при переключении этапа. Проверьте консоль.');
             }
         }
 
@@ -761,9 +772,10 @@
         }
 
         function updateTimeRemaining() {
+            if (!workStart || !workEnd) return;
             const now = new Date();
-            const [startH, startM] = workStart?.split(':') || ['00', '00'];
-            const [endH, endM] = workEnd?.split(':') || ['00', '00'];
+            const [startH, startM] = workStart.split(':');
+            const [endH, endM] = workEnd.split(':');
             const start = new Date();
             start.setHours(startH, startM, 0, 0);
             const end = new Date();
@@ -807,7 +819,7 @@
                 li.className = 'medium';
                 li.innerHTML = `
                     <span>${task.text}</span>
-                    <button class="secondary" style="color: #f3e8d6;" onclick="deleteKeyTask(${index})"><i class="fas fa-trash"></i></button>
+                    <button class="secondary" onclick="deleteKeyTask(${index})"><i class="fas fa-trash"></i></button>
                 `;
                 taskList.appendChild(li);
             });
@@ -848,8 +860,8 @@
                 li.innerHTML = `
                     <span>${task.text}</span>
                     <div>
-                        <button class="secondary" style="color: #f3e8d6;" onclick="toggleTask(${index})">${task.completed ? '<i class="fas fa-undo"></i>' : '<i class="fas fa-check"></i>'}</button>
-                        <button class="secondary" style="color: #f3e8d6;" onclick="deleteTask(${index})"><i class="fas fa-trash"></i></button>
+                        <button class="secondary" onclick="toggleTask(${index})">${task.completed ? '<i class="fas fa-undo"></i>' : '<i class="fas fa-check"></i>'}</button>
+                        <button class="secondary" onclick="deleteTask(${index})"><i class="fas fa-trash"></i></button>
                     </div>
                 `;
                 li.draggable = true;
@@ -895,7 +907,7 @@
 
         function startPomodoro() {
             if (!isPomodoroRunning) {
-                const [hours, minutes] = breakInterval.split(':');
+                const [hours, minutes] = (breakInterval || '01:00').split(':');
                 pomodoroTime = (parseInt(hours) * 60 + parseInt(minutes)) * 60;
                 isPomodoroRunning = true;
                 pomodoroInterval = setInterval(() => {
@@ -938,25 +950,18 @@
         let notes = JSON.parse(localStorage.getItem('work-notes')) || [];
         let currentNoteIndex = null;
 
-        function openNoteModal(type, index) {
+        function openNoteModal(type, index = null) {
             const modal = document.getElementById('note-modal');
             const text = document.getElementById('note-text');
             const tags = document.getElementById('note-tags');
             const color = document.getElementById('note-color');
-            if (type === 'new') {
-                text.value = '';
-                tags.value = '';
-                color.value = 'default';
-                currentNoteIndex = null;
-            } else {
-                const note = notes[index];
-                text.value = note.text;
-                tags.value = note.tags.join(', ');
-                color.value = note.color;
-                currentNoteIndex = index;
-            }
+            currentNoteIndex = type === 'new' ? null : index;
+            text.value = type === 'new' ? '' : notes[index].text;
+            tags.value = type === 'new' ? '' : notes[index].tags.join(', ');
+            color.value = type === 'new' ? 'default' : notes[index].color;
             modal.style.display = 'flex';
             renderNoteTags(tags.value);
+            text.focus();
         }
 
         function renderNoteTags(tagsString) {
@@ -973,20 +978,22 @@
         }
 
         function saveNote() {
-            const text = document.getElementById('note-text').value;
+            const text = document.getElementById('note-text').value.trim();
             const tags = document.getElementById('note-tags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
             const color = document.getElementById('note-color').value;
-            if (text) {
-                const note = { text, tags, color, date: new Date().toISOString().split('T')[0] };
-                if (currentNoteIndex === null) {
-                    notes.push(note);
-                } else {
-                    notes[currentNoteIndex] = note;
-                }
-                localStorage.setItem('work-notes', JSON.stringify(notes));
-                renderNotes();
-                closeNoteModal();
+            if (!text) {
+                alert('Введите текст заметки.');
+                return;
             }
+            const note = { text, tags, color, date: new Date().toISOString().split('T')[0] };
+            if (currentNoteIndex === null) {
+                notes.push(note);
+            } else {
+                notes[currentNoteIndex] = note;
+            }
+            localStorage.setItem('work-notes', JSON.stringify(notes));
+            renderNotes();
+            closeNoteModal();
         }
 
         function renderNotes() {
@@ -998,11 +1005,13 @@
                     const div = document.createElement('div');
                     div.className = `note-card ${note.color}`;
                     div.innerHTML = `
-                        <p>${note.text.substring(0, 50)}${note.text.length > 50 ? '...' : ''}</p>
+                        <p>${note.text}</p>
                         <div class="tags">${note.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>
                         <small>${note.date}</small>
-                        <button class="secondary" style="color: #f3e8d6;" onclick="openNoteModal('edit', ${index})"><i class="fas fa-edit"></i></button>
-                        <button class="secondary" style="color: #f3e8d6;" onclick="deleteNote(${index})"><i class="fas fa-trash"></i></button>
+                        <div style="margin-top: 10px;">
+                            <button class="secondary" onclick="openNoteModal('edit', ${index})"><i class="fas fa-edit"></i></button>
+                            <button class="secondary" onclick="deleteNote(${index})"><i class="fas fa-trash"></i></button>
+                        </div>
                     `;
                     notesList.appendChild(div);
                 });
@@ -1024,85 +1033,79 @@
             const tracker = document.getElementById('exercise-tracker');
             const svg = document.getElementById('exercise-svg');
             svg.innerHTML = '';
+            tracker.innerHTML = '';
+
             if (exercise === 'breathing') {
                 tracker.innerHTML = 'Вдохни (4 сек)...';
-                svg.innerHTML = `<circle cx="50" cy="50" r="30" fill="rgba(243, 232, 214, 0.5)"></circle>`;
+                svg.innerHTML = `<circle cx="50" cy="50" r="30" fill="none" stroke="#f3e8d6" stroke-width="4">
+                    <animate attributeName="r" values="30;40;30" dur="8s" repeatCount="2"/>
+                </circle>`;
                 let phase = 0;
+                const phases = ['Вдохни...', 'Задержи...', 'Выдохни...', 'Задержи...'];
                 const interval = setInterval(() => {
-                    const r = 30 + Math.sin(phase / 4) * 8;
-                    svg.innerHTML = `<circle cx="50" cy="50" r="${r}" fill="rgba(243, 232, 214, 0.5)"></circle>`;
+                    tracker.innerHTML = phases[phase % 4];
                     phase++;
-                    if (phase < 4) tracker.innerHTML = 'Вдохни...';
-                    else if (phase < 8) tracker.innerHTML = 'Задержи...';
-                    else if (phase < 12) tracker.innerHTML = 'Выдохни...';
-                    else if (phase < 16) tracker.innerHTML = 'Задержи...';
-                    else {
+                    if (phase >= 16) {
                         clearInterval(interval);
                         tracker.innerHTML = 'Дыши легко, ты восстановился!';
+                        svg.innerHTML = `<circle cx="50" cy="50" r="30" fill="rgba(243, 232, 214, 0.5)"/>`;
                     }
-                }, 1000);
+                }, 2000);
+
             } else if (exercise === 'eyes') {
                 tracker.innerHTML = 'Посмотри влево, вправо, вверх, вниз (5 раз).';
-                svg.innerHTML = `<circle cx="50" cy="50" r="15" fill="#f5f5f5"></circle>`;
-                let x = 50, y = 50, dir = 0, count = 0;
+                svg.innerHTML = `<circle cx="50" cy="50" r="15" fill="#f5f5f5">
+                    <animate attributeName="cx" values="50;65;50;35;50" dur="2s" repeatCount="5"/>
+                    <animate attributeName="cy" values="50;50;35;50;50" dur="2s" repeatCount="5"/>
+                </circle>`;
+                let count = 0;
                 const interval = setInterval(() => {
-                    if (dir === 0) x += 8;
-                    else if (dir === 1) x -= 8;
-                    else if (dir === 2) y -= 8;
-                    else if (dir === 3) y += 8;
-                    svg.innerHTML = `<circle cx="${x}" cy="${y}" r="15" fill="#f5f5f5"></circle>`;
-                    if (x >= 65 || x <= 35 || y <= 35 || y >= 65) {
-                        dir = (dir + 1) % 4;
-                        if (dir === 0) count++;
-                    }
-                    if (count >= 5) {
+                    count++;
+                    if (count >= 10) {
                         clearInterval(interval);
                         tracker.innerHTML = 'Глаза отдохнули!';
+                        svg.innerHTML = `<circle cx="50" cy="50" r="15" fill="#f5f5f5"/>`;
                     }
-                }, 400);
+                }, 1000);
+
             } else if (exercise === 'body') {
                 tracker.innerHTML = 'Потяни руки вверх, затем в стороны (3 подхода).';
-                svg.innerHTML = `<rect x="45" y="20" width="10" height="60" fill="#f5f5f5"></rect>`;
-                let angle = 0, count = 0;
+                svg.innerHTML = `<rect x="45" y="20" width="10" height="60" fill="#f5f5f5">
+                    <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="45 50 50" dur="1s" repeatCount="6" values="0;45;-45;0" keyTimes="0;0.33;0.66;1"/>
+                </rect>`;
+                let count = 0;
                 const interval = setInterval(() => {
-                    angle = Math.sin(count / 10) * 40;
-                    svg.innerHTML = `<rect x="45" y="20" width="10" height="60" fill="#f5f5f5" transform="rotate(${angle}, 50, 50)"></rect>`;
                     count++;
-                    if (count % 20 === 0) {
-                        count++;
-                        if (count >= 60) {
-                            clearInterval(interval);
-                            tracker.innerHTML = 'Тело размято!';
-                        }
+                    if (count >= 6) {
+                        clearInterval(interval);
+                        tracker.innerHTML = 'Тело размято!';
+                        svg.innerHTML = `<rect x="45" y="20" width="10" height="60" fill="#f5f5f5"/>`;
                     }
-                }, 200);
+                }, 1000);
+
             } else if (exercise === 'neck') {
                 tracker.innerHTML = 'Поверни голову влево, вправо, наклони (4 раза).';
-                svg.innerHTML = `<circle cx="50" cy="50" r="25" fill="#f5f5f5"></circle>`;
-                let angle = 0, count = 0;
+                svg.innerHTML = `<circle cx="50" cy="50" r="25" fill="#f5f5f5">
+                    <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="30 50 50" dur="1.5s" repeatCount="8" values="0;30;-30;0" keyTimes="0;0.33;0.66;1"/>
+                </circle>`;
+                let count = 0;
                 const interval = setInterval(() => {
-                    angle = Math.sin(count / 10) * 25;
-                    svg.innerHTML = `<circle cx="50" cy="50" r="25" fill="#f5f5f5" transform="rotate(${angle}, 50, 50)"></circle>`;
                     count++;
-                    if (count % 20 === 0) {
-                        count++;
-                        if (count >= 80) {
-                            clearInterval(interval);
-                            tracker.innerHTML = 'Шея расслаблена!';
-                        }
+                    if (count >= 8) {
+                        clearInterval(interval);
+                        tracker.innerHTML = 'Шея расслаблена!';
+                        svg.innerHTML = `<circle cx="50" cy="50" r="25" fill="#f5f5f5"/>`;
                     }
-                }, 300);
+                }, 1500);
+
             } else if (exercise === 'wrists') {
                 tracker.innerHTML = 'Вращай запястья по и против часовой (10 сек).';
-                svg.innerHTML = `<rect x="45" y="25" width="10" height="50" fill="#f5f5f5"></rect>`;
-                let angle = 0;
-                const interval = setInterval(() => {
-                    angle = (angle + 20) % 360;
-                    svg.innerHTML = `<rect x="45" y="25" width="10" height="50" fill="#f5f5f5" transform="rotate(${angle}, 50, 50)"></rect>`;
-                }, 150);
+                svg.innerHTML = `<rect x="45" y="25" width="10" height="50" fill="#f5f5f5">
+                    <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="2s" repeatCount="5"/>
+                </rect>`;
                 setTimeout(() => {
-                    clearInterval(interval);
                     tracker.innerHTML = 'Запястья готовы!';
+                    svg.innerHTML = `<rect x="45" y="25" width="10" height="50" fill="#f5f5f5"/>`;
                 }, 10000);
             }
         }
@@ -1117,28 +1120,24 @@
                 tracker.innerHTML = 'Собери звёзды за 15 секунд!';
                 const stars = Array.from(document.querySelectorAll('.star'));
                 let count = 0;
-
                 stars.forEach(star => {
                     star.style.pointerEvents = 'auto';
                     star.style.transition = 'transform 0.5s';
                     const clickHandler = () => {
                         star.style.transform = 'scale(0)';
                         count++;
-                        setTimeout(() => {
-                            star.style.display = 'none';
-                        }, 500);
+                        setTimeout(() => star.style.display = 'none', 500);
                     };
                     star.addEventListener('click', clickHandler);
-                    star.dataset.clickHandler = clickHandler.toString();
+                    star.clickHandler = clickHandler;
                 });
-
                 setTimeout(() => {
                     tracker.innerHTML = `Собрано звёзд: ${count}. Ты звезда!`;
                     stars.forEach(star => {
                         star.style.display = 'block';
                         star.style.transform = 'scale(1)';
                         star.style.pointerEvents = 'none';
-                        star.removeEventListener('click', eval(star.dataset.clickHandler));
+                        star.removeEventListener('click', star.clickHandler);
                     });
                 }, 15000);
 
@@ -1160,7 +1159,6 @@
                 `;
                 tracker.appendChild(puzzle);
                 let correct = [false, false, false, false];
-
                 puzzle.querySelectorAll('.puzzle-piece').forEach(piece => {
                     piece.addEventListener('click', () => {
                         const index = parseInt(piece.dataset.index);
@@ -1168,7 +1166,6 @@
                         piece.classList.toggle('correct');
                     });
                 });
-
                 setTimeout(() => {
                     tracker.innerHTML = `Пазл собран: ${correct.filter(c => c).length}/4. Отлично!`;
                 }, 15000);
@@ -1208,14 +1205,10 @@
                     const rect = maze.getBoundingClientRect();
                     const x = e.clientX - rect.left;
                     const y = e.clientY - rect.top;
-                    if (Math.hypot(x - ball.x, y - ball.y) < ball.r) {
-                        moving = true;
-                    }
+                    if (Math.hypot(x - ball.x, y - ball.y) < ball.r) moving = true;
                 });
 
-                maze.addEventListener('mouseup', () => {
-                    moving = false;
-                });
+                maze.addEventListener('mouseup', () => moving = false);
 
                 maze.addEventListener('mousemove', (e) => {
                     if (moving) {
@@ -1308,21 +1301,20 @@
             const tracker = document.getElementById('exercise-tracker') || document.getElementById('family-tracker');
             const svg = document.getElementById('exercise-svg');
             tracker.innerHTML = 'Вдохни (4 сек)...';
-            svg.innerHTML = `<circle cx="50" cy="50" r="30" fill="rgba(243, 232, 214, 0.5)"></circle>`;
+            svg.innerHTML = `<circle cx="50" cy="50" r="30" fill="none" stroke="#f3e8d6" stroke-width="4">
+                <animate attributeName="r" values="30;40;30" dur="8s" repeatCount="2"/>
+            </circle>`;
             let phase = 0;
+            const phases = ['Вдохни...', 'Задержи...', 'Выдохни...', 'Задержи...'];
             const interval = setInterval(() => {
-                const r = 30 + Math.sin(phase / 4) * 8;
-                svg.innerHTML = `<circle cx="50" cy="50" r="${r}" fill="rgba(243, 232, 214, 0.5)"></circle>`;
+                tracker.innerHTML = phases[phase % 4];
                 phase++;
-                if (phase < 4) tracker.innerHTML = 'Вдохни...';
-                else if (phase < 8) tracker.innerHTML = 'Задержи...';
-                else if (phase < 12) tracker.innerHTML = 'Выдохни...';
-                else if (phase < 16) tracker.innerHTML = 'Задержи...';
-                else {
+                if (phase >= 16) {
                     clearInterval(interval);
                     tracker.innerHTML = 'Ты в гармонии!';
+                    svg.innerHTML = `<circle cx="50" cy="50" r="30" fill="rgba(243, 232, 214, 0.5)"/>`;
                 }
-            }, 1000);
+            }, 2000);
         }
 
         // Результаты
@@ -1464,10 +1456,11 @@
             renderNotes();
             updateResults();
             document.getElementById('tomorrow-plan').value = localStorage.getItem('tomorrow-plan') || '';
+            document.getElementById('note-search').addEventListener('input', renderNotes);
         } catch (error) {
             console.error('Initialization error:', error);
             alert('Ошибка инициализации приложения. Проверьте консоль для деталей.');
         }
     </script>
 </body>
-                                           </html>
+    </html>
