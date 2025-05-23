@@ -6,7 +6,7 @@
     <title>CalmFlow 4.0 - Изысканная гармония</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        /* Основные стили для изящного дизайна */
+        /* Основные стили */
         body {
             background: #0a0a0a;
             color: #f5f5f5;
@@ -43,7 +43,7 @@
         .stage-nav {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             padding: 10px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 12px;
@@ -51,14 +51,14 @@
 
         .stage-nav span {
             font-size: 12px;
-            color: #6b7280;
-            padding: 8px;
+            color: #9ca3af;
+            padding: 8px 12px;
             cursor: default;
         }
 
         .stage-nav span.active {
-            color: #f5f5f5;
-            background: rgba(107, 114, 128, 0.3);
+            color: #f3e8d6;
+            background: rgba(243, 232, 214, 0.2);
             border-radius: 8px;
         }
 
@@ -82,13 +82,13 @@
             font-size: 14px;
             color: #9ca3af;
             line-height: 1.5;
-            margin: 10px 0;
+            margin: 15px 0;
         }
 
         /* Кнопки */
         button {
-            background: #6b7280;
-            color: #f5f5f5;
+            background: #f3e8d6;
+            color: #0a0a0a;
             border: none;
             padding: 12px 24px;
             cursor: pointer;
@@ -96,11 +96,12 @@
             font-family: 'Inter', sans-serif;
             font-size: 14px;
             font-weight: 500;
+            margin: 10px;
             transition: background 0.3s, transform 0.2s;
         }
 
         button:hover {
-            background: #9ca3af;
+            background: #fff7e6;
             transform: translateY(-2px);
         }
 
@@ -108,25 +109,27 @@
         .tabs {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin: 15px 0;
+            gap: 15px;
+            margin: 20px 0;
         }
 
         .tabs button {
             background: rgba(255, 255, 255, 0.05);
             padding: 8px 16px;
             font-size: 13px;
+            margin: 5px;
         }
 
         .tabs button.active {
-            background: #6b7280;
+            background: #f3e8d6;
+            color: #0a0a0a;
         }
 
         /* Поля ввода */
-        input[type="text"], textarea, select {
+        input[type="text"], input[type="time"], textarea, select {
             width: 100%;
             padding: 12px;
-            margin: 8px 0;
+            margin: 10px 0;
             background: rgba(255, 255, 255, 0.05);
             color: #f5f5f5;
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -184,38 +187,45 @@
             color: #9ca3af;
         }
 
-        /* Круговое меню часов */
-        .clock-menu {
-            position: relative;
-            width: 150px;
-            height: 150px;
-            margin: 20px auto;
-        }
-
-        .clock-circle {
+        /* Модальные заметки */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.05);
-            position: relative;
-            cursor: pointer;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
         }
 
-        .clock-hand {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 60px;
-            height: 2px;
-            background: #6b7280;
-            transform-origin: 0 50%;
-            transition: transform 0.3s;
+        .modal-content {
+            background: rgba(20, 20, 20, 0.9);
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
-        .clock-labels div {
-            position: absolute;
-            font-size: 12px;
-            color: #9ca3af;
+        .modal-content textarea {
+            width: 100%;
+            min-height: 150px;
+        }
+
+        .modal-content select {
+            width: auto;
+            margin: 10px 0;
+        }
+
+        /* SVG-анимации упражнений */
+        .exercise-animation {
+            width: 100px;
+            height: 100px;
+            margin: 20px auto;
         }
 
         /* CSS-дерево */
@@ -246,9 +256,9 @@
             transform: translateX(-50%);
             width: 35px;
             height: 35px;
-            background: radial-gradient(circle, #6b7280 40%, #4b5563 70%);
+            background: radial-gradient(circle, #f3e8d6 40%, #d4c9a8 70%);
             border-radius: 50%;
-            box-shadow: 0 0 10px rgba(107, 114, 128, 0.3);
+            box-shadow: 0 0 10px rgba(243, 232, 214, 0.3);
             animation: treeGlow 3s ease-in-out infinite;
         }
 
@@ -329,7 +339,12 @@
             button {
                 width: 100%;
                 padding: 12px;
-                font-size: 14px;
+                margin: 8px 0;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+                gap: 10px;
             }
 
             .tabs button {
@@ -338,7 +353,7 @@
                 padding: 6px 12px;
             }
 
-            input[type="text"], textarea, select {
+            input[type="text"], input[type="time"], textarea, select {
                 font-size: 14px;
                 padding: 10px;
             }
@@ -351,34 +366,14 @@
                 min-height: 80px;
             }
 
-            .clock-menu {
-                width: 120px;
-                height: 120px;
+            .exercise-animation, canvas {
+                width: 80px !important;
+                height: 80px !important;
             }
 
-            .clock-hand {
-                width: 50px;
-            }
-
-            .tree-icon {
-                width: 40px;
-                height: 40px;
-            }
-
-            .tree-icon::before {
-                top: 25px;
-                width: 6px;
-                height: 15px;
-            }
-
-            .tree-icon::after {
-                width: 30px;
-                height: 30px;
-            }
-
-            canvas {
-                width: 100px !important;
-                height: 100px !important;
+            .modal-content {
+                width: 95%;
+                padding: 15px;
             }
 
             .motivation, .exercise-instructions {
@@ -405,12 +400,12 @@
     <div class="container">
         <!-- Навигатор этапов -->
         <div class="stage-nav">
-            <span id="nav-start">Старт</span>
-            <span id="nav-setup">Настройка</span>
-            <span id="nav-work">Работа</span>
-            <span id="nav-break">Перерыв</span>
-            <span id="nav-end-shift">Завершение</span>
-            <span id="nav-family">Семья</span>
+            <span id="nav-start" class="active"><i class="fas fa-play"></i> Старт</span>
+            <span id="nav-setup"><i class="fas fa-cog"></i> Настройка</span>
+            <span id="nav-work"><i class="fas fa-tasks"></i> Работа</span>
+            <span id="nav-break"><i class="fas fa-coffee"></i> Перерыв</span>
+            <span id="nav-end-shift"><i class="fas fa-check-circle"></i> Завершение</span>
+            <span id="nav-family"><i class="fas fa-home"></i> Семья</span>
         </div>
 
         <!-- Старт смены -->
@@ -418,7 +413,7 @@
             <div class="tree-icon"></div>
             <h1>CalmFlow 4.0</h1>
             <p class="motivation">Начни свой день с изысканной продуктивности</p>
-            <button onclick="showStage('setup')">Начать смену</button>
+            <button onclick="showStage('setup')"><i class="fas fa-play"></i> Начать смену</button>
         </div>
 
         <!-- Настройка работы -->
@@ -426,38 +421,23 @@
             <h2>Настройка работы</h2>
             <p class="exercise-instructions">Подготовься к продуктивному дню.</p>
             <div class="tabs">
-                <button class="tab-btn active" onclick="showTab('setup-duration', this)">Длительность</button>
-                <button class="tab-btn" onclick="showTab('setup-tasks', this)">Задачи</button>
+                <button class="tab-btn active" onclick="showTab('setup-time', this)"><i class="fas fa-clock"></i> Время</button>
+                <button class="tab-btn" onclick="showTab('setup-tasks', this)"><i class="fas fa-list"></i> Задачи</button>
             </div>
-            <div id="setup-duration" class="tab-content active">
-                <p>Выбери время смены и Pomodoro</p>
-                <div class="clock-menu" id="shift-clock">
-                    <div class="clock-circle"></div>
-                    <div class="clock-hand" id="shift-hand"></div>
-                    <div class="clock-labels">
-                        <div style="top: 0; left: 50%; transform: translateX(-50%)">8ч</div>
-                        <div style="top: 25%; right: 10%; transform: translateY(-50%)">6ч</div>
-                        <div style="top: 75%; right: 10%; transform: translateY(-50%)">4ч</div>
-                        <div style="bottom: 0; left: 50%; transform: translateX(-50%)">2ч</div>
-                    </div>
-                </div>
-                <div class="clock-menu" id="pomodoro-clock">
-                    <div class="clock-circle"></div>
-                    <div class="clock-hand" id="pomodoro-hand"></div>
-                    <div class="clock-labels">
-                        <div style="top: 0; left: 50%; transform: translateX(-50%)">60м</div>
-                        <div style="top: 25%; right: 10%; transform: translateY(-50%)">45м</div>
-                        <div style="top: 75%; right: 10%; transform: translateY(-50%)">30м</div>
-                        <div style="bottom: 0; left: 50%; transform: translateX(-50%)">15м</div>
-                    </div>
-                </div>
+            <div id="setup-time" class="tab-content active">
+                <p>Выбери время работы и перерывов</p>
+                <label>Работа с <input type="time" id="work-start"> до <input type="time" id="work-end"></label>
+                <p id="time-remaining"></p>
+                <label>Перерывы каждые <input type="time" id="break-interval" value="01:00"></label>
+                <button onclick="applyDoctorBreaks()">Рекомендации врача</button>
+                <button onclick="saveTimeSettings()">Сохранить</button>
             </div>
             <div id="setup-tasks" class="tab-content">
                 <input type="text" id="key-task" placeholder="Ключевая задача дня">
-                <button onclick="addKeyTask()">Добавить задачу</button>
+                <button onclick="addKeyTask()"><i class="fas fa-plus"></i> Добавить задачу</button>
                 <ul id="key-task-list"></ul>
             </div>
-            <button onclick="showStage('work')">Начать работу</button>
+            <button onclick="showStage('work')"><i class="fas fa-arrow-right"></i> Начать работу</button>
         </div>
 
         <!-- Выполнение работы -->
@@ -465,9 +445,9 @@
             <h2>Рабочая зона</h2>
             <p class="exercise-instructions">Сосредоточься на задачах.</p>
             <div class="tabs">
-                <button class="tab-btn active" onclick="showTab('work-tasks', this)">Задачи</button>
-                <button class="tab-btn" onclick="showTab('work-pomodoro', this)">Pomodoro</button>
-                <button class="tab-btn" onclick="showTab('work-notes', this)">Заметки</button>
+                <button class="tab-btn active" onclick="showTab('work-tasks', this)"><i class="fas fa-tasks"></i> Задачи</button>
+                <button class="tab-btn" onclick="showTab('work-pomodoro', this)"><i class="fas fa-stopwatch"></i> Pomodoro</button>
+                <button class="tab-btn" onclick="showTab('work-notes', this)"><i class="fas fa-sticky-note"></i> Заметки</button>
             </div>
             <div id="work-tasks" class="tab-content active">
                 <input type="text" id="task" placeholder="Новая задача (Ctrl+Enter)">
@@ -476,20 +456,20 @@
                     <option value="medium">Средний</option>
                     <option value="high">Высокий</option>
                 </select>
-                <button onclick="addTask()">Добавить задачу</button>
+                <button onclick="addTask()"><i class="fas fa-plus"></i> Добавить задачу</button>
                 <ul id="task-list" class="sortable"></ul>
             </div>
             <div id="work-pomodoro" class="tab-content">
-                <button onclick="startPomodoro()">Старт Pomodoro (Space)</button>
+                <button onclick="startPomodoro()"><i class="fas fa-play"></i> Старт Pomodoro (Space)</button>
                 <p id="timer">25:00</p>
                 <canvas id="progress-circle" width="120" height="120"></canvas>
             </div>
             <div id="work-notes" class="tab-content">
-                <textarea id="code-notes" placeholder="Заметки по коду или мыслям"></textarea>
-                <button onclick="saveNotes()">Сохранить заметки</button>
+                <button onclick="openNoteModal('new')"><i class="fas fa-plus"></i> Новая заметка</button>
+                <div id="notes-list"></div>
             </div>
-            <button onclick="showStage('break')">Перерыв</button>
-            <button onclick="showStage('end-shift')">Завершить смену</button>
+            <button onclick="showStage('break')"><i class="fas fa-coffee"></i> Перерыв</button>
+            <button onclick="showStage('end-shift')"><i class="fas fa-check-circle"></i> Завершить смену</button>
         </div>
 
         <!-- Перерывы -->
@@ -497,24 +477,30 @@
             <h2>Перерыв</h2>
             <p class="exercise-instructions">Расслабься и восстанови силы.</p>
             <div class="tabs">
-                <button class="tab-btn active" onclick="showTab('break-exercise', this)">Упражнения</button>
-                <button class="tab-btn" onclick="showTab('break-relax', this)">Расслабление</button>
+                <button class="tab-btn active" onclick="showTab('break-exercise', this)"><i class="fas fa-running"></i> Упражнения</button>
+                <button class="tab-btn" onclick="showTab('break-relax', this)"><i class="fas fa-gamepad"></i> Расслабление</button>
             </div>
             <div id="break-exercise" class="tab-content active">
                 <select id="break-exercise">
                     <option value="breathing">Дыхательное упражнение</option>
                     <option value="eyes">Упражнение для глаз</option>
                     <option value="body">Упражнение для тела</option>
+                    <option value="neck">Упражнение для шеи</option>
+                    <option value="wrists">Упражнение для запястий</option>
                 </select>
-                <button onclick="startBreakExercise()">Начать</button>
+                <button onclick="startBreakExercise()"><i class="fas fa-play"></i> Начать</button>
                 <div id="exercise-tracker"></div>
-                <canvas id="breathing-circle" width="120" height="120"></canvas>
+                <svg class="exercise-animation" id="exercise-svg"></svg>
             </div>
             <div id="break-relax" class="tab-content">
-                <button onclick="startRelax()">Мини-игра: Звёзды</button>
+                <select id="relax-game">
+                    <option value="stars">Звёздное небо</option>
+                    <option value="puzzle">Пазл</option>
+                </select>
+                <button onclick="startRelax()"><i class="fas fa-gamepad"></i> Играть</button>
                 <div id="relax-tracker"></div>
             </div>
-            <button onclick="showStage('work')">Вернуться к работе</button>
+            <button onclick="showStage('work')"><i class="fas fa-arrow-left"></i> Вернуться к работе</button>
         </div>
 
         <!-- Завершение смены -->
@@ -522,27 +508,30 @@
             <h2>Завершение смены</h2>
             <p class="exercise-instructions">Оставь работу позади.</p>
             <div class="tabs">
-                <button class="tab-btn active" onclick="showTab('end-results', this)">Итоги</button>
-                <button class="tab-btn" onclick="showTab('end-ritual', this)">Ритуал</button>
-                <button class="tab-btn" onclick="showTab('end-plans', this)">Планы</button>
+                <button class="tab-btn active" onclick="showTab('end-results', this)"><i class="fas fa-chart-line"></i> Итоги</button>
+                <button class="tab-btn" onclick="showTab('end-ritual', this)"><i class="fas fa-pray"></i> Ритуал</button>
+                <button class="tab-btn" onclick="showTab('end-plans', this)"><i class="fas fa-calendar-alt"></i> Планы</button>
             </div>
             <div id="end-results" class="tab-content active">
                 <div id="results"></div>
-                <button onclick="exportResults()">Экспортировать результаты</button>
+                <button onclick="exportResults()"><i class="fas fa-download"></i> Экспортировать</button>
+                <input type="file" id="import-file" accept=".txt">
+                <button onclick="importResults()"><i class="fas fa-upload"></i> Импортировать</button>
+                <canvas id="progress-stats" width="200" height="100"></canvas>
             </div>
             <div id="end-ritual" class="tab-content">
                 <div class="checklist">
                     <label><input type="checkbox" class="end-checklist"> Закрыть рабочие вкладки</label>
-                    <label><input type="checkbox" class="end-checklist"> Проверить почту последний раз</label>
-                    <label><input type="checkbox" class="end-checklist"> Убрать рабочие материалы</label>
+                    <label><input type="checkbox" class="end-checklist"> Проверить почту</label>
+                    <label><input type="checkbox" class="end-checklist"> Убрать материалы</label>
                 </div>
-                <button onclick="startBreathing()">Дыхательное упражнение</button>
+                <button onclick="startBreathing()"><i class="fas fa-wind"></i> Дыхательное упражнение</button>
             </div>
             <div id="end-plans" class="tab-content">
                 <textarea id="tomorrow-plan" placeholder="Планы на завтра..."></textarea>
-                <button onclick="saveTomorrowPlan()">Сохранить план</button>
+                <button onclick="saveTomorrowPlan()"><i class="fas fa-save"></i> Сохранить</button>
             </div>
-            <button onclick="showStage('family')">Подготовка к семье</button>
+            <button onclick="showStage('family')"><i class="fas fa-home"></i> Подготовка к семье</button>
         </div>
 
         <!-- Подготовка к семье -->
@@ -552,25 +541,46 @@
             <div id="family-prepare" class="tab-content active">
                 <select id="family-activity">
                     <option value="relations">Совет для общения</option>
-                    <option value="stargame">Мини-игра: Звёздное небо</option>
+                    <option value="stargame">Звёздное небо</option>
+                    <option value="puzzle">Пазл</option>
                 </select>
-                <button onclick="startFamilyActivity()">Начать</button>
+                <button onclick="startFamilyActivity()"><i class="fas fa-heart"></i> Начать</button>
                 <div id="family-tracker"></div>
-                <button onclick="showFamilyStep('mood')">Сохранить настроение</button>
+                <button onclick="showFamilyStep('mood')"><i class="fas fa-smile"></i> Сохранить настроение</button>
             </div>
             <div id="family-mood" class="tab-content">
                 <textarea id="mood-tracker" placeholder="Как ты себя чувствуешь?"></textarea>
-                <button onclick="saveMood()">Сохранить</button>
-                <button onclick="showFamilyStep('export')">Экспортировать данные</button>
+                <button onclick="saveMood()"><i class="fas fa-save"></i> Сохранить</button>
+                <button onclick="showFamilyStep('export')"><i class="fas fa-download"></i> Экспортировать</button>
             </div>
             <div id="family-export" class="tab-content">
-                <p>Сохрани итоги дня</p>
-                <button onclick="exportFamilyData()">Экспортировать</button>
-                <button onclick="showFamilyStep('complete')">Завершить</button>
+                <button onclick="exportFamilyData()"><i class="fas fa-download"></i> Экспортировать</button>
+                <button onclick="showFamilyStep('complete')"><i class="fas fa-check"></i> Завершить</button>
             </div>
             <div id="family-complete" class="tab-content">
                 <p class="motivation">Отличный день! Наслаждайся временем дома.</p>
-                <button onclick="showStage('start')">Завершить день</button>
+                <button onclick="showStage('start')"><i class="fas fa-home"></i> Завершить день</button>
+            </div>
+        </div>
+
+        <!-- Модальное окно для заметок -->
+        <div id="note-modal" class="modal">
+            <div class="modal-content">
+                <h2>Заметка</h2>
+                <textarea id="note-text" placeholder="Текст заметки"></textarea>
+                <select id="note-category">
+                    <option value="general">Общее</option>
+                    <option value="code">Код</option>
+                    <option value="ideas">Идеи</option>
+                </select>
+                <select id="note-color">
+                    <option value="default">По умолчанию</option>
+                    <option value="red">Красный</option>
+                    <option value="green">Зелёный</option>
+                    <option value="blue">Синий</option>
+                </select>
+                <button onclick="saveNote()"><i class="fas fa-save"></i> Сохранить</button>
+                <button onclick="closeNoteModal()"><i class="fas fa-times"></i> Закрыть</button>
             </div>
         </div>
     </div>
@@ -615,51 +625,56 @@
         function showFamilyStep(step) {
             document.querySelectorAll('#family-stage .tab-content').forEach(t => t.classList.remove('active'));
             document.getElementById(`family-${step}`).classList.add('active');
-            if (step === 'prepare') {
-                document.getElementById('family-tip').textContent = 'Настройся на общение с близкими.';
-            } else if (step === 'mood') {
-                document.getElementById('family-tip').textContent = 'Запиши свои эмоции, чтобы завершить день.';
-            } else if (step === 'export') {
-                document.getElementById('family-tip').textContent = 'Сохрани итоги дня перед завершением.';
-            } else if (step === 'complete') {
-                document.getElementById('family-tip').textContent = 'Отличный день! Наслаждайся временем дома.';
+            const tip = document.getElementById('family-tip');
+            if (step === 'prepare') tip.textContent = 'Настройся на общение с близкими.';
+            else if (step === 'mood') tip.textContent = 'Запиши свои эмоции, чтобы завершить день.';
+            else if (step === 'export') tip.textContent = 'Сохрани итоги дня перед завершением.';
+            else if (step === 'complete') tip.textContent = 'Отличный день! Наслаждайся временем дома.';
+        }
+
+        // Управление временем
+        let workStart, workEnd, breakInterval;
+        function saveTimeSettings() {
+            workStart = document.getElementById('work-start').value;
+            workEnd = document.getElementById('work-end').value;
+            breakInterval = document.getElementById('break-interval').value;
+            if (workStart && workEnd) {
+                localStorage.setItem('work-time', JSON.stringify({ start: workStart, end: workEnd, break: breakInterval }));
+                updateTimeRemaining();
+                alert('Настройки времени сохранены!');
+            } else {
+                alert('Укажите время начала и конца работы.');
             }
         }
 
-        // Круговое меню часов
-        let shiftDuration = 120; // минут
-        let pomodoroDuration = 25; // минут
-
-        function initClockMenus() {
-            const shiftClock = document.getElementById('shift-clock');
-            const pomodoroClock = document.getElementById('pomodoro-clock');
-            const shiftHand = document.getElementById('shift-hand');
-            const pomodoroHand = document.getElementById('pomodoro-hand');
-
-            shiftClock.addEventListener('click', (e) => {
-                const rect = shiftClock.getBoundingClientRect();
-                const x = e.clientX - rect.left - rect.width / 2;
-                const y = e.clientY - rect.top - rect.height / 2;
-                const angle = Math.atan2(y, x) * 180 / Math.PI + 90;
-                const normalizedAngle = (angle + 360) % 360;
-                shiftDuration = Math.round(120 + (normalizedAngle / 360) * 360); // 2-8 часов
-                shiftHand.style.transform = `rotate(${normalizedAngle}deg)`;
-            });
-
-            pomodoroClock.addEventListener('click', (e) => {
-                const rect = pomodoroClock.getBoundingClientRect();
-                const x = e.clientX - rect.left - rect.width / 2;
-                const y = e.clientY - rect.top - rect.height / 2;
-                const angle = Math.atan2(y, x) * 180 / Math.PI + 90;
-                const normalizedAngle = (angle + 360) % 360;
-                pomodoroDuration = Math.round(15 + (normalizedAngle / 360) * 45); // 15-60 минут
-                pomodoroHand.style.transform = `rotate(${normalizedAngle}deg)`;
-            });
+        function updateTimeRemaining() {
+            const now = new Date();
+            const [startH, startM] = workStart?.split(':') || ['00', '00'];
+            const [endH, endM] = workEnd?.split(':') || ['00', '00'];
+            const start = new Date();
+            start.setHours(startH, startM, 0, 0);
+            const end = new Date();
+            end.setHours(endH, endM, 0, 0);
+            if (end < start) end.setDate(end.getDate() + 1);
+            const remaining = end - now;
+            if (remaining > 0) {
+                const hours = Math.floor(remaining / 3600000);
+                const minutes = Math.floor((remaining % 3600000) / 60000);
+                document.getElementById('time-remaining').textContent = `Осталось работать: ${hours}ч ${minutes}м`;
+            } else {
+                document.getElementById('time-remaining').textContent = 'Рабочий день завершён!';
+            }
         }
 
-        // Управление ключевыми задачами
-        let keyTasks = JSON.parse(localStorage.getItem('key-tasks')) || [];
+        function applyDoctorBreaks() {
+            document.getElementById('break-interval').value = '00:50'; // Рекомендация: перерыв каждые 50 минут
+            alert('Установлен интервал перерывов по рекомендации врача: каждые 50 минут.');
+        }
 
+        setInterval(updateTimeRemaining, 60000);
+
+        // Ключевые задачи
+        let keyTasks = JSON.parse(localStorage.getItem('key-tasks')) || [];
         function addKeyTask() {
             const taskInput = document.getElementById('key-task');
             const taskText = taskInput.value.trim();
@@ -679,7 +694,7 @@
                 li.className = 'medium';
                 li.innerHTML = `
                     <span>${task.text}</span>
-                    <button onclick="deleteKeyTask(${index})">🗑️</button>
+                    <button onclick="deleteKeyTask(${index})"><i class="fas fa-trash"></i></button>
                 `;
                 taskList.appendChild(li);
             });
@@ -695,7 +710,7 @@
             localStorage.setItem('key-tasks', JSON.stringify(keyTasks));
         }
 
-        // Управление задачами
+        // Задачи
         let tasks = JSON.parse(localStorage.getItem('work-tasks')) || [];
         let completedTasks = tasks.filter(t => t.completed).length;
 
@@ -720,8 +735,8 @@
                 li.innerHTML = `
                     <span>${task.text}</span>
                     <div>
-                        <button onclick="toggleTask(${index})">${task.completed ? '🔄' : '✅'}</button>
-                        <button onclick="deleteTask(${index})">🗑️</button>
+                        <button onclick="toggleTask(${index})">${task.completed ? '<i class="fas fa-undo"></i>' : '<i class="fas fa-check"></i>'}</button>
+                        <button onclick="deleteTask(${index})"><i class="fas fa-trash"></i></button>
                     </div>
                 `;
                 li.draggable = true;
@@ -767,7 +782,8 @@
 
         function startPomodoro() {
             if (!isPomodoroRunning) {
-                pomodoroTime = pomodoroDuration * 60;
+                const [hours, minutes] = breakInterval.split(':');
+                pomodoroTime = (parseInt(hours) * 60 + parseInt(minutes)) * 60;
                 isPomodoroRunning = true;
                 pomodoroInterval = setInterval(() => {
                     pomodoroTime--;
@@ -776,7 +792,7 @@
                     if (pomodoroTime <= 0) {
                         clearInterval(pomodoroInterval);
                         isPomodoroRunning = false;
-                        pomodoroTime = pomodoroDuration * 60;
+                        pomodoroTime = (parseInt(hours) * 60 + parseInt(minutes)) * 60;
                         updateTimer();
                         alert('Pomodoro завершён! Время для перерыва.');
                         showStage('break');
@@ -800,83 +816,202 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.beginPath();
             ctx.arc(60, 60, 50, -Math.PI / 2, (2 * Math.PI * progress) - Math.PI / 2);
-            ctx.strokeStyle = '#6b7280';
+            ctx.strokeStyle = '#f3e8d6';
             ctx.lineWidth = 8;
             ctx.stroke();
         }
 
         // Заметки
-        function saveNotes() {
-            const notes = document.getElementById('code-notes').value;
-            localStorage.setItem('work-notes', notes);
-            alert('Заметки сохранены!');
+        let notes = JSON.parse(localStorage.getItem('work-notes')) || [];
+        let currentNoteIndex = null;
+
+        function openNoteModal(type, index) {
+            const modal = document.getElementById('note-modal');
+            const text = document.getElementById('note-text');
+            const category = document.getElementById('note-category');
+            const color = document.getElementById('note-color');
+            if (type === 'new') {
+                text.value = '';
+                category.value = 'general';
+                color.value = 'default';
+                currentNoteIndex = null;
+            } else {
+                const note = notes[index];
+                text.value = note.text;
+                category.value = note.category;
+                color.value = note.color;
+                currentNoteIndex = index;
+            }
+            modal.style.display = 'flex';
         }
 
-        // Дыхание
-        function startBreathing() {
-            const canvas = document.getElementById('breathing-circle');
-            const ctx = canvas.getContext('2d');
-            let phase = 0;
-            const tracker = document.getElementById('exercise-tracker') || document.getElementById('family-tracker');
-            tracker.innerHTML = 'Вдохни (4 сек)...';
-            const interval = setInterval(() => {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.beginPath();
-                ctx.arc(60, 60, 40 + (phase % 8), 0, 2 * Math.PI);
-                ctx.fillStyle = 'rgba(107, 114, 128, 0.5)';
-                ctx.fill();
-                phase++;
-                if (phase < 4) tracker.innerHTML = 'Вдохни...';
-                else if (phase < 8) tracker.innerHTML = 'Задержи...';
-                else if (phase < 12) tracker.innerHTML = 'Выдохни...';
-                else if (phase < 16) tracker.innerHTML = 'Задержи...';
-                else {
-                    clearInterval(interval);
-                    tracker.innerHTML = 'Отлично! Ты готов к следующему шагу.';
+        function saveNote() {
+            const text = document.getElementById('note-text').value;
+            const category = document.getElementById('note-category').value;
+            const color = document.getElementById('note-color').value;
+            if (text) {
+                if (currentNoteIndex === null) {
+                    notes.push({ text, category, color });
+                } else {
+                    notes[currentNoteIndex] = { text, category, color };
                 }
-            }, 1000);
+                localStorage.setItem('work-notes', JSON.stringify(notes));
+                renderNotes();
+                closeNoteModal();
+            }
         }
 
-        // Упражнения на перерыве
+        function renderNotes() {
+            const notesList = document.getElementById('notes-list');
+            notesList.innerHTML = '';
+            notes.forEach((note, index) => {
+                const div = document.createElement('div');
+                div.className = `note ${note.color}`;
+                div.innerHTML = `
+                    <p>${note.text.substring(0, 50)}${note.text.length > 50 ? '...' : ''}</p>
+                    <small>${note.category}</small>
+                    <button onclick="openNoteModal('edit', ${index})"><i class="fas fa-edit"></i></button>
+                    <button onclick="deleteNote(${index})"><i class="fas fa-trash"></i></button>
+                `;
+                notesList.appendChild(div);
+            });
+        }
+
+        function deleteNote(index) {
+            notes.splice(index, 1);
+            localStorage.setItem('work-notes', JSON.stringify(notes));
+            renderNotes();
+        }
+
+        function closeNoteModal() {
+            document.getElementById('note-modal').style.display = 'none';
+        }
+
+        // Упражнения
         function startBreakExercise() {
             const exercise = document.getElementById('break-exercise').value;
             const tracker = document.getElementById('exercise-tracker');
+            const svg = document.getElementById('exercise-svg');
+            svg.innerHTML = '';
             if (exercise === 'breathing') {
-                startBreathing();
+                tracker.innerHTML = 'Вдохни (4 сек)...';
+                svg.innerHTML = `<circle cx="50" cy="50" r="40" fill="rgba(243, 232, 214, 0.5)"></circle>`;
+                let phase = 0;
+                const interval = setInterval(() => {
+                    const r = 40 + (phase % 8);
+                    svg.innerHTML = `<circle cx="50" cy="50" r="${r}" fill="rgba(243, 232, 214, 0.5)"></circle>`;
+                    phase++;
+                    if (phase < 4) tracker.innerHTML = 'Вдохни...';
+                    else if (phase < 8) tracker.innerHTML = 'Задержи...';
+                    else if (phase < 12) tracker.innerHTML = 'Выдохни...';
+                    else if (phase < 16) tracker.innerHTML = 'Задержи...';
+                    else {
+                        clearInterval(interval);
+                        tracker.innerHTML = 'Отлично! Ты восстановился.';
+                    }
+                }, 1000);
             } else if (exercise === 'eyes') {
                 tracker.innerHTML = 'Посмотри влево, вправо, вверх, вниз. Повтори 5 раз.';
+                svg.innerHTML = `<circle cx="50" cy="50" r="20" fill="#f5f5f5"></circle>`;
+                let x = 50, y = 50, dir = 0;
+                const interval = setInterval(() => {
+                    if (dir === 0) x += 5;
+                    else if (dir === 1) x -= 5;
+                    else if (dir === 2) y -= 5;
+                    else if (dir === 3) y += 5;
+                    svg.innerHTML = `<circle cx="${x}" cy="${y}" r="20" fill="#f5f5f5"></circle>`;
+                    if (x >= 70 || x <= 30 || y <= 30 || y >= 70) dir = (dir + 1) % 4;
+                }, 500);
+                setTimeout(() => clearInterval(interval), 5000);
             } else if (exercise === 'body') {
                 tracker.innerHTML = 'Потяни руки вверх, затем в стороны. Сделай 3 подхода.';
+                svg.innerHTML = `<rect x="40" y="20" width="20" height="60" fill="#f5f5f5"></rect>`;
+                let angle = 0;
+                const interval = setInterval(() => {
+                    angle = (angle + 10) % 360;
+                    svg.innerHTML = `<rect x="40" y="20" width="20" height="60" fill="#f5f5f5" transform="rotate(${angle}, 50, 50)"></rect>`;
+                }, 200);
+                setTimeout(() => clearInterval(interval), 6000);
+            } else if (exercise === 'neck') {
+                tracker.innerHTML = 'Поверни голову влево, вправо, наклони. Повтори 4 раза.';
+                svg.innerHTML = `<circle cx="50" cy="50" r="30" fill="#f5f5f5"></circle>`;
+                let angle = 0;
+                const interval = setInterval(() => {
+                    angle = (angle + 15) % 360;
+                    svg.innerHTML = `<circle cx="50" cy="50" r="30" fill="#f5f5f5" transform="rotate(${angle}, 50, 50)"></circle>`;
+                }, 300);
+                setTimeout(() => clearInterval(interval), 4800);
+            } else if (exercise === 'wrists') {
+                tracker.innerHTML = 'Вращай запястья по и против часовой стрелки.';
+                svg.innerHTML = `<rect x="45" y="30" width="10" height="40" fill="#f5f5f5"></rect>`;
+                let angle = 0;
+                const interval = setInterval(() => {
+                    angle = (angle + 20) % 360;
+                    svg.innerHTML = `<rect x="45" y="30" width="10" height="40" fill="#f5f5f5" transform="rotate(${angle}, 50, 50)"></rect>`;
+                }, 150);
+                setTimeout(() => clearInterval(interval), 4500);
             }
         }
 
         // Расслабление
         function startRelax() {
+            const game = document.getElementById('relax-game').value;
             const tracker = document.getElementById('relax-tracker');
-            tracker.innerHTML = 'Кликни по звёздам, чтобы собрать их! (5 секунд)';
-            const stars = document.querySelectorAll('.star');
-            let count = 0;
-            stars.forEach(star => {
-                star.style.pointerEvents = 'auto';
-                star.addEventListener('click', () => {
-                    star.style.display = 'none';
-                    count++;
+            if (game === 'stars') {
+                tracker.innerHTML = 'Кликни по звёздам! (10 секунд)';
+                const stars = document.querySelectorAll('.star');
+                let count = 0;
+                stars.forEach(star => {
+                    star.style.pointerEvents = 'auto';
+                    star.addEventListener('click', () => {
+                        star.style.display = 'none';
+                        count++;
+                    });
                 });
-            });
-            setTimeout(() => {
-                tracker.innerHTML = `Собрано звёзд: ${count}. Ты расслабился!`;
-                stars.forEach(star => star.style.display = 'block');
-            }, 5000);
+                setTimeout(() => {
+                    tracker.innerHTML = `Собрано звёзд: ${count}. Отлично!`;
+                    stars.forEach(star => star.style.display = 'block');
+                }, 10000);
+            } else if (game === 'puzzle') {
+                tracker.innerHTML = 'Собери пазл! (10 секунд)';
+                const puzzle = document.createElement('div');
+                puzzle.innerHTML = `
+                    <style>
+                        .puzzle-piece { width: 30px; height: 30px; background: #f3e8d6; margin: 5px; cursor: pointer; }
+                        .puzzle-piece.correct { background: #4caf50; }
+                    </style>
+                    <div class="puzzle-piece" onclick="checkPuzzle(0)"></div>
+                    <div class="puzzle-piece" onclick="checkPuzzle(1)"></div>
+                    <div class="puzzle-piece" onclick="checkPuzzle(2)"></div>
+                `;
+                tracker.appendChild(puzzle);
+                let correct = [false, false, false];
+                window.checkPuzzle = (index) => {
+                    correct[index] = !correct[index];
+                    puzzle.children[index].classList.toggle('correct');
+                };
+                setTimeout(() => {
+                    tracker.innerHTML = `Пазл собран: ${correct.filter(c => c).length}/3. Молодец!`;
+                }, 10000);
+            }
         }
 
-        // Активности для семьи
+        // Семейные активности
+        const relationTips = [
+            'Сделай комплимент близкому человеку.',
+            'Предложи вместе приготовить ужин.',
+            'Расскажи о своём дне и спроси, как прошёл их день.',
+            'Сходите на прогулку вместе.',
+            'Посмотрите любимый фильм или сериал.'
+        ];
+
         function startFamilyActivity() {
             const activity = document.getElementById('family-activity').value;
             const tracker = document.getElementById('family-tracker');
             if (activity === 'relations') {
-                tracker.innerHTML = 'Сделай комплимент близкому человеку или предложи провести время вместе.';
+                tracker.innerHTML = relationTips[Math.floor(Math.random() * relationTips.length)];
             } else if (activity === 'stargame') {
-                tracker.innerHTML = 'Кликни по звёздам, чтобы собрать их! (5 секунд)';
+                tracker.innerHTML = 'Кликни по звёздам! (10 секунд)';
                 const stars = document.querySelectorAll('.star');
                 let count = 0;
                 stars.forEach(star => {
@@ -889,7 +1024,28 @@
                 setTimeout(() => {
                     tracker.innerHTML = `Собрано звёзд: ${count}. Ты готов к общению!`;
                     stars.forEach(star => star.style.display = 'block');
-                }, 5000);
+                }, 10000);
+            } else if (activity === 'puzzle') {
+                tracker.innerHTML = 'Собери пазл! (10 секунд)';
+                const puzzle = document.createElement('div');
+                puzzle.innerHTML = `
+                    <style>
+                        .puzzle-piece { width: 30px; height: 30px; background: #f3e8d6; margin: 5px; cursor: pointer; }
+                        .puzzle-piece.correct { background: #4caf50; }
+                    </style>
+                    <div class="puzzle-piece" onclick="checkPuzzle(0)"></div>
+                    <div class="puzzle-piece" onclick="checkPuzzle(1)"></div>
+                    <div class="puzzle-piece" onclick="checkPuzzle(2)"></div>
+                `;
+                tracker.appendChild(puzzle);
+                let correct = [false, false, false];
+                window.checkPuzzle = (index) => {
+                    correct[index] = !correct[index];
+                    puzzle.children[index].classList.toggle('correct');
+                };
+                setTimeout(() => {
+                    tracker.innerHTML = `Пазл собран: ${correct.filter(c => c).length}/3. Молодец!`;
+                }, 10000);
             }
         }
 
@@ -911,7 +1067,7 @@
             showFamilyStep('export');
         }
 
-        // Статистика недели
+        // Статистика
         function updateWeeklyStats() {
             const canvas = document.getElementById('weekly-stats');
             if (!canvas) return;
@@ -919,7 +1075,7 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             const stats = JSON.parse(localStorage.getItem('family-stats')) || Array(7).fill(0);
             for (let i = 0; i < 7; i++) {
-                ctx.fillStyle = '#6b7280';
+                ctx.fillStyle = '#f3e8d6';
                 ctx.fillRect(i * 28, 100 - stats[i] * 10, 20, stats[i] * 10);
             }
         }
@@ -935,26 +1091,67 @@
 
         // Экспорт результатов
         function exportResults() {
-            const results = `CalmFlow 4.0 - Итоги дня\nЗадач выполнено: ${completedTasks}/${tasks.length}\nПрогресс: ${Math.round((completedTasks / tasks.length) * 100) || 0}%\nЗаметки:\n${localStorage.getItem('work-notes') || 'Нет заметок'}\nПлан на завтра:\n${localStorage.getItem('tomorrow-plan') || 'Нет плана'}`;
+            const results = `CalmFlow 4.0 - Итоги дня ${new Date().toLocaleDateString()}\nЗадач выполнено: ${completedTasks}/${tasks.length}\nПрогресс: ${Math.round((completedTasks / tasks.length) * 100) || 0}%\nЗаметки:\n${notes.map(n => n.text).join('\n') || 'Нет заметок'}\nПлан на завтра:\n${localStorage.getItem('tomorrow-plan') || 'Нет плана'}`;
             const blob = new Blob([results], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'CalmFlow_Results.txt';
+            a.download = `CalmFlow_Results_${new Date().toISOString().split('T')[0]}.txt`;
             a.click();
             URL.revokeObjectURL(url);
+        }
+
+        // Импорт результатов
+        let importedData = JSON.parse(localStorage.getItem('imported-data')) || [];
+
+        function importResults() {
+            const fileInput = document.getElementById('import-file');
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const text = e.target.result;
+                    const dateMatch = text.match(/Итоги дня (\d{2}\.\d{2}\.\d{4})/);
+                    const tasksMatch = text.match(/Задач выполнено: (\d+)\/(\d+)/);
+                    const progressMatch = text.match(/Прогресс: (\d+)%/);
+                    if (dateMatch && tasksMatch && progressMatch) {
+                        importedData.push({
+                            date: dateMatch[1],
+                            completed: parseInt(tasksMatch[1]),
+                            total: parseInt(tasksMatch[2]),
+                            progress: parseInt(progressMatch[1])
+                        });
+                        localStorage.setItem('imported-data', JSON.stringify(importedData));
+                        updateProgressStats();
+                    } else {
+                        alert('Неверный формат файла.');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        function updateProgressStats() {
+            const canvas = document.getElementById('progress-stats');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const days = importedData.slice(-7); // Последние 7 дней
+            for (let i = 0; i < days.length; i++) {
+                ctx.fillStyle = '#f3e8d6';
+                ctx.fillRect(i * 28, 100 - days[i].progress, 20, days[i].progress);
+            }
         }
 
         // Экспорт семейных данных
         function exportFamilyData() {
             const mood = localStorage.getItem('family-mood') || 'Нет записей';
             const stats = JSON.parse(localStorage.getItem('family-stats')) || Array(7).fill(0);
-            const data = `CalmFlow 4.0 - Семейные итоги\nНастроение: ${mood}\nАктивность за неделю: ${stats.join(', ')}`;
+            const data = `CalmFlow 4.0 - Семейные итоги ${new Date().toLocaleDateString()}\nНастроение: ${mood}\nАктивность за неделю: ${stats.join(', ')}`;
             const blob = new Blob([data], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'CalmFlow_Family.txt';
+            a.download = `CalmFlow_Family_${new Date().toISOString().split('T')[0]}.txt`;
             a.click();
             URL.revokeObjectURL(url);
             showFamilyStep('complete');
@@ -973,14 +1170,23 @@
 
         // Инициализация
         initStars();
-        initClockMenus();
+        const timeSettings = JSON.parse(localStorage.getItem('work-time'));
+        if (timeSettings) {
+            document.getElementById('work-start').value = timeSettings.start;
+            document.getElementById('work-end').value = timeSettings.end;
+            document.getElementById('break-interval').value = timeSettings.break;
+            workStart = timeSettings.start;
+            workEnd = timeSettings.end;
+            breakInterval = timeSettings.break;
+            updateTimeRemaining();
+        }
         renderKeyTasks();
         renderTasks();
+        renderNotes();
         updateWeeklyStats();
         updateResults();
-        document.getElementById('code-notes').value = localStorage.getItem('work-notes') || '';
-        document.getElementById('mood-tracker').value = localStorage.getItem('family-mood') || '';
         document.getElementById('tomorrow-plan').value = localStorage.getItem('tomorrow-plan') || '';
+        document.getElementById('mood-tracker').value = localStorage.getItem('family-mood') || '';
     </script>
 </body>
-                </html>
+    </html>
