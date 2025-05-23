@@ -23,13 +23,13 @@
 
         /* Контейнер */
         .container {
-            max-width: 700px;
+            max-width: 800px;
             width: 90%;
-            padding: 30px;
-            background: rgba(20, 20, 20, 0.8);
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            padding: 40px;
+            background: rgba(20, 20, 20, 0.85);
+            border-radius: 24px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
             text-align: center;
             animation: fadeIn 1s ease-in;
         }
@@ -39,108 +39,140 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Навигатор этапов */
+        /* Полукруглый навигатор */
         .stage-nav {
+            position: relative;
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 25px;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: radial-gradient(circle at center, rgba(243, 232, 214, 0.1), transparent);
+            border-radius: 50px;
         }
 
         .stage-nav span {
-            font-size: 12px;
+            font-size: 13px;
             color: #9ca3af;
-            padding: 8px 12px;
-            cursor: default;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        .stage-nav span:hover {
+            color: #f3e8d6;
+            transform: scale(1.1);
         }
 
         .stage-nav span.active {
-            color: #f3e8d6;
-            background: rgba(243, 232, 214, 0.2);
-            border-radius: 8px;
+            color: #f4c7a6;
+            background: rgba(244, 199, 166, 0.2);
+            border-radius: 12px;
+            transform: scale(1.15);
         }
 
         /* Заголовки */
         h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 32px;
+            font-size: 36px;
             color: #f5f5f5;
-            margin: 0 0 10px;
+            margin: 0 0 15px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         h2 {
             font-family: 'Playfair Display', serif;
-            font-size: 22px;
-            color: #f5f5f5;
-            margin: 20px 0 10px;
+            font-size: 24px;
+            color: #f3e8d6;
+            margin: 25px 0 15px;
         }
 
         /* Сообщения */
         .motivation, .exercise-instructions {
-            font-size: 14px;
-            color: #9ca3af;
-            line-height: 1.5;
+            font-size: 15px;
+            color: #b0b8c1;
+            line-height: 1.6;
             margin: 15px 0;
+            font-style: italic;
         }
 
         /* Кнопки */
         button {
-            background: #f3e8d6;
+            background: linear-gradient(135deg, #f3e8d6, #f4c7a6);
             color: #0a0a0a;
             border: none;
-            padding: 12px 24px;
+            padding: 12px 28px;
             cursor: pointer;
-            border-radius: 12px;
+            border-radius: 16px;
             font-family: 'Inter', sans-serif;
             font-size: 14px;
             font-weight: 500;
-            margin: 10px;
-            transition: background 0.3s, transform 0.2s;
+            margin: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
         }
 
         button:hover {
-            background: #fff7e6;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(244, 199, 166, 0.4);
+        }
+
+        button.primary {
+            padding: 14px 32px;
+            font-size: 16px;
+            border-radius: 20px;
+        }
+
+        button.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #f3e8d6;
+            padding: 10px 20px;
+            font-size: 13px;
         }
 
         /* Вкладки */
         .tabs {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin: 20px 0;
+            gap: 20px;
+            margin: 25px 0;
         }
 
         .tabs button {
             background: rgba(255, 255, 255, 0.05);
-            padding: 8px 16px;
-            font-size: 13px;
-            margin: 5px;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 12px;
+            margin: 0;
         }
 
         .tabs button.active {
-            background: #f3e8d6;
+            background: #f4c7a6;
             color: #0a0a0a;
         }
 
         /* Поля ввода */
         input[type="text"], input[type="time"], textarea, select {
             width: 100%;
-            padding: 12px;
-            margin: 10px 0;
+            padding: 14px;
+            margin: 12px 0;
             background: rgba(255, 255, 255, 0.05);
             color: #f5f5f5;
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
-            font-size: 14px;
+            font-size: 15px;
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
+            transition: border 0.3s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: #f4c7a6;
+            outline: none;
         }
 
         textarea {
-            min-height: 100px;
+            min-height: 120px;
             resize: vertical;
             font-family: 'Courier New', monospace;
         }
@@ -149,7 +181,7 @@
         #task-list, #key-task-list {
             list-style: none;
             padding: 0;
-            max-height: 250px;
+            max-height: 300px;
             overflow-y: auto;
         }
 
@@ -157,34 +189,34 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px;
-            margin: 5px 0;
+            padding: 14px;
+            margin: 8px 0;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 12px;
-            transition: transform 0.2s;
+            transition: transform 0.3s;
         }
 
         #task-list li:hover, #key-task-list li:hover {
-            transform: translateX(5px);
+            transform: translateX(8px);
         }
 
-        #task-list li.low { border-left: 4px solid #4caf50; }
-        #task-list li.medium { border-left: 4px solid #ffca28; }
-        #task-list li.high { border-left: 4px solid #f44336; }
+        #task-list li.low { border-left: 5px solid #4caf50; }
+        #task-list li.medium { border-left: 5px solid #ffca28; }
+        #task-list li.high { border-left: 5px solid #f44336; }
 
         /* Чек-лист */
         .checklist {
             text-align: left;
-            margin: 15px 0;
+            margin: 20px 0;
         }
 
         .checklist label {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin: 8px 0;
-            font-size: 14px;
-            color: #9ca3af;
+            gap: 12px;
+            margin: 10px 0;
+            font-size: 15px;
+            color: #b0b8c1;
         }
 
         /* Модальные заметки */
@@ -195,7 +227,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.75);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -203,49 +235,116 @@
 
         .modal-content {
             background: rgba(20, 20, 20, 0.9);
-            padding: 20px;
-            border-radius: 12px;
+            padding: 25px;
+            border-radius: 16px;
             width: 90%;
-            max-width: 500px;
-            max-height: 80vh;
+            max-width: 550px;
+            max-height: 85vh;
             overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
         .modal-content textarea {
             width: 100%;
-            min-height: 150px;
+            min-height: 200px;
         }
 
-        .modal-content select {
-            width: auto;
+        .modal-content .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
             margin: 10px 0;
         }
 
+        .modal-content .tag {
+            background: #f4c7a6;
+            color: #0a0a0a;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        /* Заметки */
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .note-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .note-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(244, 199, 166, 0.3);
+        }
+
+        .note-card.red { background: rgba(244, 67, 54, 0.2); }
+        .note-card.green { background: rgba(76, 175, 80, 0.2); }
+        .note-card.blue { background: rgba(33, 150, 243, 0.2); }
+
         /* SVG-анимации упражнений */
         .exercise-animation {
-            width: 100px;
-            height: 100px;
-            margin: 20px auto;
+            width: 120px;
+            height: 120px;
+            margin: 25px auto;
+        }
+
+        /* Дневник настроения */
+        .mood-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .mood-emoji {
+            font-size: 24px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 12px;
+            transition: transform 0.3s;
+        }
+
+        .mood-emoji:hover {
+            transform: scale(1.2);
+        }
+
+        .mood-emoji.selected {
+            background: #f4c7a6;
+        }
+
+        /* Графики */
+        canvas {
+            display: block;
+            margin: 25px auto;
         }
 
         /* CSS-дерево */
         .tree-icon {
-            width: 50px;
-            height: 50px;
-            margin: 20px auto;
+            width: 60px;
+            height: 60px;
+            margin: 25px auto;
             position: relative;
         }
 
         .tree-icon::before {
             content: '';
             position: absolute;
-            top: 35px;
+            top: 40px;
             left: 50%;
             transform: translateX(-50%);
-            width: 8px;
-            height: 15px;
+            width: 10px;
+            height: 20px;
             background: #4a4a4a;
-            border-radius: 2px;
+            border-radius: 3px;
         }
 
         .tree-icon::after {
@@ -254,17 +353,17 @@
             top: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 35px;
-            height: 35px;
-            background: radial-gradient(circle, #f3e8d6 40%, #d4c9a8 70%);
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, #f4c7a6 40%, #d4c9a8 70%);
             border-radius: 50%;
-            box-shadow: 0 0 10px rgba(243, 232, 214, 0.3);
-            animation: treeGlow 3s ease-in-out infinite;
+            box-shadow: 0 0 15px rgba(244, 199, 166, 0.4);
+            animation: treeGlow 3.5s ease-in-out infinite;
         }
 
         @keyframes treeGlow {
             0%, 100% { transform: translateX(-50%) scale(1); }
-            50% { transform: translateX(-50%) scale(1.1); }
+            50% { transform: translateX(-50%) scale(1.15); }
         }
 
         /* Звёздный фон */
@@ -286,14 +385,8 @@
         }
 
         @keyframes twinkle {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.7; }
-        }
-
-        /* Прогресс и дыхание */
-        canvas {
-            display: block;
-            margin: 20px auto;
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 0.8; }
         }
 
         /* Анимация этапов */
@@ -315,21 +408,21 @@
         @media (max-width: 600px) {
             .container {
                 width: 95%;
-                padding: 20px;
+                padding: 25px;
             }
 
             .stage-nav {
                 flex-wrap: wrap;
-                gap: 5px;
+                gap: 10px;
             }
 
             .stage-nav span {
-                font-size: 10px;
-                padding: 6px;
+                font-size: 11px;
+                padding: 8px;
             }
 
             h1 {
-                font-size: 26px;
+                font-size: 28px;
             }
 
             h2 {
@@ -337,53 +430,41 @@
             }
 
             button {
-                width: 100%;
-                padding: 12px;
-                margin: 8px 0;
+                margin: 8px;
+            }
+
+            button.primary {
+                padding: 12px 28px;
+                font-size: 14px;
             }
 
             .tabs {
                 flex-wrap: wrap;
-                gap: 10px;
+                gap: 15px;
             }
 
-            .tabs button {
-                width: auto;
-                font-size: 12px;
-                padding: 6px 12px;
-            }
-
-            input[type="text"], input[type="time"], textarea, select {
-                font-size: 14px;
-                padding: 10px;
-            }
-
-            #task-list, #key-task-list {
-                max-height: 200px;
-            }
-
-            textarea {
-                min-height: 80px;
+            .notes-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             }
 
             .exercise-animation, canvas {
-                width: 80px !important;
-                height: 80px !important;
+                width: 100px !important;
+                height: 100px !important;
             }
 
             .modal-content {
                 width: 95%;
-                padding: 15px;
+                padding: 20px;
             }
 
             .motivation, .exercise-instructions {
-                font-size: 12px;
+                font-size: 13px;
             }
         }
 
         @media (max-width: 400px) {
             h1 {
-                font-size: 22px;
+                font-size: 24px;
             }
 
             h2 {
@@ -412,38 +493,38 @@
         <div id="start-stage" class="stage active">
             <div class="tree-icon"></div>
             <h1>CalmFlow 4.0</h1>
-            <p class="motivation">Начни свой день с изысканной продуктивности</p>
-            <button onclick="showStage('setup')"><i class="fas fa-play"></i> Начать смену</button>
+            <p class="motivation">Вдохни гармонию, начни свой день с ясностью</p>
+            <button class="primary" onclick="showStage('setup')"><i class="fas fa-play"></i> Начать смену</button>
         </div>
 
         <!-- Настройка работы -->
         <div id="setup-stage" class="stage">
             <h2>Настройка работы</h2>
-            <p class="exercise-instructions">Подготовься к продуктивному дню.</p>
+            <p class="exercise-instructions">Подготовься к продуктивному дню с лёгкостью.</p>
             <div class="tabs">
                 <button class="tab-btn active" onclick="showTab('setup-time', this)"><i class="fas fa-clock"></i> Время</button>
                 <button class="tab-btn" onclick="showTab('setup-tasks', this)"><i class="fas fa-list"></i> Задачи</button>
             </div>
             <div id="setup-time" class="tab-content active">
-                <p>Выбери время работы и перерывов</p>
+                <p>Задай ритм своего дня</p>
                 <label>Работа с <input type="time" id="work-start"> до <input type="time" id="work-end"></label>
                 <p id="time-remaining"></p>
                 <label>Перерывы каждые <input type="time" id="break-interval" value="01:00"></label>
-                <button onclick="applyDoctorBreaks()">Рекомендации врача</button>
-                <button onclick="saveTimeSettings()">Сохранить</button>
+                <button class="secondary" onclick="applyDoctorBreaks()"><i class="fas fa-user-md"></i> Рекомендации врача</button>
+                <button class="primary" onclick="saveTimeSettings()"><i class="fas fa-save"></i> Сохранить</button>
             </div>
             <div id="setup-tasks" class="tab-content">
                 <input type="text" id="key-task" placeholder="Ключевая задача дня">
-                <button onclick="addKeyTask()"><i class="fas fa-plus"></i> Добавить задачу</button>
+                <button class="primary" onclick="addKeyTask()"><i class="fas fa-plus"></i> Добавить задачу</button>
                 <ul id="key-task-list"></ul>
             </div>
-            <button onclick="showStage('work')"><i class="fas fa-arrow-right"></i> Начать работу</button>
+            <button class="primary" onclick="showStage('work')"><i class="fas fa-arrow-right"></i> Начать работу</button>
         </div>
 
         <!-- Выполнение работы -->
         <div id="work-stage" class="stage">
             <h2>Рабочая зона</h2>
-            <p class="exercise-instructions">Сосредоточься на задачах.</p>
+            <p class="exercise-instructions">Погрузись в поток задач.</p>
             <div class="tabs">
                 <button class="tab-btn active" onclick="showTab('work-tasks', this)"><i class="fas fa-tasks"></i> Задачи</button>
                 <button class="tab-btn" onclick="showTab('work-pomodoro', this)"><i class="fas fa-stopwatch"></i> Pomodoro</button>
@@ -456,26 +537,27 @@
                     <option value="medium">Средний</option>
                     <option value="high">Высокий</option>
                 </select>
-                <button onclick="addTask()"><i class="fas fa-plus"></i> Добавить задачу</button>
+                <button class="primary" onclick="addTask()"><i class="fas fa-plus"></i> Добавить задачу</button>
                 <ul id="task-list" class="sortable"></ul>
             </div>
             <div id="work-pomodoro" class="tab-content">
-                <button onclick="startPomodoro()"><i class="fas fa-play"></i> Старт Pomodoro (Space)</button>
+                <button class="primary" onclick="startPomodoro()"><i class="fas fa-play"></i> Старт Pomodoro (Space)</button>
                 <p id="timer">25:00</p>
                 <canvas id="progress-circle" width="120" height="120"></canvas>
             </div>
             <div id="work-notes" class="tab-content">
-                <button onclick="openNoteModal('new')"><i class="fas fa-plus"></i> Новая заметка</button>
-                <div id="notes-list"></div>
+                <input type="text" id="note-search" placeholder="Поиск заметок...">
+                <button class="primary" onclick="openNoteModal('new')"><i class="fas fa-plus"></i> Новая заметка</button>
+                <div class="notes-grid" id="notes-list"></div>
             </div>
-            <button onclick="showStage('break')"><i class="fas fa-coffee"></i> Перерыв</button>
-            <button onclick="showStage('end-shift')"><i class="fas fa-check-circle"></i> Завершить смену</button>
+            <button class="secondary" onclick="showStage('break')"><i class="fas fa-coffee"></i> Перерыв</button>
+            <button class="primary" onclick="showStage('end-shift')"><i class="fas fa-check-circle"></i> Завершить смену</button>
         </div>
 
         <!-- Перерывы -->
         <div id="break-stage" class="stage">
             <h2>Перерыв</h2>
-            <p class="exercise-instructions">Расслабься и восстанови силы.</p>
+            <p class="exercise-instructions">Восстанови силы и вдохновение.</p>
             <div class="tabs">
                 <button class="tab-btn active" onclick="showTab('break-exercise', this)"><i class="fas fa-running"></i> Упражнения</button>
                 <button class="tab-btn" onclick="showTab('break-relax', this)"><i class="fas fa-gamepad"></i> Расслабление</button>
@@ -488,7 +570,7 @@
                     <option value="neck">Упражнение для шеи</option>
                     <option value="wrists">Упражнение для запястий</option>
                 </select>
-                <button onclick="startBreakExercise()"><i class="fas fa-play"></i> Начать</button>
+                <button class="primary" onclick="startBreakExercise()"><i class="fas fa-play"></i> Начать</button>
                 <div id="exercise-tracker"></div>
                 <svg class="exercise-animation" id="exercise-svg"></svg>
             </div>
@@ -496,17 +578,18 @@
                 <select id="relax-game">
                     <option value="stars">Звёздное небо</option>
                     <option value="puzzle">Пазл</option>
+                    <option value="maze">Лабиринт</option>
                 </select>
-                <button onclick="startRelax()"><i class="fas fa-gamepad"></i> Играть</button>
+                <button class="primary" onclick="startRelax()"><i class="fas fa-gamepad"></i> Играть</button>
                 <div id="relax-tracker"></div>
             </div>
-            <button onclick="showStage('work')"><i class="fas fa-arrow-left"></i> Вернуться к работе</button>
+            <button class="primary" onclick="showStage('work')"><i class="fas fa-arrow-left"></i> Вернуться к работе</button>
         </div>
 
         <!-- Завершение смены -->
         <div id="end-shift-stage" class="stage">
             <h2>Завершение смены</h2>
-            <p class="exercise-instructions">Оставь работу позади.</p>
+            <p class="exercise-instructions">Оставь работу с лёгким сердцем.</p>
             <div class="tabs">
                 <button class="tab-btn active" onclick="showTab('end-results', this)"><i class="fas fa-chart-line"></i> Итоги</button>
                 <button class="tab-btn" onclick="showTab('end-ritual', this)"><i class="fas fa-pray"></i> Ритуал</button>
@@ -514,10 +597,15 @@
             </div>
             <div id="end-results" class="tab-content active">
                 <div id="results"></div>
-                <button onclick="exportResults()"><i class="fas fa-download"></i> Экспортировать</button>
-                <input type="file" id="import-file" accept=".txt">
-                <button onclick="importResults()"><i class="fas fa-upload"></i> Импортировать</button>
-                <canvas id="progress-stats" width="200" height="100"></canvas>
+                <select id="stats-filter">
+                    <option value="day">День</option>
+                    <option value="week">Неделя</option>
+                    <option value="month">Месяц</option>
+                </select>
+                <canvas id="progress-stats" width="300" height="150"></canvas>
+                <button class="secondary" onclick="exportResults()"><i class="fas fa-download"></i> Экспортировать</button>
+                <input type="file" id="import-file" accept=".txt" multiple>
+                <button class="secondary" onclick="importResults()"><i class="fas fa-upload"></i> Импортировать</button>
             </div>
             <div id="end-ritual" class="tab-content">
                 <div class="checklist">
@@ -525,41 +613,49 @@
                     <label><input type="checkbox" class="end-checklist"> Проверить почту</label>
                     <label><input type="checkbox" class="end-checklist"> Убрать материалы</label>
                 </div>
-                <button onclick="startBreathing()"><i class="fas fa-wind"></i> Дыхательное упражнение</button>
+                <button class="primary" onclick="startBreathing()"><i class="fas fa-wind"></i> Дыхательное упражнение</button>
             </div>
             <div id="end-plans" class="tab-content">
                 <textarea id="tomorrow-plan" placeholder="Планы на завтра..."></textarea>
-                <button onclick="saveTomorrowPlan()"><i class="fas fa-save"></i> Сохранить</button>
+                <button class="primary" onclick="saveTomorrowPlan()"><i class="fas fa-save"></i> Сохранить</button>
             </div>
-            <button onclick="showStage('family')"><i class="fas fa-home"></i> Подготовка к семье</button>
+            <button class="primary" onclick="showStage('family')"><i class="fas fa-home"></i> Подготовка к семье</button>
         </div>
 
         <!-- Подготовка к семье -->
         <div id="family-stage" class="stage">
             <h2>Время для семьи</h2>
-            <p class="exercise-instructions" id="family-tip">Настройся на общение с близкими.</p>
+            <p class="exercise-instructions" id="family-tip">Настройся на тепло и общение.</p>
             <div id="family-prepare" class="tab-content active">
                 <select id="family-activity">
                     <option value="relations">Совет для общения</option>
                     <option value="stargame">Звёздное небо</option>
                     <option value="puzzle">Пазл</option>
+                    <option value="maze">Лабиринт</option>
                 </select>
-                <button onclick="startFamilyActivity()"><i class="fas fa-heart"></i> Начать</button>
+                <button class="primary" onclick="startFamilyActivity()"><i class="fas fa-heart"></i> Начать</button>
                 <div id="family-tracker"></div>
-                <button onclick="showFamilyStep('mood')"><i class="fas fa-smile"></i> Сохранить настроение</button>
+                <button class="primary" onclick="showFamilyStep('mood')"><i class="fas fa-smile"></i> Сохранить настроение</button>
             </div>
             <div id="family-mood" class="tab-content">
-                <textarea id="mood-tracker" placeholder="Как ты себя чувствуешь?"></textarea>
-                <button onclick="saveMood()"><i class="fas fa-save"></i> Сохранить</button>
-                <button onclick="showFamilyStep('export')"><i class="fas fa-download"></i> Экспортировать</button>
+                <div class="mood-container">
+                    <span class="mood-emoji" data-mood="😊">😊</span>
+                    <span class="mood-emoji" data-mood="😔">😔</span>
+                    <span class="mood-emoji" data-mood="😊">😊</span>
+                    <span class="mood-emoji" data-mood="😴">😴</span>
+                    <span class="mood-emoji" data-mood="😊">😊</span>
+                </div>
+                <textarea id="mood-tracker" placeholder="Опиши свои эмоции..."></textarea>
+                <button class="primary" onclick="saveMood()"><i class="fas fa-save"></i> Сохранить</button>
+                <button class="primary" onclick="showFamilyStep('export')"><i class="fas fa-download"></i> Экспортировать</button>
             </div>
             <div id="family-export" class="tab-content">
-                <button onclick="exportFamilyData()"><i class="fas fa-download"></i> Экспортировать</button>
-                <button onclick="showFamilyStep('complete')"><i class="fas fa-check"></i> Завершить</button>
+                <button class="primary" onclick="exportFamilyData()"><i class="fas fa-download"></i> Экспортировать</button>
+                <button class="primary" onclick="showFamilyStep('complete')"><i class="fas fa-check"></i> Завершить</button>
             </div>
             <div id="family-complete" class="tab-content">
-                <p class="motivation">Отличный день! Наслаждайся временем дома.</p>
-                <button onclick="showStage('start')"><i class="fas fa-home"></i> Завершить день</button>
+                <p class="motivation">Чудесный день! Проведи вечер с близкими.</p>
+                <button class="primary" onclick="showStage('start')"><i class="fas fa-home"></i> Завершить день</button>
             </div>
         </div>
 
@@ -568,19 +664,16 @@
             <div class="modal-content">
                 <h2>Заметка</h2>
                 <textarea id="note-text" placeholder="Текст заметки"></textarea>
-                <select id="note-category">
-                    <option value="general">Общее</option>
-                    <option value="code">Код</option>
-                    <option value="ideas">Идеи</option>
-                </select>
+                <input type="text" id="note-tags" placeholder="Теги (через запятую)">
                 <select id="note-color">
                     <option value="default">По умолчанию</option>
                     <option value="red">Красный</option>
                     <option value="green">Зелёный</option>
                     <option value="blue">Синий</option>
                 </select>
-                <button onclick="saveNote()"><i class="fas fa-save"></i> Сохранить</button>
-                <button onclick="closeNoteModal()"><i class="fas fa-times"></i> Закрыть</button>
+                <div class="tags" id="note-tags-list"></div>
+                <button class="primary" onclick="saveNote()"><i class="fas fa-save"></i> Сохранить</button>
+                <button class="secondary" onclick="closeNoteModal()"><i class="fas fa-times"></i> Закрыть</button>
             </div>
         </div>
     </div>
@@ -590,10 +683,10 @@
         // Инициализация звёзд
         function initStars() {
             const starsContainer = document.getElementById('stars');
-            for (let i = 0; i < 80; i++) {
+            for (let i = 0; i < 100; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
-                star.style.width = `${Math.random() * 1.5}px`;
+                star.style.width = `${Math.random() * 1.8}px`;
                 star.style.height = star.style.width;
                 star.style.left = `${Math.random() * 100}%`;
                 star.style.top = `${Math.random() * 100}%`;
@@ -626,10 +719,10 @@
             document.querySelectorAll('#family-stage .tab-content').forEach(t => t.classList.remove('active'));
             document.getElementById(`family-${step}`).classList.add('active');
             const tip = document.getElementById('family-tip');
-            if (step === 'prepare') tip.textContent = 'Настройся на общение с близкими.';
-            else if (step === 'mood') tip.textContent = 'Запиши свои эмоции, чтобы завершить день.';
-            else if (step === 'export') tip.textContent = 'Сохрани итоги дня перед завершением.';
-            else if (step === 'complete') tip.textContent = 'Отличный день! Наслаждайся временем дома.';
+            if (step === 'prepare') tip.textContent = 'Настройся на тепло и общение.';
+            else if (step === 'mood') tip.textContent = 'Поделись своими эмоциями.';
+            else if (step === 'export') tip.textContent = 'Сохрани итоги дня.';
+            else if (step === 'complete') tip.textContent = 'Чудесный день! Проведи вечер с близкими.';
         }
 
         // Управление временем
@@ -638,12 +731,12 @@
             workStart = document.getElementById('work-start').value;
             workEnd = document.getElementById('work-end').value;
             breakInterval = document.getElementById('break-interval').value;
-            if (workStart && workEnd) {
+            if (workStart && workEnd && breakInterval) {
                 localStorage.setItem('work-time', JSON.stringify({ start: workStart, end: workEnd, break: breakInterval }));
                 updateTimeRemaining();
                 alert('Настройки времени сохранены!');
             } else {
-                alert('Укажите время начала и конца работы.');
+                alert('Заполните все поля времени.');
             }
         }
 
@@ -667,8 +760,8 @@
         }
 
         function applyDoctorBreaks() {
-            document.getElementById('break-interval').value = '00:50'; // Рекомендация: перерыв каждые 50 минут
-            alert('Установлен интервал перерывов по рекомендации врача: каждые 50 минут.');
+            document.getElementById('break-interval').value = '00:50';
+            alert('Установлены перерывы каждые 50 минут (рекомендация врача).');
         }
 
         setInterval(updateTimeRemaining, 60000);
@@ -694,7 +787,7 @@
                 li.className = 'medium';
                 li.innerHTML = `
                     <span>${task.text}</span>
-                    <button onclick="deleteKeyTask(${index})"><i class="fas fa-trash"></i></button>
+                    <button class="secondary" onclick="deleteKeyTask(${index})"><i class="fas fa-trash"></i></button>
                 `;
                 taskList.appendChild(li);
             });
@@ -719,7 +812,7 @@
             const priority = document.getElementById('priority').value;
             const taskText = taskInput.value.trim();
             if (taskText) {
-                tasks.push({ text: taskText, priority: priority, completed: false });
+                tasks.push({ text: taskText, priority: priority, completed: false, date: new Date().toISOString().split('T')[0] });
                 taskInput.value = '';
                 saveTasks();
                 renderTasks();
@@ -735,8 +828,8 @@
                 li.innerHTML = `
                     <span>${task.text}</span>
                     <div>
-                        <button onclick="toggleTask(${index})">${task.completed ? '<i class="fas fa-undo"></i>' : '<i class="fas fa-check"></i>'}</button>
-                        <button onclick="deleteTask(${index})"><i class="fas fa-trash"></i></button>
+                        <button class="secondary" onclick="toggleTask(${index})">${task.completed ? '<i class="fas fa-undo"></i>' : '<i class="fas fa-check"></i>'}</button>
+                        <button class="secondary" onclick="deleteTask(${index})"><i class="fas fa-trash"></i></button>
                     </div>
                 `;
                 li.draggable = true;
@@ -816,8 +909,8 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.beginPath();
             ctx.arc(60, 60, 50, -Math.PI / 2, (2 * Math.PI * progress) - Math.PI / 2);
-            ctx.strokeStyle = '#f3e8d6';
-            ctx.lineWidth = 8;
+            ctx.strokeStyle = '#f4c7a6';
+            ctx.lineWidth = 10;
             ctx.stroke();
         }
 
@@ -828,32 +921,47 @@
         function openNoteModal(type, index) {
             const modal = document.getElementById('note-modal');
             const text = document.getElementById('note-text');
-            const category = document.getElementById('note-category');
+            const tags = document.getElementById('note-tags');
             const color = document.getElementById('note-color');
             if (type === 'new') {
                 text.value = '';
-                category.value = 'general';
+                tags.value = '';
                 color.value = 'default';
                 currentNoteIndex = null;
             } else {
                 const note = notes[index];
                 text.value = note.text;
-                category.value = note.category;
+                tags.value = note.tags.join(', ');
                 color.value = note.color;
                 currentNoteIndex = index;
             }
             modal.style.display = 'flex';
+            renderNoteTags(tags.value);
+        }
+
+        function renderNoteTags(tagsString) {
+            const tagsList = document.getElementById('note-tags-list');
+            tagsList.innerHTML = '';
+            if (tagsString) {
+                tagsString.split(',').map(tag => tag.trim()).filter(tag => tag).forEach(tag => {
+                    const span = document.createElement('span');
+                    span.className = 'tag';
+                    span.textContent = tag;
+                    tagsList.appendChild(span);
+                });
+            }
         }
 
         function saveNote() {
             const text = document.getElementById('note-text').value;
-            const category = document.getElementById('note-category').value;
+            const tags = document.getElementById('note-tags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
             const color = document.getElementById('note-color').value;
             if (text) {
+                const note = { text, tags, color, date: new Date().toISOString().split('T')[0] };
                 if (currentNoteIndex === null) {
-                    notes.push({ text, category, color });
+                    notes.push(note);
                 } else {
-                    notes[currentNoteIndex] = { text, category, color };
+                    notes[currentNoteIndex] = note;
                 }
                 localStorage.setItem('work-notes', JSON.stringify(notes));
                 renderNotes();
@@ -863,18 +971,21 @@
 
         function renderNotes() {
             const notesList = document.getElementById('notes-list');
+            const search = document.getElementById('note-search').value.toLowerCase();
             notesList.innerHTML = '';
-            notes.forEach((note, index) => {
-                const div = document.createElement('div');
-                div.className = `note ${note.color}`;
-                div.innerHTML = `
-                    <p>${note.text.substring(0, 50)}${note.text.length > 50 ? '...' : ''}</p>
-                    <small>${note.category}</small>
-                    <button onclick="openNoteModal('edit', ${index})"><i class="fas fa-edit"></i></button>
-                    <button onclick="deleteNote(${index})"><i class="fas fa-trash"></i></button>
-                `;
-                notesList.appendChild(div);
-            });
+            notes.filter(note => note.text.toLowerCase().includes(search) || note.tags.some(tag => tag.toLowerCase().includes(search)))
+                .forEach((note, index) => {
+                    const div = document.createElement('div');
+                    div.className = `note-card ${note.color}`;
+                    div.innerHTML = `
+                        <p>${note.text.substring(0, 50)}${note.text.length > 50 ? '...' : ''}</p>
+                        <div class="tags">${note.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>
+                        <small>${note.date}</small>
+                        <button class="secondary" onclick="openNoteModal('edit', ${index})"><i class="fas fa-edit"></i></button>
+                        <button class="secondary" onclick="deleteNote(${index})"><i class="fas fa-trash"></i></button>
+                    `;
+                    notesList.appendChild(div);
+                });
         }
 
         function deleteNote(index) {
@@ -895,11 +1006,11 @@
             svg.innerHTML = '';
             if (exercise === 'breathing') {
                 tracker.innerHTML = 'Вдохни (4 сек)...';
-                svg.innerHTML = `<circle cx="50" cy="50" r="40" fill="rgba(243, 232, 214, 0.5)"></circle>`;
+                svg.innerHTML = `<circle cx="60" cy="60" r="40" fill="rgba(244, 199, 166, 0.5)"></circle>`;
                 let phase = 0;
                 const interval = setInterval(() => {
-                    const r = 40 + (phase % 8);
-                    svg.innerHTML = `<circle cx="50" cy="50" r="${r}" fill="rgba(243, 232, 214, 0.5)"></circle>`;
+                    const r = 40 + Math.sin(phase / 4) * 10;
+                    svg.innerHTML = `<circle cx="60" cy="60" r="${r}" fill="rgba(244, 199, 166, 0.5)"></circle>`;
                     phase++;
                     if (phase < 4) tracker.innerHTML = 'Вдохни...';
                     else if (phase < 8) tracker.innerHTML = 'Задержи...';
@@ -907,102 +1018,192 @@
                     else if (phase < 16) tracker.innerHTML = 'Задержи...';
                     else {
                         clearInterval(interval);
-                        tracker.innerHTML = 'Отлично! Ты восстановился.';
+                        tracker.innerHTML = 'Дыши легко, ты восстановился!';
                     }
                 }, 1000);
             } else if (exercise === 'eyes') {
-                tracker.innerHTML = 'Посмотри влево, вправо, вверх, вниз. Повтори 5 раз.';
-                svg.innerHTML = `<circle cx="50" cy="50" r="20" fill="#f5f5f5"></circle>`;
-                let x = 50, y = 50, dir = 0;
+                tracker.innerHTML = 'Посмотри влево, вправо, вверх, вниз (5 раз).';
+                svg.innerHTML = `<circle cx="60" cy="60" r="20" fill="#f5f5f5"></circle>`;
+                let x = 60, y = 60, dir = 0, count = 0;
                 const interval = setInterval(() => {
-                    if (dir === 0) x += 5;
-                    else if (dir === 1) x -= 5;
-                    else if (dir === 2) y -= 5;
-                    else if (dir === 3) y += 5;
+                    if (dir === 0) x += 10;
+                    else if (dir === 1) x -= 10;
+                    else if (dir === 2) y -= 10;
+                    else if (dir === 3) y += 10;
                     svg.innerHTML = `<circle cx="${x}" cy="${y}" r="20" fill="#f5f5f5"></circle>`;
-                    if (x >= 70 || x <= 30 || y <= 30 || y >= 70) dir = (dir + 1) % 4;
-                }, 500);
-                setTimeout(() => clearInterval(interval), 5000);
+                    if (x >= 80 || x <= 40 || y <= 40 || y >= 80) {
+                        dir = (dir + 1) % 4;
+                        if (dir === 0) count++;
+                    }
+                    if (count >= 5) {
+                        clearInterval(interval);
+                        tracker.innerHTML = 'Глаза отдохнули!';
+                    }
+                }, 400);
             } else if (exercise === 'body') {
-                tracker.innerHTML = 'Потяни руки вверх, затем в стороны. Сделай 3 подхода.';
-                svg.innerHTML = `<rect x="40" y="20" width="20" height="60" fill="#f5f5f5"></rect>`;
-                let angle = 0;
+                tracker.innerHTML = 'Потяни руки вверх, затем в стороны (3 подхода).';
+                svg.innerHTML = `<rect x="50" y="20" width="20" height="80" fill="#f5f5f5"></rect>`;
+                let angle = 0, count = 0;
                 const interval = setInterval(() => {
-                    angle = (angle + 10) % 360;
-                    svg.innerHTML = `<rect x="40" y="20" width="20" height="60" fill="#f5f5f5" transform="rotate(${angle}, 50, 50)"></rect>`;
+                    angle = Math.sin(count / 10) * 45;
+                    svg.innerHTML = `<rect x="50" y="20" width="20" height="80" fill="#f5f5f5" transform="rotate(${angle}, 60, 60)"></rect>`;
+                    count++;
+                    if (count % 20 === 0) {
+                        count++;
+                        if (count >= 60) {
+                            clearInterval(interval);
+                            tracker.innerHTML = 'Тело размято!';
+                        }
+                    }
                 }, 200);
-                setTimeout(() => clearInterval(interval), 6000);
             } else if (exercise === 'neck') {
-                tracker.innerHTML = 'Поверни голову влево, вправо, наклони. Повтори 4 раза.';
-                svg.innerHTML = `<circle cx="50" cy="50" r="30" fill="#f5f5f5"></circle>`;
-                let angle = 0;
+                tracker.innerHTML = 'Поверни голову влево, вправо, наклони (4 раза).';
+                svg.innerHTML = `<circle cx="60" cy="60" r="30" fill="#f5f5f5"></circle>`;
+                let angle = 0, count = 0;
                 const interval = setInterval(() => {
-                    angle = (angle + 15) % 360;
-                    svg.innerHTML = `<circle cx="50" cy="50" r="30" fill="#f5f5f5" transform="rotate(${angle}, 50, 50)"></circle>`;
+                    angle = Math.sin(count / 10) * 30;
+                    svg.innerHTML = `<circle cx="60" cy="60" r="30" fill="#f5f5f5" transform="rotate(${angle}, 60, 60)"></circle>`;
+                    count++;
+                    if (count % 20 === 0) {
+                        count++;
+                        if (count >= 80) {
+                            clearInterval(interval);
+                            tracker.innerHTML = 'Шея расслаблена!';
+                        }
+                    }
                 }, 300);
-                setTimeout(() => clearInterval(interval), 4800);
             } else if (exercise === 'wrists') {
-                tracker.innerHTML = 'Вращай запястья по и против часовой стрелки.';
-                svg.innerHTML = `<rect x="45" y="30" width="10" height="40" fill="#f5f5f5"></rect>`;
+                tracker.innerHTML = 'Вращай запястья по и против часовой (10 сек).';
+                svg.innerHTML = `<rect x="55" y="30" width="10" height="60" fill="#f5f5f5"></rect>`;
                 let angle = 0;
                 const interval = setInterval(() => {
                     angle = (angle + 20) % 360;
-                    svg.innerHTML = `<rect x="45" y="30" width="10" height="40" fill="#f5f5f5" transform="rotate(${angle}, 50, 50)"></rect>`;
+                    svg.innerHTML = `<rect x="55" y="30" width="10" height="60" fill="#f5f5f5" transform="rotate(${angle}, 60, 60)"></rect>`;
                 }, 150);
-                setTimeout(() => clearInterval(interval), 4500);
+                setTimeout(() => {
+                    clearInterval(interval);
+                    tracker.innerHTML = 'Запястья готовы!';
+                }, 10000);
             }
         }
 
-        // Расслабление
+        // Игры
         function startRelax() {
             const game = document.getElementById('relax-game').value;
             const tracker = document.getElementById('relax-tracker');
+            tracker.innerHTML = '';
             if (game === 'stars') {
-                tracker.innerHTML = 'Кликни по звёздам! (10 секунд)';
+                tracker.innerHTML = 'Собери звёзды за 15 секунд!';
                 const stars = document.querySelectorAll('.star');
                 let count = 0;
                 stars.forEach(star => {
                     star.style.pointerEvents = 'auto';
+                    star.style.transition = 'transform 0.5s';
                     star.addEventListener('click', () => {
-                        star.style.display = 'none';
+                        star.style.transform = 'scale(0)';
                         count++;
+                        setTimeout(() => (star.style.display = 'none'), 500);
                     });
                 });
                 setTimeout(() => {
-                    tracker.innerHTML = `Собрано звёзд: ${count}. Отлично!`;
-                    stars.forEach(star => star.style.display = 'block');
-                }, 10000);
+                    tracker.innerHTML = `Собрано звёзд: ${count}. Ты звезда!`;
+                    stars.forEach(star => {
+                        star.style.display = 'block';
+                        star.style.transform = 'scale(1)';
+                    });
+                }, 15000);
             } else if (game === 'puzzle') {
-                tracker.innerHTML = 'Собери пазл! (10 секунд)';
+                tracker.innerHTML = 'Собери пазл за 15 секунд!';
                 const puzzle = document.createElement('div');
                 puzzle.innerHTML = `
                     <style>
-                        .puzzle-piece { width: 30px; height: 30px; background: #f3e8d6; margin: 5px; cursor: pointer; }
+                        .puzzle-container { display: grid; grid-template-columns: repeat(2, 50px); gap: 5px; }
+                        .puzzle-piece { width: 50px; height: 50px; background: #f3e8d6; cursor: pointer; border-radius: 8px; }
                         .puzzle-piece.correct { background: #4caf50; }
                     </style>
-                    <div class="puzzle-piece" onclick="checkPuzzle(0)"></div>
-                    <div class="puzzle-piece" onclick="checkPuzzle(1)"></div>
-                    <div class="puzzle-piece" onclick="checkPuzzle(2)"></div>
+                    <div class="puzzle-container">
+                        <div class="puzzle-piece" onclick="checkPuzzle(0)"></div>
+                        <div class="puzzle-piece" onclick="checkPuzzle(1)"></div>
+                        <div class="puzzle-piece" onclick="checkPuzzle(2)"></div>
+                        <div class="puzzle-piece" onclick="checkPuzzle(3)"></div>
+                    </div>
                 `;
                 tracker.appendChild(puzzle);
-                let correct = [false, false, false];
+                let correct = [false, false, false, false];
                 window.checkPuzzle = (index) => {
                     correct[index] = !correct[index];
-                    puzzle.children[index].classList.toggle('correct');
+                    puzzle.children[0].children[index].classList.toggle('correct');
                 };
                 setTimeout(() => {
-                    tracker.innerHTML = `Пазл собран: ${correct.filter(c => c).length}/3. Молодец!`;
-                }, 10000);
+                    tracker.innerHTML = `Пазл собран: ${correct.filter(c => c).length}/4. Отлично!`;
+                }, 15000);
+            } else if (game === 'maze') {
+                tracker.innerHTML = 'Проведи шарик через лабиринт!';
+                const maze = document.createElement('canvas');
+                maze.width = 200;
+                maze.height = 200;
+                tracker.appendChild(maze);
+                const ctx = maze.getContext('2d');
+                const ball = { x: 20, y: 20, r: 5 };
+                const target = { x: 180, y: 180, r: 5 };
+                const walls = [
+                    { x: 0, y: 50, w: 150, h: 10 },
+                    { x: 50, y: 100, w: 150, h: 10 },
+                    { x: 0, y: 150, w: 150, h: 10 }
+                ];
+                let moving = false;
+
+                function drawMaze() {
+                    ctx.clearRect(0, 0, maze.width, maze.height);
+                    ctx.fillStyle = '#f3e8d6';
+                    walls.forEach(wall => ctx.fillRect(wall.x, wall.y, wall.w, wall.h));
+                    ctx.beginPath();
+                    ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+                    ctx.fillStyle = '#f4c7a6';
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(target.x, target.y, target.r, 0, Math.PI * 2);
+                    ctx.fillStyle = '#4caf50';
+                    ctx.fill();
+                }
+
+                maze.addEventListener('mousedown', () => (moving = true));
+                maze.addEventListener('mouseup', () => (moving = false));
+                maze.addEventListener('mousemove', (e) => {
+                    if (moving) {
+                        const rect = maze.getBoundingClientRect();
+                        const newX = e.clientX - rect.left;
+                        const newY = e.clientY - rect.top;
+                        if (!walls.some(wall => newX > wall.x && newX < wall.x + wall.w && newY > wall.y && newY < wall.y + wall.h)) {
+                            ball.x = newX;
+                            ball.y = newY;
+                        }
+                        drawMaze();
+                        if (Math.hypot(ball.x - target.x, ball.y - target.y) < 10) {
+                            tracker.innerHTML = 'Лабиринт пройден!';
+                            moving = false;
+                        }
+                    }
+                });
+
+                drawMaze();
+                setTimeout(() => {
+                    if (Math.hypot(ball.x - target.x, ball.y - target.y) >= 10) {
+                        tracker.innerHTML = 'Попробуй ещё раз!';
+                    }
+                }, 20000);
             }
         }
 
         // Семейные активности
         const relationTips = [
             'Сделай комплимент близкому человеку.',
-            'Предложи вместе приготовить ужин.',
-            'Расскажи о своём дне и спроси, как прошёл их день.',
-            'Сходите на прогулку вместе.',
-            'Посмотрите любимый фильм или сериал.'
+            'Приготовьте вместе что-то вкусное.',
+            'Расскажи о своём дне и выслушай их.',
+            'Сходите на вечернюю прогулку.',
+            'Посмотрите семейный фильм.',
+            'Поиграйте в настольную игру.',
+            'Обсудите планы на выходные.'
         ];
 
         function startFamilyActivity() {
@@ -1010,42 +1211,8 @@
             const tracker = document.getElementById('family-tracker');
             if (activity === 'relations') {
                 tracker.innerHTML = relationTips[Math.floor(Math.random() * relationTips.length)];
-            } else if (activity === 'stargame') {
-                tracker.innerHTML = 'Кликни по звёздам! (10 секунд)';
-                const stars = document.querySelectorAll('.star');
-                let count = 0;
-                stars.forEach(star => {
-                    star.style.pointerEvents = 'auto';
-                    star.addEventListener('click', () => {
-                        star.style.display = 'none';
-                        count++;
-                    });
-                });
-                setTimeout(() => {
-                    tracker.innerHTML = `Собрано звёзд: ${count}. Ты готов к общению!`;
-                    stars.forEach(star => star.style.display = 'block');
-                }, 10000);
-            } else if (activity === 'puzzle') {
-                tracker.innerHTML = 'Собери пазл! (10 секунд)';
-                const puzzle = document.createElement('div');
-                puzzle.innerHTML = `
-                    <style>
-                        .puzzle-piece { width: 30px; height: 30px; background: #f3e8d6; margin: 5px; cursor: pointer; }
-                        .puzzle-piece.correct { background: #4caf50; }
-                    </style>
-                    <div class="puzzle-piece" onclick="checkPuzzle(0)"></div>
-                    <div class="puzzle-piece" onclick="checkPuzzle(1)"></div>
-                    <div class="puzzle-piece" onclick="checkPuzzle(2)"></div>
-                `;
-                tracker.appendChild(puzzle);
-                let correct = [false, false, false];
-                window.checkPuzzle = (index) => {
-                    correct[index] = !correct[index];
-                    puzzle.children[index].classList.toggle('correct');
-                };
-                setTimeout(() => {
-                    tracker.innerHTML = `Пазл собран: ${correct.filter(c => c).length}/3. Молодец!`;
-                }, 10000);
+            } else {
+                startRelax(); // Используем те же игры
             }
         }
 
@@ -1056,42 +1223,113 @@
             alert('План на завтра сохранён!');
         }
 
-        // Настроение
+        // Дневник настроения
+        let selectedMood = null;
         function saveMood() {
             const mood = document.getElementById('mood-tracker').value;
-            localStorage.setItem('family-mood', mood);
-            let stats = JSON.parse(localStorage.getItem('family-stats')) || Array(7).fill(0);
-            stats[new Date().getDay()]++;
-            localStorage.setItem('family-stats', JSON.stringify(stats));
-            alert('Настроение сохранено!');
-            showFamilyStep('export');
+            if (selectedMood || mood) {
+                const entry = {
+                    emoji: selectedMood,
+                    text: mood,
+                    date: new Date().toISOString().split('T')[0]
+                };
+                let stats = JSON.parse(localStorage.getItem('family-stats')) || [];
+                stats.push(entry);
+                localStorage.setItem('family-stats', JSON.stringify(stats));
+                alert('Настроение сохранено!');
+                showFamilyStep('export');
+            } else {
+                alert('Выберите эмодзи или напишите настроение.');
+            }
         }
 
-        // Статистика
-        function updateWeeklyStats() {
-            const canvas = document.getElementById('weekly-stats');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const stats = JSON.parse(localStorage.getItem('family-stats')) || Array(7).fill(0);
-            for (let i = 0; i < 7; i++) {
-                ctx.fillStyle = '#f3e8d6';
-                ctx.fillRect(i * 28, 100 - stats[i] * 10, 20, stats[i] * 10);
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('mood-emoji')) {
+                document.querySelectorAll('.mood-emoji').forEach(emoji => emoji.classList.remove('selected'));
+                e.target.classList.add('selected');
+                selectedMood = e.target.dataset.mood;
             }
+        });
+
+        // Дыхание
+        function startBreathing() {
+            const tracker = document.getElementById('exercise-tracker') || document.getElementById('family-tracker');
+            const svg = document.getElementById('exercise-svg');
+            tracker.innerHTML = 'Вдохни (4 сек)...';
+            svg.innerHTML = `<circle cx="60" cy="60" r="40" fill="rgba(244, 199, 166, 0.5)"></circle>`;
+            let phase = 0;
+            const interval = setInterval(() => {
+                const r = 40 + Math.sin(phase / 4) * 10;
+                svg.innerHTML = `<circle cx="60" cy="60" r="${r}" fill="rgba(244, 199, 166, 0.5)"></circle>`;
+                phase++;
+                if (phase < 4) tracker.innerHTML = 'Вдохни...';
+                else if (phase < 8) tracker.innerHTML = 'Задержи...';
+                else if (phase < 12) tracker.innerHTML = 'Выдохни...';
+                else if (phase < 16) tracker.innerHTML = 'Задержи...';
+                else {
+                    clearInterval(interval);
+                    tracker.innerHTML = 'Ты в гармонии!';
+                }
+            }, 1000);
         }
 
         // Результаты
         function updateResults() {
             const results = document.getElementById('results');
             results.innerHTML = `
-                <p>Выполнено задач: ${completedTasks} из ${tasks.length}</p>
+                <p>Задач выполнено: ${completedTasks} из ${tasks.length}</p>
                 <p>Прогресс: ${Math.round((completedTasks / tasks.length) * 100) || 0}%</p>
             `;
+            updateProgressStats();
+        }
+
+        // Статистика
+        function updateProgressStats() {
+            const canvas = document.getElementById('progress-stats');
+            const ctx = canvas.getContext('2d');
+            const filter = document.getElementById('stats-filter').value;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let data = importedData.concat(tasks.map(task => ({
+                date: task.date,
+                completed: task.completed ? 1 : 0,
+                total: 1,
+                progress: task.completed ? 100 : 0
+            })));
+            const now = new Date();
+            if (filter === 'day') {
+                data = data.filter(d => d.date === now.toISOString().split('T')[0]);
+            } else if (filter === 'week') {
+                const weekAgo = new Date(now);
+                weekAgo.setDate(now.getDate() - 7);
+                data = data.filter(d => new Date(d.date) >= weekAgo);
+            } else if (filter === 'month') {
+                const monthAgo = new Date(now);
+                monthAgo.setDate(now.getDate() - 30);
+                data = data.filter(d => new Date(d.date) >= monthAgo);
+            }
+            const grouped = data.reduce((acc, d) => {
+                acc[d.date] = acc[d.date] || { completed: 0, total: 0 };
+                acc[d.date].completed += d.completed;
+                acc[d.date].total += d.total;
+                return acc;
+            }, {});
+            const dates = Object.keys(grouped).sort();
+            const maxY = Math.max(...Object.values(grouped).map(g => g.completed / g.total || 0), 1);
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height);
+            dates.forEach((date, i) => {
+                const x = (i / (dates.length - 1 || 1)) * canvas.width;
+                const y = canvas.height - ((grouped[date].completed / grouped[date].total || 0) / maxY) * canvas.height;
+                ctx.lineTo(x, y);
+            });
+            ctx.strokeStyle = '#f4c7a6';
+            ctx.lineWidth = 3;
+            ctx.stroke();
         }
 
         // Экспорт результатов
         function exportResults() {
-            const results = `CalmFlow 4.0 - Итоги дня ${new Date().toLocaleDateString()}\nЗадач выполнено: ${completedTasks}/${tasks.length}\nПрогресс: ${Math.round((completedTasks / tasks.length) * 100) || 0}%\nЗаметки:\n${notes.map(n => n.text).join('\n') || 'Нет заметок'}\nПлан на завтра:\n${localStorage.getItem('tomorrow-plan') || 'Нет плана'}`;
+            const results = `CalmFlow 4.0 - Итоги дня ${new Date().toLocaleDateString('ru')}\nЗадач выполнено: ${completedTasks}/${tasks.length}\nПрогресс: ${Math.round((completedTasks / tasks.length) * 100) || 0}%\nЗаметки:\n${notes.map(n => `[${n.date}] ${n.text} (${n.tags.join(', ')})`).join('\n') || 'Нет заметок'}\nПлан на завтра:\n${localStorage.getItem('tomorrow-plan') || 'Нет плана'}`;
             const blob = new Blob([results], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -1106,8 +1344,8 @@
 
         function importResults() {
             const fileInput = document.getElementById('import-file');
-            const file = fileInput.files[0];
-            if (file) {
+            const files = fileInput.files;
+            for (let file of files) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const text = e.target.result;
@@ -1116,7 +1354,7 @@
                     const progressMatch = text.match(/Прогресс: (\d+)%/);
                     if (dateMatch && tasksMatch && progressMatch) {
                         importedData.push({
-                            date: dateMatch[1],
+                            date: dateMatch[1].split('.').reverse().join('-'),
                             completed: parseInt(tasksMatch[1]),
                             total: parseInt(tasksMatch[2]),
                             progress: parseInt(progressMatch[1])
@@ -1124,29 +1362,17 @@
                         localStorage.setItem('imported-data', JSON.stringify(importedData));
                         updateProgressStats();
                     } else {
-                        alert('Неверный формат файла.');
+                        alert(`Неверный формат файла: ${file.name}`);
                     }
                 };
                 reader.readAsText(file);
             }
         }
 
-        function updateProgressStats() {
-            const canvas = document.getElementById('progress-stats');
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const days = importedData.slice(-7); // Последние 7 дней
-            for (let i = 0; i < days.length; i++) {
-                ctx.fillStyle = '#f3e8d6';
-                ctx.fillRect(i * 28, 100 - days[i].progress, 20, days[i].progress);
-            }
-        }
-
         // Экспорт семейных данных
         function exportFamilyData() {
-            const mood = localStorage.getItem('family-mood') || 'Нет записей';
-            const stats = JSON.parse(localStorage.getItem('family-stats')) || Array(7).fill(0);
-            const data = `CalmFlow 4.0 - Семейные итоги ${new Date().toLocaleDateString()}\nНастроение: ${mood}\nАктивность за неделю: ${stats.join(', ')}`;
+            const stats = JSON.parse(localStorage.getItem('family-stats')) || [];
+            const data = `CalmFlow 4.0 - Семейные итоги ${new Date().toLocaleDateString('ru')}\nНастроение:\n${stats.map(s => `[${s.date}] ${s.emoji} ${s.text}`).join('\n') || 'Нет записей'}`;
             const blob = new Blob([data], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -1183,10 +1409,8 @@
         renderKeyTasks();
         renderTasks();
         renderNotes();
-        updateWeeklyStats();
         updateResults();
         document.getElementById('tomorrow-plan').value = localStorage.getItem('tomorrow-plan') || '';
-        document.getElementById('mood-tracker').value = localStorage.getItem('family-mood') || '';
     </script>
 </body>
     </html>
