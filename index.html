@@ -90,6 +90,14 @@
             margin: 25px 0 15px;
         }
 
+        h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 18px;
+            color: #f3e8d6;
+            margin: 15px 0 10px;
+            text-align: left;
+        }
+
         /* Сообщения */
         .motivation, .exercise-instructions {
             font-size: 14px;
@@ -285,88 +293,74 @@
             font-size: 12px;
         }
 
-        /* Старый стиль заметок */
+        /* Сетка заметок */
         #notes-list {
-            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
             padding: 0;
             margin: 15px 0;
         }
 
-        #notes-list li {
+        .note-card {
             background: rgba(40, 40, 40, 0.9);
-            padding: 12px;
-            margin: 6px 0;
+            padding: 15px;
             border: 1px solid #b0b8c1;
             border-radius: 6px;
             text-align: left;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 150px;
         }
 
-        #notes-list li p {
-            margin: 0 0 8px;
+        .note-card p {
+            margin: 0 0 10px;
             font-size: 14px;
             color: #f5f5f5;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
         }
 
-        #notes-list li .tags {
+        .note-card .tags {
             margin: 8px 0;
+            flex-grow: 1;
         }
 
-        #notes-list li small {
+        .note-card small {
             color: #b0b8c1;
             font-size: 12px;
             display: block;
             margin-top: 8px;
         }
 
-        /* Анимации упражнений */
-        .exercise-animation {
-            width: 100px;
-            height: 100px;
-            margin: 20px auto;
-            position: relative;
+        .note-card .actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
         }
 
-        .exercise-animation div {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: #f3e8d6;
-            position: absolute;
-            top: 0;
-            left: 0;
+        /* Категории упражнений */
+        .exercise-category {
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(30, 30, 30, 0.9);
+            border: 1px solid #b0b8c1;
+            border-radius: 6px;
         }
 
-        .exercise-breathing { animation: breathe 8s ease-in-out 2; }
-        @keyframes breathe {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.3); }
+        .exercise-category select {
+            margin-bottom: 10px;
         }
 
-        .exercise-eyes { animation: eyeMove 2s ease-in-out 5; }
-        @keyframes eyeMove {
-            0%, 100% { transform: translate(0, 0); }
-            25% { transform: translate(15px, 0); }
-            50% { transform: translate(0, -15px); }
-            75% { transform: translate(-15px, 0); }
-        }
-
-        .exercise-body { animation: stretch 2s ease-in-out 3; }
-        @keyframes stretch {
-            0%, 100% { transform: scale(1, 1); }
-            50% { transform: scale(1, 1.4); }
-        }
-
-        .exercise-neck { animation: tilt 1.5s ease-in-out 4; }
-        @keyframes tilt {
-            0%, 100% { transform: rotate(0deg); }
-            33% { transform: rotate(30deg); }
-            66% { transform: rotate(-30deg); }
-        }
-
-        .exercise-wrists { animation: rotate 2s linear 5; }
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        /* Таймер упражнений */
+        #exercise-timer {
+            font-size: 16px;
+            color: #f3e8d6;
+            margin: 10px 0;
         }
 
         /* Дневник настроения */
@@ -515,7 +509,7 @@
                 gap: 10px;
             }
 
-            .exercise-animation, canvas {
+            canvas {
                 width: 80px !important;
                 height: 80px !important;
             }
@@ -527,6 +521,10 @@
 
             .motivation, .exercise-instructions {
                 font-size: 12px;
+            }
+
+            #notes-list {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             }
         }
 
@@ -616,7 +614,7 @@
             <div id="work-notes" class="tab-content">
                 <input type="text" id="note-search" placeholder="Поиск заметок...">
                 <button class="primary" onclick="openNoteModal('new')"><i class="fas fa-plus"></i> Новая заметка</button>
-                <ul id="notes-list"></ul>
+                <div id="notes-list"></div>
             </div>
             <button class="secondary" onclick="showStage('break')"><i class="fas fa-coffee"></i> Перерыв</button>
             <button class="primary" onclick="showStage('end-shift')"><i class="fas fa-check-circle"></i> Завершить смену</button>
@@ -631,16 +629,33 @@
                 <button class="tab-btn" onclick="showTab('break-relax', this)"><i class="fas fa-gamepad"></i> Расслабление</button>
             </div>
             <div id="break-exercise" class="tab-content active">
-                <select id="break-exercise">
-                    <option value="breathing">Дыхательное упражнение</option>
-                    <option value="eyes">Упражнение для глаз</option>
-                    <option value="body">Упражнение для тела</option>
-                    <option value="neck">Упражнение для шеи</option>
-                    <option value="wrists">Упражнение для запястий</option>
-                </select>
-                <button class="primary" onclick="startBreakExercise()"><i class="fas fa-play"></i> Начать</button>
-                <div id="exercise-tracker"></div>
-                <div class="exercise-animation" id="exercise-animation"></div>
+                <div class="exercise-category">
+                    <h3>Дыхание</h3>
+                    <select id="breathing-exercise">
+                        <option value="breathing">Дыхательное упражнение</option>
+                    </select>
+                    <button class="primary" onclick="startBreakExercise('breathing')"><i class="fas fa-play"></i> Начать</button>
+                    <div id="breathing-tracker"></div>
+                    <div id="exercise-timer"></div>
+                </div>
+                <div class="exercise-category">
+                    <h3>Глаза</h3>
+                    <select id="eyes-exercise">
+                        <option value="eyes">Упражнение для глаз</option>
+                    </select>
+                    <button class="primary" onclick="startBreakExercise('eyes')"><i class="fas fa-play"></i> Начать</button>
+                    <div id="eyes-tracker"></div>
+                </div>
+                <div class="exercise-category">
+                    <h3>Тело</h3>
+                    <select id="body-exercise">
+                        <option value="body">Упражнение для тела</option>
+                        <option value="neck">Упражнение для шеи</option>
+                        <option value="wrists">Упражнение для запястий</option>
+                    </select>
+                    <button class="primary" onclick="startBreakExercise('body')"><i class="fas fa-play"></i> Начать</button>
+                    <div id="body-tracker"></div>
+                </div>
             </div>
             <div id="break-relax" class="tab-content">
                 <select id="relax-game">
@@ -1046,17 +1061,18 @@
             notesList.innerHTML = '';
             notes.filter(note => note.text.toLowerCase().includes(search) || note.tags.some(tag => tag.toLowerCase().includes(search)))
                 .forEach((note, index) => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `
+                    const card = document.createElement('div');
+                    card.className = 'note-card';
+                    card.innerHTML = `
                         <p>${note.text}</p>
                         <div class="tags">${note.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>
                         <small>${note.date}</small>
-                        <div style="margin-top: 10px;">
+                        <div class="actions">
                             <button class="secondary" data-text="Редактировать" onclick="openNoteModal('edit', ${index})"><i class="fas fa-edit"></i></button>
                             <button class="secondary" data-text="Удалить" onclick="deleteNote(${index})"><i class="fas fa-trash"></i></button>
                         </div>
                     `;
-                    notesList.appendChild(li);
+                    notesList.appendChild(card);
                 });
         }
 
@@ -1071,76 +1087,75 @@
         }
 
         // Упражнения
-        function startBreakExercise() {
-            const exercise = document.getElementById('break-exercise').value;
-            const tracker = document.getElementById('exercise-tracker');
-            const animation = document.getElementById('exercise-animation');
+        function startBreakExercise(category) {
+            const exercise = document.getElementById(`${category}-exercise`).value;
+            const tracker = document.getElementById(`${category}-tracker`);
+            const timer = document.getElementById('exercise-timer');
             console.log(`Starting exercise: ${exercise}`);
-            animation.innerHTML = '<div></div>';
-            const animDiv = animation.querySelector('div');
             tracker.innerHTML = '';
+            timer.innerHTML = '';
 
             if (exercise === 'breathing') {
-                tracker.innerHTML = 'Вдохни (4 сек)...';
-                animDiv.className = 'exercise-breathing';
+                tracker.innerHTML = 'Подготовьтесь к дыхательному упражнению: сядьте прямо, расслабьтесь.';
                 let phase = 0;
-                const phases = ['Вдохни...', 'Задержи...', 'Выдохни...', 'Задержи...'];
+                let timeLeft = 4;
+                const phases = ['Вдох (4 сек)...', 'Задержка (4 сек)...', 'Выдох (4 сек)...', 'Задержка (4 сек)...'];
+                timer.innerHTML = `Осталось: ${timeLeft} сек`;
                 const interval = setInterval(() => {
-                    tracker.innerHTML = phases[phase % 4];
-                    phase++;
-                    if (phase >= 16) {
-                        clearInterval(interval);
-                        tracker.innerHTML = 'Дыши легко, ты восстановился!';
-                        animDiv.className = '';
+                    if (timeLeft <= 0) {
+                        phase++;
+                        timeLeft = 4;
+                        if (phase >= 16) {
+                            clearInterval(interval);
+                            tracker.innerHTML = 'Дыши легко, ты восстановился!';
+                            timer.innerHTML = '';
+                            return;
+                        }
+                        tracker.innerHTML = phases[phase % 4];
                     }
-                }, 2000);
+                    timeLeft--;
+                    timer.innerHTML = `Осталось: ${timeLeft} сек`;
+                }, 1000);
 
             } else if (exercise === 'eyes') {
-                tracker.innerHTML = 'Посмотри влево, вправо, вверх, вниз (5 раз).';
-                animDiv.className = 'exercise-eyes';
-                let count = 0;
-                const interval = setInterval(() => {
-                    count++;
-                    if (count >= 10) {
-                        clearInterval(interval);
-                        tracker.innerHTML = 'Глаза отдохнули!';
-                        animDiv.className = '';
-                    }
-                }, 1000);
+                tracker.innerHTML = `
+                    Посмотри влево (2 сек), вправо (2 сек), вверх (2 сек), вниз (2 сек).<br>
+                    Повтори 5 раз.<br>
+                    Начинай медленно, сохраняй комфорт.
+                `;
+                setTimeout(() => {
+                    tracker.innerHTML = 'Глаза отдохнули! Моргни несколько раз.';
+                }, 40000);
 
             } else if (exercise === 'body') {
-                tracker.innerHTML = 'Потяни руки вверх, затем в стороны (3 подхода).';
-                animDiv.className = 'exercise-body';
-                let count = 0;
-                const interval = setInterval(() => {
-                    count++;
-                    if (count >= 6) {
-                        clearInterval(interval);
-                        tracker.innerHTML = 'Тело размято!';
-                        animDiv.className = '';
-                    }
-                }, 1000);
+                tracker.innerHTML = `
+                    Потяни руки вверх (3 сек), затем в стороны (3 сек).<br>
+                    Повтори 3 подхода.<br>
+                    Двигайся плавно, чувствуй мышцы.
+                `;
+                setTimeout(() => {
+                    tracker.innerHTML = 'Тело размято! Сделай лёгкую встряску.';
+                }, 18000);
 
             } else if (exercise === 'neck') {
-                tracker.innerHTML = 'Поверни голову влево, вправо, наклони (4 раза).';
-                animDiv.className = 'exercise-neck';
-                let count = 0;
-                const interval = setInterval(() => {
-                    count++;
-                    if (count >= 8) {
-                        clearInterval(interval);
-                        tracker.innerHTML = 'Шея расслаблена!';
-                        animDiv.className = '';
-                    }
-                }, 1500);
+                tracker.innerHTML = `
+                    Поверни голову влево (2 сек), вправо (2 сек), наклони к плечам (2 сек).<br>
+                    Повтори 4 раза.<br>
+                    Двигайся осторожно, без рывков.
+                `;
+                setTimeout(() => {
+                    tracker.innerHTML = 'Шея расслаблена! Сделай лёгкий массаж.';
+                }, 24000);
 
             } else if (exercise === 'wrists') {
-                tracker.innerHTML = 'Вращай запястья по и против часовой (10 сек).';
-                animDiv.className = 'exercise-wrists';
+                tracker.innerHTML = `
+                    Вращай запястья по часовой стрелке (5 сек), затем против (5 сек).<br>
+                    Повтори 3 раза.<br>
+                    Держи руки расслабленными.
+                `;
                 setTimeout(() => {
-                    tracker.innerHTML = 'Запястья готовы!';
-                    animDiv.className = '';
-                }, 10000);
+                    tracker.innerHTML = 'Запястья готовы! Потри ладони.';
+                }, 30000);
             }
         }
 
@@ -1330,23 +1345,32 @@
             }
         });
 
-        // Дыхание
+        // Дыхание в ритуале
         function startBreathing() {
             const tracker = document.getElementById('exercise-tracker') || document.getElementById('family-tracker');
-            const animation = document.getElementById('exercise-animation');
-            tracker.innerHTML = 'Вдохни (4 сек)...';
-            animation.innerHTML = '<div class="exercise-breathing"></div>';
+            tracker.innerHTML = 'Подготовьтесь к дыхательному упражнению: сядьте прямо, расслабьтесь.';
             let phase = 0;
-            const phases = ['Вдохни...', 'Задержи...', 'Выдохни...', 'Задержи...'];
+            let timeLeft = 4;
+            const phases = ['Вдох (4 сек)...', 'Задержка (4 сек)...', 'Выдох (4 сек)...', 'Задержка (4 сек)...'];
+            const timer = document.createElement('div');
+            timer.id = 'exercise-timer';
+            tracker.after(timer);
+            timer.innerHTML = `Осталось: ${timeLeft} сек`;
             const interval = setInterval(() => {
-                tracker.innerHTML = phases[phase % 4];
-                phase++;
-                if (phase >= 16) {
-                    clearInterval(interval);
-                    tracker.innerHTML = 'Ты в гармонии!';
-                    animation.innerHTML = '<div></div>';
+                if (timeLeft <= 0) {
+                    phase++;
+                    timeLeft = 4;
+                    if (phase >= 16) {
+                        clearInterval(interval);
+                        tracker.innerHTML = 'Ты в гармонии!';
+                        timer.innerHTML = '';
+                        return;
+                    }
+                    tracker.innerHTML = phases[phase % 4];
                 }
-            }, 2000);
+                timeLeft--;
+                timer.innerHTML = `Осталось: ${timeLeft} сек`;
+            }, 1000);
         }
 
         // Результаты
@@ -1496,4 +1520,4 @@
         }
     </script>
 </body>
-                    </html>
+    </html>
