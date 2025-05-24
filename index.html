@@ -3,141 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CalmFlow 4.0 - Гармония и продуктивность</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    <title>CalmFlow — Разделяя работу и дом</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        /* Сброс стилей */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         /* Основные стили */
         body {
-            background: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%);
-            color: #f5f5f5;
+            background: linear-gradient(180deg, #0A0A0A 0%, #1A1A1A 100%);
+            color: #E8D8A2;
             font-family: 'Inter', sans-serif;
-            margin: 0;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             overflow-y: auto;
             position: relative;
             font-size: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Звёздный фон */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: #F5F5F5;
+            border-radius: 50%;
+            animation: twinkle 5s infinite ease-in-out;
+        }
+
+        .falling-star {
+            position: absolute;
+            background: linear-gradient(to bottom, #F5F5F5, transparent);
+            width: 2px;
+            height: 20px;
+            animation: fall 2s linear infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 0.9; transform: scale(1.2); }
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-100vh) translateX(0); opacity: 1; }
+            100% { transform: translateY(100vh) translateX(20px); opacity: 0; }
         }
 
         /* Контейнер */
         .container {
-            max-width: 800px;
+            max-width: 900px;
             width: 90%;
-            padding: 40px;
-            background: rgba(20, 20, 20, 0.95);
-            border: 1px solid #f3e8d6;
-            border-radius: 12px;
-            backdrop-filter: blur(8px);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            padding: 30px;
+            background: rgba(20, 20, 20, 0.6);
+            border: 1px solid rgba(232, 216, 162, 0.2);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
             text-align: center;
-            position: relative;
-            animation: fadeIn 1s ease-in;
+            animation: fadeIn 0.8s ease-out;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Полукруглый навигатор */
+        /* Навигатор */
         .stage-nav {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin-bottom: 25px;
+            gap: 12px;
             padding: 10px;
-            background: rgba(30, 30, 30, 0.9);
-            border-radius: 10px;
+            margin-bottom: 20px;
+            background: rgba(30, 30, 30, 0.5);
+            border-radius: 12px;
+            backdrop-filter: blur(5px);
         }
 
         .stage-nav span {
-            font-family: 'Inter', sans-serif;
             font-size: 14px;
-            color: #b0b8c1;
-            padding: 10px 18px;
+            color: #E8D8A2;
+            padding: 8px 16px;
             cursor: pointer;
-            transition: all 0.3s;
-            border-radius: 6px;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .stage-nav span:hover {
-            color: #f3e8d6;
-            background: rgba(243, 232, 214, 0.1);
-            transform: scale(1.05);
+            background: rgba(232, 216, 162, 0.1);
+            transform: translateY(-2px);
         }
 
         .stage-nav span.active {
-            color: #0a0a0a;
-            background: #f3e8d6;
+            background: rgba(232, 216, 162, 0.2);
+            color: #E8D8A2;
             font-weight: 500;
         }
 
         /* Заголовки */
         h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 36px;
-            color: #f3e8d6;
-            margin: 0 0 15px;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            font-size: 32px;
+            color: #E8D8A2;
+            margin: 0 0 10px;
+            letter-spacing: 0.5px;
+            animation: textGlow 2s ease-in-out infinite;
         }
 
         h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 24px;
-            color: #f3e8d6;
-            margin: 25px 0 15px;
-        }
-
-        h3 {
             font-family: 'Inter', sans-serif;
-            font-size: 18px;
-            color: #f3e8d6;
-            margin: 15px 0 10px;
-            text-align: left;
+            font-size: 20px;
+            color: #E8D8A2;
+            margin: 20px 0 10px;
+            font-weight: 400;
         }
 
-        /* Сообщения */
-        .motivation, .exercise-instructions {
+        @keyframes textGlow {
+            0%, 100% { text-shadow: 0 0 5px rgba(232, 216, 162, 0.3); }
+            50% { text-shadow: 0 0 10px rgba(232, 216, 162, 0.5); }
+        }
+
+        /* Слоган */
+        .slogan {
+            font-family: 'Inter', sans-serif;
             font-size: 14px;
-            color: #b0b8c1;
-            line-height: 1.5;
-            margin: 10px 0;
-            font-style: italic;
+            color: #B0A68A;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            opacity: 0;
+            animation: fadeInSlogan 1s ease-out 0.5s forwards;
+        }
+
+        @keyframes fadeInSlogan {
+            to { opacity: 1; }
         }
 
         /* Кнопки */
         button {
-            background: linear-gradient(135deg, #f3e8d6, #e0d4b8);
-            color: #0a0a0a;
+            background: linear-gradient(135deg, #E8D8A2 0%, #D4C48A 100%);
+            color: #0A0A0A;
             border: none;
-            padding: 10px 25px;
+            padding: 10px 20px;
             cursor: pointer;
-            border-radius: 6px;
+            border-radius: 8px;
             font-family: 'Inter', sans-serif;
             font-size: 14px;
             font-weight: 500;
-            margin: 8px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(232, 216, 162, 0.2);
         }
 
         button:hover {
             transform: translateY(-1px);
-            box-shadow: 0 5px 15px rgba(243, 232, 214, 0.4);
+            box-shadow: 0 4px 15px rgba(232, 216, 162, 0.4);
         }
 
         button.primary {
-            padding: 12px 30px;
+            padding: 12px 24px;
             font-size: 15px;
         }
 
         button.secondary {
-            background: rgba(243, 232, 214, 0.1);
-            color: #f3e8d6 !important;
-            border: 1px solid #f3e8d6;
-            padding: 8px 15px;
+            background: transparent;
+            color: #E8D8A2;
+            border: 1px solid #E8D8A2;
+            padding: 8px 14px;
             font-size: 13px;
             display: inline-flex;
             align-items: center;
@@ -145,12 +192,12 @@
         }
 
         button.secondary i {
-            color: #f3e8d6 !important;
+            color: #E8D8A2;
         }
 
         button.secondary::after {
             content: attr(data-text);
-            color: #f3e8d6;
+            color: #E8D8A2;
             font-size: 12px;
         }
 
@@ -158,57 +205,55 @@
         .tabs {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin: 20px 0;
+            gap: 10px;
+            margin: 15px 0;
         }
 
         .tabs button {
             background: rgba(255, 255, 255, 0.05);
-            color: #f3e8d6;
-            border: 1px solid #b0b8c1;
-            padding: 8px 20px;
-            border-radius: 6px;
+            color: #E8D8A2;
+            border: 1px solid rgba(232, 216, 162, 0.3);
+            padding: 8px 16px;
+            border-radius: 8px;
             margin: 0;
         }
 
         .tabs button.active {
-            background: #f3e8d6;
-            color: #0a0a0a;
-            border: 1px solid #f3e8d6;
+            background: rgba(232, 216, 162, 0.2);
+            color: #E8D8A2;
+            border: 1px solid #E8D8A2;
         }
 
         /* Поля ввода */
         input[type="text"], input[type="time"], textarea, select {
             width: 100%;
-            padding: 12px;
-            margin: 10px 0;
+            padding: 10px;
+            margin: 8px 0;
             background: rgba(255, 255, 255, 0.05);
-            color: #f5f5f5;
-            border: 1px solid #b0b8c1;
-            border-radius: 6px;
+            color: #E8D8A2;
+            border: 1px solid rgba(232, 216, 162, 0.3);
+            border-radius: 8px;
             font-size: 14px;
-            box-sizing: border-box;
             font-family: 'Inter', sans-serif;
-            transition: border 0.3s;
+            transition: all 0.3s ease;
         }
 
         input:focus, textarea:focus, select:focus {
-            border-color: #f3e8d6;
-            box-shadow: 0 0 6px rgba(243, 232, 214, 0.2);
+            border-color: #E8D8A2;
+            box-shadow: 0 0 6px rgba(232, 216, 162, 0.3);
             outline: none;
         }
 
         textarea {
-            min-height: 100px;
+            min-height: 120px;
             resize: vertical;
-            font-family: 'Inter', sans-serif;
         }
 
         /* Список задач */
         #task-list, #key-task-list {
             list-style: none;
             padding: 0;
-            max-height: 250px;
+            max-height: 300px;
             overflow-y: auto;
         }
 
@@ -216,36 +261,21 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px;
+            padding: 10px;
             margin: 6px 0;
-            background: rgba(40, 40, 40, 0.9);
-            border: 1px solid #b0b8c1;
-            border-radius: 6px;
-            transition: transform 0.3s;
+            background: rgba(40, 40, 40, 0.5);
+            border: 1px solid rgba(232, 216, 162, 0.2);
+            border-radius: 8px;
+            transition: transform 0.3s ease;
         }
 
         #task-list li:hover, #key-task-list li:hover {
-            transform: translateX(5px);
+            transform: translateX(3px);
         }
 
-        #task-list li.low { border-left: 4px solid #81c784; }
-        #task-list li.medium { border-left: 4px solid #ffca28; }
-        #task-list li.high { border-left: 4px solid #e57373; }
-
-        /* Чек-лист */
-        .checklist {
-            text-align: left;
-            margin: 15px 0;
-        }
-
-        .checklist label {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 8px 0;
-            font-size: 14px;
-            color: #b0b8c1;
-        }
+        #task-list li.low { border-left: 3px solid #81C784; }
+        #task-list li.medium { border-left: 3px solid #FFCA28; }
+        #task-list li.high { border-left: 3px solid #E57373; }
 
         /* Модальные окна */
         .modal {
@@ -262,22 +292,24 @@
         }
 
         .modal-content {
-            background: rgba(30, 30, 30, 0.95);
-            padding: 25px;
-            border: 1px solid #f3e8d6;
-            border-radius: 10px;
+            background: rgba(30, 30, 30, 0.6);
+            padding: 20px;
+            border: 1px solid rgba(232, 216, 162, 0.2);
+            border-radius: 12px;
             width: 90%;
-            max-width: 500px;
+            max-width: 450px;
             max-height: 80vh;
             overflow-y: auto;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
 
         .modal-content h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 24px;
-            color: #f3e8d6;
+            font-family: 'Inter', sans-serif;
+            font-size: 20px;
+            color: #E8D8A2;
             margin: 0 0 15px;
+            font-weight: 400;
         }
 
         .modal-content select {
@@ -285,21 +317,21 @@
         }
 
         .modal-content .exercise-tracker {
-            margin: 15px 0;
+            margin: 10px 0;
             font-size: 14px;
-            color: #f5f5f5;
+            color: #E8D8A2;
             line-height: 1.5;
         }
 
         .modal-content .exercise-timer {
-            font-size: 16px;
-            color: #f3e8d6;
-            margin: 10px 0;
+            font-size: 15px;
+            color: #E8D8A2;
+            margin: 8px 0;
         }
 
         .modal-content textarea {
             width: 100%;
-            min-height: 150px;
+            min-height: 120px;
         }
 
         .modal-content .tags {
@@ -310,9 +342,9 @@
         }
 
         .modal-content .tag {
-            background: #f3e8d6;
-            color: #0a0a0a;
-            padding: 5px 10px;
+            background: rgba(232, 216, 162, 0.2);
+            color: #E8D8A2;
+            padding: 4px 8px;
             border-radius: 6px;
             font-size: 12px;
         }
@@ -320,27 +352,27 @@
         /* Сетка заметок */
         #notes-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
             padding: 0;
-            margin: 15px 0;
+            margin: 12px 0;
         }
 
         .note-card {
-            background: rgba(40, 40, 40, 0.9);
-            padding: 15px;
-            border: 1px solid #b0b8c1;
-            border-radius: 6px;
+            background: rgba(40, 40, 40, 0.5);
+            padding: 12px;
+            border: 1px solid rgba(232, 216, 162, 0.2);
+            border-radius: 8px;
             text-align: left;
             display: flex;
             flex-direction: column;
-            min-height: 150px;
+            min-height: 120px;
         }
 
         .note-card p {
-            margin: 0 0 10px;
-            font-size: 14px;
-            color: #f5f5f5;
+            margin: 0 0 8px;
+            font-size: 13px;
+            color: #E8D8A2;
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
@@ -350,125 +382,63 @@
         }
 
         .note-card .tags {
-            margin: 8px 0;
+            margin: 6px 0;
         }
 
         .note-card small {
-            color: #b0b8c1;
-            font-size: 12px;
-            margin-top: 8px;
+            color: #B0A68A;
+            font-size: 11px;
+            margin-top: 6px;
         }
 
         .note-card .actions {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             margin-top: auto;
             justify-content: flex-end;
         }
 
-        /* Таймер упражнений */
-        .exercise-timer {
-            font-size: 16px;
-            color: #f3e8d6;
-            margin: 10px 0;
+        /* Таймер и прогресс */
+        .exercise-timer, #timer {
+            font-size: 15px;
+            color: #E8D8A2;
+            margin: 8px 0;
+        }
+
+        canvas {
+            display: block;
+            margin: 15px auto;
         }
 
         /* Дневник настроения */
         .mood-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 10px;
             justify-content: center;
-            margin: 15px 0;
+            margin: 12px 0;
         }
 
         .mood-emoji {
-            font-size: 22px;
+            font-size: 20px;
             cursor: pointer;
-            padding: 8px;
-            border-radius: 10px;
-            transition: transform 0.3s;
+            padding: 6px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
         }
 
         .mood-emoji:hover {
-            transform: scale(1.15);
+            transform: scale(1.2);
         }
 
         .mood-emoji.selected {
-            background: #f3e8d6;
-        }
-
-        /* Графики */
-        canvas {
-            display: block;
-            margin: 20px auto;
-        }
-
-        /* Дерево */
-        .tree-icon {
-            width: 50px;
-            height: 50px;
-            margin: 20px auto;
-            position: relative;
-        }
-
-        .tree-icon::before {
-            content: '';
-            position: absolute;
-            top: 35px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 8px;
-            height: 15px;
-            background: #4a4a4a;
-            border-radius: 2px;
-        }
-
-        .tree-icon::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 35px;
-            height: 35px;
-            background: radial-gradient(circle, #f3e8d6 40%, #b0b8c1 70%);
-            border-radius: 50%;
-            box-shadow: 0 0 10px rgba(243, 232, 214, 0.3);
-            animation: treeGlow 3s ease-in-out infinite;
-        }
-
-        @keyframes treeGlow {
-            0%, 100% { transform: translateX(-50%) scale(1); }
-            50% { transform: translateX(-50%) scale(1.1); }
-        }
-
-        /* Звёздный фон */
-        .stars {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
-
-        .star {
-            position: absolute;
-            background: #f5f5f5;
-            border-radius: 50%;
-            animation: twinkle 4s infinite;
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.9; }
+            background: rgba(232, 216, 162, 0.2);
         }
 
         /* Анимация этапов */
         .stage, .tab-content {
             display: none;
-            animation: slideIn 0.5s ease-in;
+            animation: slideIn 0.5s ease-out;
         }
 
         .stage.active, .tab-content.active {
@@ -476,7 +446,7 @@
         }
 
         @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-15px); }
+            from { opacity: 0; transform: translateX(-10px); }
             to { opacity: 1; transform: translateX(0); }
         }
 
@@ -502,7 +472,7 @@
             }
 
             h2 {
-                font-size: 20px;
+                font-size: 18px;
             }
 
             button {
@@ -510,18 +480,18 @@
             }
 
             button.primary {
-                padding: 10px 25px;
+                padding: 10px 20px;
                 font-size: 14px;
             }
 
             .tabs {
                 flex-wrap: wrap;
-                gap: 10px;
+                gap: 8px;
             }
 
             canvas {
-                width: 80px !important;
-                height: 80px !important;
+                width: 100px !important;
+                height: 100px !important;
             }
 
             .modal-content {
@@ -529,22 +499,8 @@
                 padding: 15px;
             }
 
-            .motivation, .exercise-instructions {
-                font-size: 12px;
-            }
-
             #notes-list {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            }
-        }
-
-        @media (max-width: 400px) {
-            h1 {
-                font-size: 24px;
-            }
-
-            h2 {
-                font-size: 18px;
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             }
         }
     </style>
@@ -567,22 +523,19 @@
 
         <!-- Старт смены -->
         <div id="start-stage" class="stage active">
-            <div class="tree-icon"></div>
-            <h1>CalmFlow 4.0</h1>
-            <p class="motivation">Вдохни гармонию, начни свой день с ясностью</p>
+            <h1>CalmFlow</h1>
+            <p class="slogan">Разделяя работу и дом</p>
             <button class="primary" onclick="showStage('setup')"><i class="fas fa-play"></i> Начать смену</button>
         </div>
 
         <!-- Настройка работы -->
         <div id="setup-stage" class="stage">
             <h2>Настройка работы</h2>
-            <p class="exercise-instructions">Подготовься к продуктивному дню с лёгкостью.</p>
             <div class="tabs">
                 <button class="tab-btn active" onclick="showTab('setup-time', this)"><i class="fas fa-clock"></i> Время</button>
                 <button class="tab-btn" onclick="showTab('setup-tasks', this)"><i class="fas fa-list"></i> Задачи</button>
             </div>
             <div id="setup-time" class="tab-content active">
-                <p>Задай ритм своего дня</p>
                 <label>Работа с <input type="time" id="work-start"> до <input type="time" id="work-end"></label>
                 <p id="time-remaining"></p>
                 <label>Перерывы каждые <input type="time" id="break-interval" value="01:00"></label>
@@ -600,7 +553,6 @@
         <!-- Выполнение работы -->
         <div id="work-stage" class="stage">
             <h2>Рабочая зона</h2>
-            <p class="exercise-instructions">Погрузись в поток задач.</p>
             <div class="tabs">
                 <button class="tab-btn active" onclick="showTab('work-tasks', this)"><i class="fas fa-tasks"></i> Задачи</button>
                 <button class="tab-btn" onclick="showTab('work-pomodoro', this)"><i class="fas fa-stopwatch"></i> Pomodoro</button>
@@ -617,9 +569,9 @@
                 <ul id="task-list" class="sortable"></ul>
             </div>
             <div id="work-pomodoro" class="tab-content">
-                <button class="primary" onclick="startPomodoro()"><i class="fas fa-play"></i> Старт Pomodoro (Space)</button>
+                <button class="primary" onclick="startPomodoro()"><i class="fas fa-play"></i> Старт Pomodoro</button>
                 <p id="timer">25:00</p>
-                <canvas id="progress-circle" width="120" height="120"></canvas>
+                <canvas id="progress-circle" width="100" height="100"></canvas>
             </div>
             <div id="work-notes" class="tab-content">
                 <input type="text" id="note-search" placeholder="Поиск заметок...">
@@ -633,7 +585,6 @@
         <!-- Перерывы -->
         <div id="break-stage" class="stage">
             <h2>Перерыв</h2>
-            <p class="exercise-instructions">Восстанови силы и вдохновение.</p>
             <div class="tabs">
                 <button class="tab-btn active" onclick="showTab('break-exercise', this)"><i class="fas fa-running"></i> Упражнения</button>
                 <button class="tab-btn" onclick="showTab('break-relax', this)"><i class="fas fa-gamepad"></i> Расслабление</button>
@@ -658,7 +609,6 @@
         <!-- Завершение смены -->
         <div id="end-shift-stage" class="stage">
             <h2>Завершение смены</h2>
-            <p class="exercise-instructions">Оставь работу с лёгким сердцем.</p>
             <div class="tabs">
                 <button class="tab-btn active" onclick="showTab('end-results', this)"><i class="fas fa-chart-line"></i> Итоги</button>
                 <button class="tab-btn" onclick="showTab('end-ritual', this)"><i class="fas fa-pray"></i> Ритуал</button>
@@ -671,7 +621,7 @@
                     <option value="week">Неделя</option>
                     <option value="month">Месяц</option>
                 </select>
-                <canvas id="progress-stats" width="300" height="150"></canvas>
+                <canvas id="progress-stats" width="280" height="140"></canvas>
                 <button class="secondary" onclick="exportResults()"><i class="fas fa-download"></i> Экспортировать</button>
                 <input type="file" id="import-file" accept=".txt" multiple>
                 <button class="secondary" onclick="importResults()"><i class="fas fa-upload"></i> Импортировать</button>
@@ -694,7 +644,6 @@
         <!-- Подготовка к семье -->
         <div id="family-stage" class="stage">
             <h2>Время для семьи</h2>
-            <p class="exercise-instructions" id="family-tip">Настройся на тепло и общение.</p>
             <div id="family-prepare" class="tab-content active">
                 <select id="family-activity">
                     <option value="relations">Совет для общения</option>
@@ -723,7 +672,7 @@
                 <button class="primary" onclick="showFamilyStep('complete')"><i class="fas fa-check"></i> Завершить</button>
             </div>
             <div id="family-complete" class="tab-content">
-                <p class="motivation">Чудесный день! Проведи вечер с близкими.</p>
+                <p>Чудесный день завершён!</p>
                 <button class="primary" onclick="showStage('start')"><i class="fas fa-home"></i> Завершить день</button>
             </div>
         </div>
@@ -786,15 +735,24 @@
         function initStars() {
             const starsContainer = document.getElementById('stars');
             starsContainer.innerHTML = '';
-            for (let i = 0; i < 100; i++) {
+            // Обычные звёзды
+            for (let i = 0; i < 120; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
                 star.style.width = `${Math.random() * 1.5 + 0.5}px`;
                 star.style.height = star.style.width;
                 star.style.left = `${Math.random() * 100}%`;
                 star.style.top = `${Math.random() * 100}%`;
-                star.style.animationDelay = `${Math.random() * 4}s`;
+                star.style.animationDelay = `${Math.random() * 5}s`;
                 starsContainer.appendChild(star);
+            }
+            // Падающие звёзды
+            for (let i = 0; i < 3; i++) {
+                const fallingStar = document.createElement('div');
+                fallingStar.className = 'falling-star';
+                fallingStar.style.left = `${Math.random() * 100}%`;
+                fallingStar.style.animationDelay = `${Math.random() * 10}s`;
+                starsContainer.appendChild(fallingStar);
             }
         }
 
@@ -811,7 +769,7 @@
                 console.log(`Stage switched to: ${stage}`);
             } catch (error) {
                 console.error(error);
-                alert('Ошибка при переключении этапа. Проверьте консоль.');
+                alert('Ошибка при переключении этапа.');
             }
         }
 
@@ -827,11 +785,6 @@
         function showFamilyStep(step) {
             document.querySelectorAll('#family-stage .tab-content').forEach(t => t.classList.remove('active'));
             document.getElementById(`family-${step}`).classList.add('active');
-            const tip = document.getElementById('family-tip');
-            if (step === 'prepare') tip.textContent = 'Настройся на тепло и общение.';
-            else if (step === 'mood') tip.textContent = 'Поделись своими эмоциями.';
-            else if (step === 'export') tip.textContent = 'Сохрани итоги дня.';
-            else if (step === 'complete') tip.textContent = 'Чудесный день! Проведи вечер с близкими.';
         }
 
         // Управление временем
@@ -863,15 +816,15 @@
             if (remaining > 0) {
                 const hours = Math.floor(remaining / 3600000);
                 const minutes = Math.floor((remaining % 3600000) / 60000);
-                document.getElementById('time-remaining').textContent = `Осталось работать: ${hours}ч ${minutes}м`;
+                document.getElementById('time-remaining').textContent = `Осталось: ${hours}ч ${minutes}м`;
             } else {
-                document.getElementById('time-remaining').textContent = 'Рабочий день завершён!';
+                document.getElementById('time-remaining').textContent = 'День завершён!';
             }
         }
 
         function applyDoctorBreaks() {
             document.getElementById('break-interval').value = '00:50';
-            alert('Установлены перерывы каждые 50 минут (рекомендация врача).');
+            alert('Перерывы каждые 50 минут (рекомендация врача).');
         }
 
         setInterval(updateTimeRemaining, 60000);
@@ -1018,9 +971,9 @@
             const progress = completedTasks / tasks.length || 0;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.beginPath();
-            ctx.arc(60, 60, 50, -Math.PI / 2, (2 * Math.PI * progress) - Math.PI / 2);
-            ctx.strokeStyle = '#f3e8d6';
-            ctx.lineWidth = 8;
+            ctx.arc(50, 50, 45, -Math.PI / 2, (2 * Math.PI * progress) - Math.PI / 2);
+            ctx.strokeStyle = '#E8D8A2';
+            ctx.lineWidth = 6;
             ctx.stroke();
         }
 
@@ -1029,7 +982,6 @@
         let currentNoteIndex = null;
 
         function openNoteModal(type, index = null) {
-            console.log(`Opening note modal: type=${type}, index=${index}`);
             const modal = document.getElementById('note-modal');
             const text = document.getElementById('note-text');
             const tags = document.getElementById('note-tags');
@@ -1055,7 +1007,6 @@
         }
 
         function saveNote() {
-            console.log('Saving note...');
             const text = document.getElementById('note-text').value.trim();
             const tags = document.getElementById('note-tags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
             if (!text) {
@@ -1068,19 +1019,12 @@
             } else {
                 notes[currentNoteIndex] = note;
             }
-            try {
-                localStorage.setItem('work-notes', JSON.stringify(notes));
-                console.log('Note saved:', note);
-                renderNotes();
-                closeNoteModal();
-            } catch (error) {
-                console.error('Error saving note:', error);
-                alert('Ошибка при сохранении заметки. Проверьте консоль.');
-            }
+            localStorage.setItem('work-notes', JSON.stringify(notes));
+            renderNotes();
+            closeNoteModal();
         }
 
         function renderNotes() {
-            console.log('Rendering notes:', notes);
             const notesList = document.getElementById('notes-list');
             const search = document.getElementById('note-search').value.toLowerCase();
             notesList.innerHTML = '';
@@ -1117,25 +1061,22 @@
             modal.style.display = 'flex';
             document.getElementById(`${category}-tracker`).innerHTML = '';
             if (category === 'breathing') document.getElementById('breathing-timer').innerHTML = '';
-            console.log(`Opening exercise modal: ${category}`);
         }
 
         function closeExerciseModal(category) {
             const modal = document.getElementById(`${category}-modal`);
             modal.style.display = 'none';
-            console.log(`Closing exercise modal: ${category}`);
         }
 
         function startBreakExercise(category) {
             const exercise = document.getElementById(`${category}-exercise`).value;
             const tracker = document.getElementById(`${category}-tracker`);
             const timer = category === 'breathing' ? document.getElementById('breathing-timer') : null;
-            console.log(`Starting exercise: ${exercise}`);
             tracker.innerHTML = '';
             if (timer) timer.innerHTML = '';
 
             if (category === 'breathing') {
-                tracker.innerHTML = 'Подготовьтесь к дыхательному упражнению: сядьте прямо, расслабьтесь.';
+                tracker.innerHTML = 'Сядьте прямо, расслабьтесь.';
                 let phase = 0;
                 let timeLeft = 0;
                 let phases = [];
@@ -1145,17 +1086,17 @@
                 if (exercise === 'box') {
                     phases = ['Вдох (4 сек)...', 'Задержка (4 сек)...', 'Выдох (4 сек)...', 'Задержка (4 сек)...'];
                     phaseDurations = [4, 4, 4, 4];
-                    maxPhases = 24; // 6 циклов по 4 фазы
+                    maxPhases = 24; // 6 циклов
                     timeLeft = 4;
                 } else if (exercise === '478') {
                     phases = ['Вдох (4 сек)...', 'Задержка (7 сек)...', 'Выдох (8 сек)...'];
                     phaseDurations = [4, 7, 8];
-                    maxPhases = 12; // 4 цикла по 3 фазы
+                    maxPhases = 12; // 4 цикла
                     timeLeft = 4;
                 } else if (exercise === 'basic') {
                     phases = ['Вдох (4 сек)...', 'Задержка (4 сек)...', 'Выдох (4 сек)...', 'Задержка (4 сек)...'];
                     phaseDurations = [4, 4, 4, 4];
-                    maxPhases = 16; // 4 цикла по 4 фазы
+                    maxPhases = 16; // 4 цикла
                     timeLeft = 4;
                 }
 
@@ -1165,7 +1106,7 @@
                         phase++;
                         if (phase >= maxPhases) {
                             clearInterval(interval);
-                            tracker.innerHTML = 'Дыши легко, ты восстановился!';
+                            tracker.innerHTML = 'Дыши легко!';
                             timer.innerHTML = '';
                             return;
                         }
@@ -1180,40 +1121,36 @@
             } else if (category === 'eyes' && exercise === 'eyes') {
                 tracker.innerHTML = `
                     Посмотри влево (2 сек), вправо (2 сек), вверх (2 сек), вниз (2 сек).<br>
-                    Повтори 5 раз.<br>
-                    Начинай медленно, сохраняй комфорт.
+                    Повтори 5 раз.
                 `;
                 setTimeout(() => {
-                    tracker.innerHTML = 'Глаза отдохнули! Моргни несколько раз.';
+                    tracker.innerHTML = 'Глаза отдохнули!';
                 }, 40000);
 
             } else if (category === 'body') {
                 if (exercise === 'body') {
                     tracker.innerHTML = `
                         Потяни руки вверх (3 сек), затем в стороны (3 сек).<br>
-                        Повтори 3 подхода.<br>
-                        Двигайся плавно, чувствуй мышцы.
+                        Повтори 3 подхода.
                     `;
                     setTimeout(() => {
-                        tracker.innerHTML = 'Тело размято! Сделай лёгкую встряску.';
+                        tracker.innerHTML = 'Тело размято!';
                     }, 18000);
                 } else if (exercise === 'neck') {
                     tracker.innerHTML = `
                         Поверни голову влево (2 сек), вправо (2 сек), наклони к плечам (2 сек).<br>
-                        Повтори 4 раза.<br>
-                        Двигайся осторожно, без рывков.
+                        Повтори 4 раза.
                     `;
                     setTimeout(() => {
-                        tracker.innerHTML = 'Шея расслаблена! Сделай лёгкий массаж.';
+                        tracker.innerHTML = 'Шея расслаблена!';
                     }, 24000);
                 } else if (exercise === 'wrists') {
                     tracker.innerHTML = `
-                        Вращай запястья по часовой стрелке (5 сек), затем против (5 сек).<br>
-                        Повтори 3 раза.<br>
-                        Держи руки расслабленными.
+                        Вращай запястья по часовой (5 сек), против (5 сек).<br>
+                        Повтори 3 раза.
                     `;
                     setTimeout(() => {
-                        tracker.innerHTML = 'Запястья готовы! Потри ладони.';
+                        tracker.innerHTML = 'Запястья готовы!';
                     }, 30000);
                 }
             }
@@ -1241,7 +1178,7 @@
                     star.clickHandler = clickHandler;
                 });
                 setTimeout(() => {
-                    tracker.innerHTML = `Собрано звёзд: ${count}. Ты звезда!`;
+                    tracker.innerHTML = `Собрано звёзд: ${count}.`;
                     stars.forEach(star => {
                         star.style.display = 'block';
                         star.style.transform = 'scale(1)';
@@ -1256,8 +1193,8 @@
                 puzzle.innerHTML = `
                     <style>
                         .puzzle-container { display: grid; grid-template-columns: repeat(2, 40px); gap: 4px; margin: 8px auto; }
-                        .puzzle-piece { width: 40px; height: 40px; background: #f3e8d6; cursor: pointer; border-radius: 6px; border: 1px solid #b0b8c1; }
-                        .puzzle-piece.correct { background: #81c784; }
+                        .puzzle-piece { width: 40px; height: 40px; background: rgba(232, 216, 162, 0.2); cursor: pointer; border-radius: 6px; border: 1px solid #E8D8A2; }
+                        .puzzle-piece.correct { background: #81C784; }
                     </style>
                     <div class="puzzle-container">
                         <div class="puzzle-piece" data-index="0"></div>
@@ -1276,7 +1213,7 @@
                     });
                 });
                 setTimeout(() => {
-                    tracker.innerHTML = `Пазл собран: ${correct.filter(c => c).length}/4. Отлично!`;
+                    tracker.innerHTML = `Пазл собран: ${correct.filter(c => c).length}/4.`;
                 }, 15000);
 
             } else if (game === 'maze') {
@@ -1284,7 +1221,7 @@
                 const maze = document.createElement('canvas');
                 maze.width = 180;
                 maze.height = 180;
-                maze.style.border = '1px solid #f3e8d6';
+                maze.style.border = '1px solid #E8D8A2';
                 tracker.appendChild(maze);
                 const ctx = maze.getContext('2d');
                 const ball = { x: 15, y: 15, r: 4 };
@@ -1298,15 +1235,15 @@
 
                 function drawMaze() {
                     ctx.clearRect(0, 0, maze.width, maze.height);
-                    ctx.fillStyle = '#f3e8d6';
+                    ctx.fillStyle = '#E8D8A2';
                     walls.forEach(wall => ctx.fillRect(wall.x, wall.y, wall.w, wall.h));
                     ctx.beginPath();
                     ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
-                    ctx.fillStyle = '#f3e8d6';
+                    ctx.fillStyle = '#E8D8A2';
                     ctx.fill();
                     ctx.beginPath();
                     ctx.arc(target.x, target.y, target.r, 0, Math.PI * 2);
-                    ctx.fillStyle = '#81c784';
+                    ctx.fillStyle = '#81C784';
                     ctx.fill();
                 }
 
@@ -1343,7 +1280,7 @@
                 drawMaze();
                 setTimeout(() => {
                     if (Math.hypot(ball.x - target.x, ball.y - target.y) >= 8) {
-                        tracker.innerHTML = 'Попробуй ещё раз!';
+                        tracker.innerHTML = 'Попробуй ещё!';
                     }
                 }, 20000);
             }
@@ -1351,13 +1288,13 @@
 
         // Семейные активности
         const relationTips = [
-            'Сделай комплимент близкому человеку.',
-            'Приготовьте вместе что-то вкусное.',
-            'Расскажи о своём дне и выслушай их.',
-            'Сходите на вечернюю прогулку.',
-            'Посмотрите семейный фильм.',
-            'Поиграйте в настольную игру.',
-            'Обсудите планы на выходные.'
+            'Сделай комплимент близкому.',
+            'Приготовьте что-то вкусное.',
+            'Расскажи о своём дне.',
+            'Сходите на прогулку.',
+            'Посмотрите фильм.',
+            'Поиграйте в игру.',
+            'Обсудите планы.'
         ];
 
         function startFamilyActivity() {
@@ -1374,7 +1311,7 @@
         function saveTomorrowPlan() {
             const plan = document.getElementById('tomorrow-plan').value;
             localStorage.setItem('tomorrow-plan', plan);
-            alert('План на завтра сохранён!');
+            alert('План сохранён!');
         }
 
         // Дневник настроения
@@ -1407,8 +1344,8 @@
 
         // Дыхание в ритуале
         function startBreathing() {
-            const tracker = document.getElementById('exercise-tracker') || document.getElementById('family-tracker');
-            tracker.innerHTML = 'Подготовьтесь к дыхательному упражнению: сядьте прямо, расслабьтесь.';
+            const tracker = document.getElementById('family-tracker');
+            tracker.innerHTML = 'Сядьте прямо, расслабьтесь.';
             let phase = 0;
             let timeLeft = 4;
             const phases = ['Вдох (4 сек)...', 'Задержка (4 сек)...', 'Выдох (4 сек)...', 'Задержка (4 сек)...'];
@@ -1438,7 +1375,7 @@
         function updateResults() {
             const results = document.getElementById('results');
             results.innerHTML = `
-                <p>Задач выполнено: ${completedTasks} из ${tasks.length}</p>
+                <p>Задач выполнено: ${completedTasks}/${tasks.length}</p>
                 <p>Прогресс: ${Math.round((completedTasks / tasks.length) * 100) || 0}%</p>
             `;
             updateProgressStats();
@@ -1483,14 +1420,14 @@
                 const y = canvas.height - ((grouped[date].completed / grouped[date].total || 0) / maxY) * canvas.height;
                 ctx.lineTo(x, y);
             });
-            ctx.strokeStyle = '#f3e8d6';
+            ctx.strokeStyle = '#E8D8A2';
             ctx.lineWidth = 2;
             ctx.stroke();
         }
 
         // Экспорт результатов
         function exportResults() {
-            const results = `CalmFlow 4.0 - Итоги дня ${new Date().toLocaleDateString('ru')}\nЗадач выполнено: ${completedTasks}/${tasks.length}\nПрогресс: ${Math.round((completedTasks / tasks.length) * 100) || 0}%\nЗаметки:\n${notes.map(n => `[${n.date}] ${n.text} (${n.tags.join(', ')})`).join('\n') || 'Нет заметок'}\nПлан на завтра:\n${localStorage.getItem('tomorrow-plan') || 'Нет плана'}`;
+            const results = `CalmFlow — Итоги дня ${new Date().toLocaleDateString('ru')}\nЗадач выполнено: ${completedTasks}/${tasks.length}\nПрогресс: ${Math.round((completedTasks / tasks.length) * 100) || 0}%\nЗаметки:\n${notes.map(n => `[${n.date}] ${n.text} (${n.tags.join(', ')})`).join('\n') || 'Нет заметок'}\nПлан на завтра:\n${localStorage.getItem('tomorrow-plan') || 'Нет плана'}`;
             const blob = new Blob([results], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -1533,7 +1470,7 @@
         // Экспорт семейных данных
         function exportFamilyData() {
             const stats = JSON.parse(localStorage.getItem('family-stats')) || [];
-            const data = `CalmFlow 4.0 - Семейные итоги ${new Date().toLocaleDateString('ru')}\nНастроение:\n${stats.map(s => `[${s.date}] ${s.emoji} ${s.text}`).join('\n') || 'Нет записей'}`;
+            const data = `CalmFlow — Семейные итоги ${new Date().toLocaleDateString('ru')}\nНастроение:\n${stats.map(s => `[${s.date}] ${s.emoji} ${s.text}`).join('\n') || 'Нет записей'}`;
             const blob = new Blob([data], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -1574,10 +1511,9 @@
             updateResults();
             document.getElementById('tomorrow-plan').value = localStorage.getItem('tomorrow-plan') || '';
             document.getElementById('note-search').addEventListener('input', renderNotes);
-            console.log('Initialization completed');
         } catch (error) {
             console.error('Initialization error:', error);
-            alert('Ошибка инициализации приложения. Проверьте консоль для деталей.');
+            alert('Ошибка инициализации.');
         }
     </script>
 </body>
