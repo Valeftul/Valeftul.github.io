@@ -15,8 +15,8 @@
 
         /* Основные стили */
         body {
-            background: linear-gradient(180deg, #0A0A0A 0%, #1A1A1A 100%);
-            color: #E8D8A2;
+            background: radial-gradient(circle at center, #0B0B0F 0%, #1C1C24 100%);
+            color: #EDEDED;
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
             overflow-y: auto;
@@ -25,6 +25,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            filter: sepia(0.2);
         }
 
         /* Звёздный фон */
@@ -35,120 +36,166 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            pointer-events: none;
+            pointer-events: auto;
         }
 
         .star {
             position: absolute;
-            background: #F5F5F5;
+            background: #F0F0F5;
             border-radius: 50%;
-            animation: twinkle 5s infinite ease-in-out;
+            box-shadow: 0 0 6px rgba(163, 191, 250, 0.3);
+            animation: twinkle 6s infinite ease-in-out;
+            cursor: pointer;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .star.pulse {
+            animation: pulse 8s infinite ease-in-out;
+        }
+
+        .star:hover {
+            transform: scale(1.3);
+            box-shadow: 0 0 10px rgba(163, 191, 250, 0.5);
         }
 
         .falling-star {
             position: absolute;
-            background: linear-gradient(to bottom, #F5F5F5, transparent);
+            background: linear-gradient(to bottom, #F0F0F5, transparent);
             width: 2px;
-            height: 20px;
-            animation: fall 2s linear infinite;
+            height: 25px;
+            animation: fall 2.5s linear infinite;
         }
 
         @keyframes twinkle {
-            0%, 100% { opacity: 0.3; transform: scale(0.8); }
-            50% { opacity: 0.9; transform: scale(1.2); }
+            0%, 100% { opacity: 0.4; transform: scale(0.7); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.4); }
         }
 
         @keyframes fall {
             0% { transform: translateY(-100vh) translateX(0); opacity: 1; }
-            100% { transform: translateY(100vh) translateX(20px); opacity: 0; }
+            100% { transform: translateY(100vh) translateX(15px); opacity: 0; }
         }
 
         /* Контейнер */
         .container {
             max-width: 900px;
             width: 90%;
-            padding: 30px;
-            background: rgba(20, 20, 20, 0.6);
-            border: 1px solid rgba(232, 216, 162, 0.2);
-            border-radius: 16px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            padding: 25px;
+            background: rgba(28, 28, 36, 0.7);
+            border-radius: 12px;
+            box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3), -4px -4px 8px rgba(50, 50, 60, 0.2);
             text-align: center;
-            animation: fadeIn 0.8s ease-out;
+            animation: dissolve 0.8s ease-out;
+            position: relative;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes dissolve {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Прогресс дня */
+        .progress-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, #D4A373, #A3BFFA);
+            transition: width 0.5s ease;
         }
 
         /* Навигатор */
         .stage-nav {
             display: flex;
             justify-content: center;
-            gap: 12px;
-            padding: 10px;
-            margin-bottom: 20px;
-            background: rgba(30, 30, 30, 0.5);
-            border-radius: 12px;
-            backdrop-filter: blur(5px);
+            gap: 10px;
+            padding: 8px;
+            margin-bottom: 15px;
+            background: rgba(28, 28, 36, 0.5);
+            border-radius: 10px;
+            box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.2), inset -2px -2px 4px rgba(50, 50, 60, 0.2);
         }
 
         .stage-nav span {
-            font-size: 14px;
-            color: #E8D8A2;
-            padding: 8px 16px;
+            font-size: 13px;
+            color: #EDEDED;
+            padding: 6px 12px;
             cursor: pointer;
             transition: all 0.3s ease;
             border-radius: 8px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
+            position: relative;
         }
 
         .stage-nav span:hover {
-            background: rgba(232, 216, 162, 0.1);
-            transform: translateY(-2px);
+            background: rgba(212, 163, 115, 0.1);
+            transform: translateY(-1px);
         }
 
         .stage-nav span.active {
-            background: rgba(232, 216, 162, 0.2);
-            color: #E8D8A2;
+            background: rgba(212, 163, 115, 0.2);
+            color: #D4A373;
             font-weight: 500;
+        }
+
+        .stage-nav span.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #D4A373;
         }
 
         /* Заголовки */
         h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 32px;
-            color: #E8D8A2;
-            margin: 0 0 10px;
-            letter-spacing: 0.5px;
-            animation: textGlow 2s ease-in-out infinite;
+            font-size: 30px;
+            color: #D4A373;
+            margin: 0 0 8px;
+            letter-spacing: 0.3px;
+            position: relative;
+            display: inline-block;
         }
+
+        h1::before, h1::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 1px;
+            background: #D4A373;
+            top: 50%;
+        }
+
+        h1::before { left: -30px; }
+        h1::after { right: -30px; }
 
         h2 {
             font-family: 'Inter', sans-serif;
-            font-size: 20px;
-            color: #E8D8A2;
-            margin: 20px 0 10px;
-            font-weight: 400;
-        }
-
-        @keyframes textGlow {
-            0%, 100% { text-shadow: 0 0 5px rgba(232, 216, 162, 0.3); }
-            50% { text-shadow: 0 0 10px rgba(232, 216, 162, 0.5); }
+            font-size: 18px;
+            color: #EDEDED;
+            margin: 15px 0 8px;
+            font-weight: 300;
         }
 
         /* Слоган */
         .slogan {
             font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            color: #B0A68A;
-            margin-bottom: 20px;
-            letter-spacing: 1px;
+            font-size: 13px;
+            color: #A0A0A0;
+            margin-bottom: 15px;
+            letter-spacing: 0.8px;
             opacity: 0;
-            animation: fadeInSlogan 1s ease-out 0.5s forwards;
+            animation: fadeInSlogan 1.2s ease-out 0.6s forwards;
         }
 
         @keyframes fadeInSlogan {
@@ -157,95 +204,114 @@
 
         /* Кнопки */
         button {
-            background: linear-gradient(135deg, #E8D8A2 0%, #D4C48A 100%);
-            color: #0A0A0A;
+            background: linear-gradient(135deg, #D4A373 0%, #A3BFFA 100%);
+            color: #0B0B0F;
             border: none;
-            padding: 10px 20px;
+            padding: 8px 18px;
             cursor: pointer;
             border-radius: 8px;
             font-family: 'Inter', sans-serif;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 10px rgba(232, 216, 162, 0.2);
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2), -2px -2px 4px rgba(50, 50, 60, 0.2);
+            position: relative;
+            overflow: hidden;
         }
 
         button:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(232, 216, 162, 0.4);
+            box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3), -3px -3px 6px rgba(50, 50, 60, 0.3);
+        }
+
+        button:active::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: ripple 0.6s ease-out;
+        }
+
+        @keyframes ripple {
+            to { width: 200px; height: 200px; opacity: 0; }
         }
 
         button.primary {
-            padding: 12px 24px;
-            font-size: 15px;
+            padding: 10px 22px;
+            font-size: 14px;
         }
 
         button.secondary {
             background: transparent;
-            color: #E8D8A2;
-            border: 1px solid #E8D8A2;
-            padding: 8px 14px;
-            font-size: 13px;
+            color: #D4A373;
+            border: 1px solid #D4A373;
+            padding: 6px 12px;
+            font-size: 12px;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
         }
 
         button.secondary i {
-            color: #E8D8A2;
+            color: #D4A373;
         }
 
         button.secondary::after {
             content: attr(data-text);
-            color: #E8D8A2;
-            font-size: 12px;
+            color: #D4A373;
+            font-size: 11px;
         }
 
         /* Вкладки */
         .tabs {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin: 15px 0;
+            gap: 8px;
+            margin: 12px 0;
         }
 
         .tabs button {
-            background: rgba(255, 255, 255, 0.05);
-            color: #E8D8A2;
-            border: 1px solid rgba(232, 216, 162, 0.3);
-            padding: 8px 16px;
+            background: rgba(28, 28, 36, 0.5);
+            color: #EDEDED;
+            border: 1px solid rgba(212, 163, 115, 0.3);
+            padding: 6px 14px;
             border-radius: 8px;
             margin: 0;
         }
 
         .tabs button.active {
-            background: rgba(232, 216, 162, 0.2);
-            color: #E8D8A2;
-            border: 1px solid #E8D8A2;
+            background: rgba(212, 163, 115, 0.2);
+            color: #D4A373;
+            border: 1px solid #D4A373;
         }
 
         /* Поля ввода */
         input[type="text"], input[type="time"], textarea, select {
             width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            background: rgba(255, 255, 255, 0.05);
-            color: #E8D8A2;
-            border: 1px solid rgba(232, 216, 162, 0.3);
+            padding: 8px;
+            margin: 6px 0;
+            background: rgba(28, 28, 36, 0.5);
+            color: #EDEDED;
+            border: 1px solid rgba(212, 163, 115, 0.3);
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 13px;
             font-family: 'Inter', sans-serif;
             transition: all 0.3s ease;
         }
 
         input:focus, textarea:focus, select:focus {
-            border-color: #E8D8A2;
-            box-shadow: 0 0 6px rgba(232, 216, 162, 0.3);
+            border-color: #D4A373;
+            box-shadow: 0 0 5px rgba(212, 163, 115, 0.4);
             outline: none;
         }
 
         textarea {
-            min-height: 120px;
+            min-height: 100px;
             resize: vertical;
         }
 
@@ -253,7 +319,7 @@
         #task-list, #key-task-list {
             list-style: none;
             padding: 0;
-            max-height: 300px;
+            max-height: 280px;
             overflow-y: auto;
         }
 
@@ -261,16 +327,16 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px;
-            margin: 6px 0;
-            background: rgba(40, 40, 40, 0.5);
-            border: 1px solid rgba(232, 216, 162, 0.2);
+            padding: 8px;
+            margin: 5px 0;
+            background: rgba(40, 40, 48, 0.5);
+            border: 1px solid rgba(212, 163, 115, 0.2);
             border-radius: 8px;
             transition: transform 0.3s ease;
         }
 
         #task-list li:hover, #key-task-list li:hover {
-            transform: translateX(3px);
+            transform: translateX(2px);
         }
 
         #task-list li.low { border-left: 3px solid #81C784; }
@@ -285,94 +351,107 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             z-index: 1000;
             justify-content: center;
             align-items: center;
         }
 
         .modal-content {
-            background: rgba(30, 30, 30, 0.6);
-            padding: 20px;
-            border: 1px solid rgba(232, 216, 162, 0.2);
-            border-radius: 12px;
+            background: rgba(28, 28, 36, 0.7);
+            padding: 18px;
+            border: 1px solid rgba(212, 163, 115, 0.3);
+            border-radius: 10px;
             width: 90%;
-            max-width: 450px;
+            max-width: 420px;
             max-height: 80vh;
             overflow-y: auto;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3), -4px -4px 8px rgba(50, 50, 60, 0.2);
+            transform: scale(0.9);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+            opacity: 1;
         }
 
         .modal-content h2 {
             font-family: 'Inter', sans-serif;
-            font-size: 20px;
-            color: #E8D8A2;
-            margin: 0 0 15px;
+            font-size: 18px;
+            color: #D4A373;
+            margin: 0 0 12px;
             font-weight: 400;
         }
 
         .modal-content select {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .modal-content .exercise-tracker {
-            margin: 10px 0;
-            font-size: 14px;
-            color: #E8D8A2;
-            line-height: 1.5;
+            margin: 8px 0;
+            font-size: 13px;
+            color: #EDEDED;
+            line-height: 1.4;
         }
 
         .modal-content .exercise-timer {
-            font-size: 15px;
-            color: #E8D8A2;
-            margin: 8px 0;
+            font-size: 14px;
+            color: #D4A373;
+            margin: 6px 0;
         }
 
         .modal-content textarea {
             width: 100%;
-            min-height: 120px;
+            min-height: 100px;
         }
 
         .modal-content .tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
-            margin: 8px 0;
+            gap: 5px;
+            margin: 6px 0;
         }
 
         .modal-content .tag {
-            background: rgba(232, 216, 162, 0.2);
-            color: #E8D8A2;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 12px;
+            background: rgba(212, 163, 115, 0.2);
+            color: #D4A373;
+            padding: 3px 6px;
+            border-radius: 5px;
+            font-size: 11px;
         }
 
         /* Сетка заметок */
         #notes-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 10px;
             padding: 0;
-            margin: 12px 0;
+            margin: 10px 0;
         }
 
         .note-card {
-            background: rgba(40, 40, 40, 0.5);
-            padding: 12px;
-            border: 1px solid rgba(232, 216, 162, 0.2);
+            background: rgba(40, 40, 48, 0.5);
+            padding: 10px;
+            border: 1px solid rgba(212, 163, 115, 0.2);
             border-radius: 8px;
             text-align: left;
             display: flex;
             flex-direction: column;
-            min-height: 120px;
+            min-height: 100px;
+            transition: transform 0.3s ease;
+        }
+
+        .note-card:hover {
+            transform: translateY(-2px) rotate(1deg);
+            box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
         }
 
         .note-card p {
-            margin: 0 0 8px;
-            font-size: 13px;
-            color: #E8D8A2;
+            margin: 0 0 6px;
+            font-size: 12px;
+            color: #EDEDED;
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
@@ -382,125 +461,130 @@
         }
 
         .note-card .tags {
-            margin: 6px 0;
+            margin: 5px 0;
+        }
+
+        .note-card .tag {
+            background: rgba(163, 191, 250, 0.2);
         }
 
         .note-card small {
-            color: #B0A68A;
-            font-size: 11px;
-            margin-top: 6px;
+            color: #A0A0A0;
+            font-size: 10px;
+            margin-top: 5px;
         }
 
         .note-card .actions {
             display: flex;
-            gap: 6px;
+            gap: 5px;
             margin-top: auto;
             justify-content: flex-end;
         }
 
-        /* Таймер и прогресс */
-        .exercise-timer, #timer {
-            font-size: 15px;
-            color: #E8D8A2;
-            margin: 8px 0;
+        /* Прогресс */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(28, 28, 36, 0.5);
+            border-radius: 3px;
+            margin: 10px 0;
+            overflow: hidden;
         }
 
-        canvas {
-            display: block;
-            margin: 15px auto;
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #D4A373, #A3BFFA);
+            transition: width 0.5s ease;
         }
 
         /* Дневник настроения */
         .mood-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
             justify-content: center;
-            margin: 12px 0;
+            margin: 10px 0;
         }
 
         .mood-emoji {
-            font-size: 20px;
+            font-size: 18px;
             cursor: pointer;
-            padding: 6px;
-            border-radius: 8px;
+            padding: 5px;
+            border-radius: 6px;
             transition: all 0.3s ease;
         }
 
         .mood-emoji:hover {
-            transform: scale(1.2);
+            transform: scale(1.15);
         }
 
         .mood-emoji.selected {
-            background: rgba(232, 216, 162, 0.2);
+            background: rgba(212, 163, 115, 0.2);
         }
 
         /* Анимация этапов */
         .stage, .tab-content {
             display: none;
-            animation: slideIn 0.5s ease-out;
+            animation: dissolve 0.6s ease-out;
         }
 
         .stage.active, .tab-content.active {
             display: block;
         }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-10px); }
-            to { opacity: 1; transform: translateX(0); }
+        @keyframes dissolve {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* Адаптивность */
         @media (max-width: 600px) {
             .container {
                 width: 95%;
-                padding: 20px;
+                padding: 15px;
             }
 
             .stage-nav {
-                flex-wrap: wrap;
-                gap: 8px;
+                flex-direction: column;
+                align-items: center;
+                gap: 6px;
             }
 
             .stage-nav span {
                 font-size: 12px;
-                padding: 6px 12px;
+                padding: 5px 10px;
             }
 
             h1 {
-                font-size: 28px;
+                font-size: 26px;
             }
 
             h2 {
-                font-size: 18px;
+                font-size: 16px;
             }
 
             button {
-                margin: 6px;
+                margin: 5px;
             }
 
             button.primary {
-                padding: 10px 20px;
-                font-size: 14px;
+                padding: 8px 18px;
+                font-size: 13px;
             }
 
             .tabs {
                 flex-wrap: wrap;
-                gap: 8px;
-            }
-
-            canvas {
-                width: 100px !important;
-                height: 100px !important;
+                gap: 6px;
             }
 
             .modal-content {
                 width: 95%;
-                padding: 15px;
+                padding: 12px;
             }
 
             #notes-list {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             }
         }
     </style>
@@ -511,6 +595,7 @@
 
     <!-- Контейнер приложения -->
     <div class="container">
+        <div class="progress-bar" id="progress-bar"></div>
         <!-- Навигатор этапов -->
         <div class="stage-nav">
             <span id="nav-start" class="active"><i class="fas fa-play"></i> Старт</span>
@@ -571,7 +656,9 @@
             <div id="work-pomodoro" class="tab-content">
                 <button class="primary" onclick="startPomodoro()"><i class="fas fa-play"></i> Старт Pomodoro</button>
                 <p id="timer">25:00</p>
-                <canvas id="progress-circle" width="100" height="100"></canvas>
+                <div class="progress-container">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
             </div>
             <div id="work-notes" class="tab-content">
                 <input type="text" id="note-search" placeholder="Поиск заметок...">
@@ -621,7 +708,9 @@
                     <option value="week">Неделя</option>
                     <option value="month">Месяц</option>
                 </select>
-                <canvas id="progress-stats" width="280" height="140"></canvas>
+                <div class="progress-container">
+                    <div class="progress-fill" id="stats-progress"></div>
+                </div>
                 <button class="secondary" onclick="exportResults()"><i class="fas fa-download"></i> Экспортировать</button>
                 <input type="file" id="import-file" accept=".txt" multiple>
                 <button class="secondary" onclick="importResults()"><i class="fas fa-upload"></i> Импортировать</button>
@@ -735,25 +824,41 @@
         function initStars() {
             const starsContainer = document.getElementById('stars');
             starsContainer.innerHTML = '';
-            // Обычные звёзды
-            for (let i = 0; i < 120; i++) {
+            // Обычные и пульсирующие звёзды
+            for (let i = 0; i < 150; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
-                star.style.width = `${Math.random() * 1.5 + 0.5}px`;
-                star.style.height = star.style.width;
+                if (Math.random() < 0.1) star.classList.add('pulse');
+                const size = Math.random() * 1.8 + 0.4;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
                 star.style.left = `${Math.random() * 100}%`;
                 star.style.top = `${Math.random() * 100}%`;
-                star.style.animationDelay = `${Math.random() * 5}s`;
+                star.style.animationDelay = `${Math.random() * 6}s`;
+                star.style.opacity = Math.random() * 0.6 + 0.4;
+                star.addEventListener('click', () => {
+                    star.style.transform = 'scale(0)';
+                    star.style.opacity = '0';
+                    setTimeout(() => star.remove(), 300);
+                });
                 starsContainer.appendChild(star);
             }
             // Падающие звёзды
-            for (let i = 0; i < 3; i++) {
+            for (let i = 0; i < 4; i++) {
                 const fallingStar = document.createElement('div');
                 fallingStar.className = 'falling-star';
                 fallingStar.style.left = `${Math.random() * 100}%`;
-                fallingStar.style.animationDelay = `${Math.random() * 10}s`;
+                fallingStar.style.animationDelay = `${Math.random() * 12}s`;
                 starsContainer.appendChild(fallingStar);
             }
+        }
+
+        // Прогресс дня
+        function updateProgressBar(stage) {
+            const stages = ['start', 'setup', 'work', 'break', 'end-shift', 'family'];
+            const index = stages.indexOf(stage);
+            const progress = (index / (stages.length - 1)) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
         }
 
         // Переключение этапов
@@ -766,6 +871,7 @@
                 document.querySelectorAll('.stage-nav span').forEach(s => s.classList.remove('active'));
                 document.getElementById(`nav-${stage}`).classList.add('active');
                 if (stage === 'family') showFamilyStep('prepare');
+                updateProgressBar(stage);
                 console.log(`Stage switched to: ${stage}`);
             } catch (error) {
                 console.error(error);
@@ -966,15 +1072,9 @@
 
         // Прогресс
         function updateProgress() {
-            const canvas = document.getElementById('progress-circle');
-            const ctx = canvas.getContext('2d');
+            const progressFill = document.getElementById('progress-fill');
             const progress = completedTasks / tasks.length || 0;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.beginPath();
-            ctx.arc(50, 50, 45, -Math.PI / 2, (2 * Math.PI * progress) - Math.PI / 2);
-            ctx.strokeStyle = '#E8D8A2';
-            ctx.lineWidth = 6;
-            ctx.stroke();
+            progressFill.style.width = `${progress * 100}%`;
         }
 
         // Заметки
@@ -989,6 +1089,7 @@
             text.value = type === 'new' ? '' : notes[index].text;
             tags.value = type === 'new' ? '' : notes[index].tags.join(', ');
             modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
             renderNoteTags(tags.value);
             text.focus();
         }
@@ -1052,20 +1153,24 @@
         }
 
         function closeNoteModal() {
-            document.getElementById('note-modal').style.display = 'none';
+            const modal = document.getElementById('note-modal');
+            modal.classList.remove('active');
+            setTimeout(() => modal.style.display = 'none', 300);
         }
 
         // Упражнения
         function openExerciseModal(category) {
             const modal = document.getElementById(`${category}-modal`);
             modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
             document.getElementById(`${category}-tracker`).innerHTML = '';
             if (category === 'breathing') document.getElementById('breathing-timer').innerHTML = '';
         }
 
         function closeExerciseModal(category) {
             const modal = document.getElementById(`${category}-modal`);
-            modal.style.display = 'none';
+            modal.classList.remove('active');
+            setTimeout(() => modal.style.display = 'none', 300);
         }
 
         function startBreakExercise(category) {
@@ -1168,23 +1273,19 @@
                 let count = 0;
                 stars.forEach(star => {
                     star.style.pointerEvents = 'auto';
-                    star.style.transition = 'transform 0.5s';
+                    star.style.transition = 'transform 0.5s, opacity 0.5s';
                     const clickHandler = () => {
                         star.style.transform = 'scale(0)';
+                        star.style.opacity = '0';
                         count++;
-                        setTimeout(() => star.style.display = 'none', 500);
+                        setTimeout(() => star.remove(), 500);
                     };
                     star.addEventListener('click', clickHandler);
                     star.clickHandler = clickHandler;
                 });
                 setTimeout(() => {
                     tracker.innerHTML = `Собрано звёзд: ${count}.`;
-                    stars.forEach(star => {
-                        star.style.display = 'block';
-                        star.style.transform = 'scale(1)';
-                        star.style.pointerEvents = 'none';
-                        star.removeEventListener('click', star.clickHandler);
-                    });
+                    initStars();
                 }, 15000);
 
             } else if (game === 'puzzle') {
@@ -1192,8 +1293,8 @@
                 const puzzle = document.createElement('div');
                 puzzle.innerHTML = `
                     <style>
-                        .puzzle-container { display: grid; grid-template-columns: repeat(2, 40px); gap: 4px; margin: 8px auto; }
-                        .puzzle-piece { width: 40px; height: 40px; background: rgba(232, 216, 162, 0.2); cursor: pointer; border-radius: 6px; border: 1px solid #E8D8A2; }
+                        .puzzle-container { display: grid; grid-template-columns: repeat(2, 35px); gap: 3px; margin: 6px auto; }
+                        .puzzle-piece { width: 35px; height: 35px; background: rgba(212, 163, 115, 0.2); cursor: pointer; border-radius: 5px; border: 1px solid #D4A373; }
                         .puzzle-piece.correct { background: #81C784; }
                     </style>
                     <div class="puzzle-container">
@@ -1219,27 +1320,27 @@
             } else if (game === 'maze') {
                 tracker.innerHTML = 'Проведи шарик через лабиринт!';
                 const maze = document.createElement('canvas');
-                maze.width = 180;
-                maze.height = 180;
-                maze.style.border = '1px solid #E8D8A2';
+                maze.width = 160;
+                maze.height = 160;
+                maze.style.border = '1px solid #D4A373';
                 tracker.appendChild(maze);
                 const ctx = maze.getContext('2d');
                 const ball = { x: 15, y: 15, r: 4 };
-                const target = { x: 165, y: 165, r: 4 };
+                const target = { x: 145, y: 145, r: 4 };
                 const walls = [
-                    { x: 0, y: 40, w: 120, h: 8 },
-                    { x: 40, y: 80, w: 120, h: 8 },
-                    { x: 0, y: 120, w: 120, h: 8 }
+                    { x: 0, y: 35, w: 100, h: 8 },
+                    { x: 35, y: 70, w: 100, h: 8 },
+                    { x: 0, y: 105, w: 100, h: 8 }
                 ];
                 let moving = false;
 
                 function drawMaze() {
                     ctx.clearRect(0, 0, maze.width, maze.height);
-                    ctx.fillStyle = '#E8D8A2';
+                    ctx.fillStyle = '#D4A373';
                     walls.forEach(wall => ctx.fillRect(wall.x, wall.y, wall.w, wall.h));
                     ctx.beginPath();
                     ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
-                    ctx.fillStyle = '#E8D8A2';
+                    ctx.fillStyle = '#D4A373';
                     ctx.fill();
                     ctx.beginPath();
                     ctx.arc(target.x, target.y, target.r, 0, Math.PI * 2);
@@ -1383,10 +1484,8 @@
 
         // Статистика
         function updateProgressStats() {
-            const canvas = document.getElementById('progress-stats');
-            const ctx = canvas.getContext('2d');
+            const progressFill = document.getElementById('stats-progress');
             const filter = document.getElementById('stats-filter').value;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
             let data = importedData.concat(tasks.map(task => ({
                 date: task.date,
                 completed: task.completed ? 1 : 0,
@@ -1405,24 +1504,9 @@
                 monthAgo.setDate(now.getDate() - 30);
                 data = data.filter(d => new Date(d.date) >= monthAgo);
             }
-            const grouped = data.reduce((acc, d) => {
-                acc[d.date] = acc[d.date] || { completed: 0, total: 0 };
-                acc[d.date].completed += d.completed;
-                acc[d.date].total += d.total;
-                return acc;
-            }, {});
-            const dates = Object.keys(grouped).sort();
-            const maxY = Math.max(...Object.values(grouped).map(g => g.completed / g.total || 0), 1);
-            ctx.beginPath();
-            ctx.moveTo(0, canvas.height);
-            dates.forEach((date, i) => {
-                const x = (i / (dates.length - 1 || 1)) * canvas.width;
-                const y = canvas.height - ((grouped[date].completed / grouped[date].total || 0) / maxY) * canvas.height;
-                ctx.lineTo(x, y);
-            });
-            ctx.strokeStyle = '#E8D8A2';
-            ctx.lineWidth = 2;
-            ctx.stroke();
+            const total = data.reduce((sum, d) => sum + d.total, 0);
+            const completed = data.reduce((sum, d) => sum + d.completed, 0);
+            progressFill.style.width = `${(completed / total) * 100 || 0}%`;
         }
 
         // Экспорт результатов
