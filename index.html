@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CalmFlow — Разделяя работу и дом</title>
-    <!-- Динамический favicon -->
+    <!-- Динамический favicon будет установлен через JavaScript -->
     <link rel="icon" id="favicon" type="image/png" href="">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome -->
+    <!-- Font Awesome CDN с fallback -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" onload="console.log('Font Awesome loaded')" onerror="this.href='/fontawesome/css/all.min.css'">
     <style>
         /* Сброс стилей */
@@ -30,14 +30,9 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: background 0.5s ease;
         }
 
-        body.light-theme {
-            background: radial-gradient(circle at center, #E6F0FA 0%, #B0BEC5 100%);
-            color: #0A0A12;
-        }
-
+        /* Резервный фон */
         body::before {
             content: '';
             position: fixed;
@@ -50,11 +45,7 @@
             z-index: -2;
         }
 
-        body.light-theme::before {
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="10" cy="10" r="0.5" fill="black"/><circle cx="50" cy="50" r="0.7" fill="black"/><circle cx="80" cy="20" r="0.6" fill="black"/></svg>') repeat;
-            opacity: 0.05;
-        }
-
+        /* Звёздный фон */
         .stars {
             position: fixed;
             top: 0;
@@ -128,6 +119,7 @@
             100% { transform: scale(2); opacity: 0; }
         }
 
+        /* Контейнер */
         .container {
             max-width: 1000px;
             width: 95%;
@@ -140,13 +132,6 @@
             text-align: center;
             animation: dissolve 0.8s ease-out;
             position: relative;
-            transition: background 0.5s ease, color 0.5s ease;
-        }
-
-        body.light-theme .container {
-            background: rgba(255, 255, 255, 0.9);
-            color: #0A0A12;
-            border: 1px solid rgba(64, 196, 255, 0.5);
         }
 
         @keyframes dissolve {
@@ -154,6 +139,7 @@
             to { opacity: 1; transform: scale(1); }
         }
 
+        /* Прогресс-бар */
         .progress-bar {
             width: 100%;
             height: 6px;
@@ -161,10 +147,6 @@
             border-radius: 3px;
             margin: 10px 0;
             overflow: hidden;
-        }
-
-        body.light-theme .progress-bar {
-            background: rgba(0, 0, 0, 0.1);
         }
 
         .progress-fill {
@@ -175,6 +157,7 @@
             box-shadow: 0 0 8px rgba(64, 196, 255, 0.5);
         }
 
+        /* Навигатор */
         .stage-nav {
             position: sticky;
             top: 0;
@@ -189,11 +172,6 @@
             z-index: 10;
         }
 
-        body.light-theme .stage-nav {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(64, 196, 255, 0.5);
-        }
-
         .stage-nav span {
             font-size: 13px;
             color: #E6F0FA;
@@ -205,10 +183,6 @@
             align-items: center;
             gap: 5px;
             position: relative;
-        }
-
-        body.light-theme .stage-nav span {
-            color: #0A0A12;
         }
 
         .stage-nav span:hover {
@@ -233,6 +207,7 @@
             background: #40C4FF;
         }
 
+        /* Заголовки */
         h1 {
             font-family: 'Orbitron', sans-serif;
             font-size: 30px;
@@ -241,10 +216,6 @@
             letter-spacing: 1px;
             position: relative;
             display: inline-block;
-        }
-
-        body.light-theme h1 {
-            color: #0288D1;
         }
 
         h1::before, h1::after {
@@ -268,10 +239,7 @@
             font-weight: 300;
         }
 
-        body.light-theme h2 {
-            color: #0A0A12;
-        }
-
+        /* Слоган */
         .slogan {
             font-family: 'Inter', sans-serif;
             font-size: 13px;
@@ -282,14 +250,11 @@
             animation: fadeInSlogan 1.2s ease-out 0.6s forwards;
         }
 
-        body.light-theme .slogan {
-            color: #455A64;
-        }
-
         @keyframes fadeInSlogan {
             to { opacity: 1; }
         }
 
+        /* Кнопки */
         button {
             background: linear-gradient(135deg, #40C4FF 0%, #B388FF 100%);
             color: #0A0A12;
@@ -345,17 +310,8 @@
             gap: 4px;
         }
 
-        body.light-theme button.secondary {
-            color: #0288D1;
-            border: 1px solid #0288D1;
-        }
-
         button.secondary i {
             color: #40C4FF;
-        }
-
-        body.light-theme button.secondary i {
-            color: #0288D1;
         }
 
         button.secondary::after {
@@ -364,10 +320,7 @@
             font-size: 11px;
         }
 
-        body.light-theme button.secondary::after {
-            color: #0288D1;
-        }
-
+        /* Вкладки */
         .tabs {
             display: flex;
             justify-content: center;
@@ -387,25 +340,14 @@
             gap: 6px;
         }
 
-        body.light-theme .tabs button {
-            background: rgba(255, 255, 255, 0.7);
-            color: #0A0A12;
-            border: 1px solid rgba(64, 196, 255, 0.5);
-        }
-
         .tabs button.active {
             background: rgba(64, 196, 255, 0.2);
             color: #40C4FF;
             border: 1px solid #40C4FF;
         }
 
-        body.light-theme .tabs button.active {
-            background: rgba(64, 196, 255, 0.3);
-            color: #0288D1;
-            border: 1px solid #0288D1;
-        }
-
-        input[type="text"], input[type="time"], input[type="date"], textarea, select {
+        /* Поля ввода */
+        input[type="text"], input[type="time"], textarea, select {
             width: 100%;
             padding: 8px;
             margin: 6px 0;
@@ -418,21 +360,10 @@
             transition: all 0.3s ease;
         }
 
-        body.light-theme input[type="text"], body.light-theme input[type="time"], body.light-theme input[type="date"], body.light-theme textarea, body.light-theme select {
-            background: rgba(255, 255, 255, 0.7);
-            color: #0A0A12;
-            border: 1px solid rgba(64, 196, 255, 0.5);
-        }
-
         input:focus, textarea:focus, select:focus {
             border-color: #40C4FF;
             box-shadow: 0 0 5px rgba(64, 196, 255, 0.4);
             outline: none;
-        }
-
-        body.light-theme input:focus, body.light-theme textarea:focus, body.light-theme select:focus {
-            border-color: #0288D1;
-            box-shadow: 0 0 5px rgba(64, 196, 255, 0.6);
         }
 
         textarea {
@@ -440,14 +371,15 @@
             resize: vertical;
         }
 
-        #task-list, #key-task-list, #archive-list {
+        /* Список задач */
+        #task-list, #key-task-list {
             list-style: none;
             padding: 0;
             max-height: 280px;
             overflow-y: auto;
         }
 
-        #task-list li, #key-task-list li, #archive-list li {
+        #task-list li, #key-task-list li {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -459,56 +391,41 @@
             transition: transform 0.3s ease;
         }
 
-        body.light-theme #task-list li, body.light-theme #key-task-list li, body.light-theme #archive-list li {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(64, 196, 255, 0.5);
-        }
-
-        #task-list li:hover, #key-task-list li:hover, #archive-list li:hover {
+        #task-list li:hover, #key-task-list li:hover {
             transform: scale(1.02);
         }
 
         #task-list li.low { border-left: 3px solid #4CAF50; }
         #task-list li.medium { border-left: 3px solid #FFCA28; }
         #task-list li.high { border-left: 3px solid #F44336; }
-        #archive-list li.low { border-left: 3px solid #4CAF50; }
-        #archive-list li.medium { border-left: 3px solid #FFCA28; }
-        #archive-list li.high { border-left: 3px solid #F44336; }
 
         #task-list li.drop-target {
             border: 2px dashed #40C4FF;
         }
 
-        body.light-theme #task-list li.drop-target {
-            border: 2px dashed #0288D1;
-        }
-
-        #task-list li.completed, #archive-list li.completed {
+        #task-list li.completed {
             opacity: 0.6;
             text-decoration: line-through;
         }
 
-        #task-list li .task-details, #archive-list li .task-details {
+        #task-list li .task-details {
             flex: 1;
             display: flex;
             flex-direction: column;
             gap: 4px;
         }
 
-        #task-list li .task-meta, #archive-list li .task-meta {
+        #task-list li .task-meta {
             font-size: 11px;
             color: #90A4AE;
         }
 
-        body.light-theme #task-list li .task-meta, body.light-theme #archive-list li .task-meta {
-            color: #455A64;
-        }
-
-        #task-list li .actions, #archive-list li .actions {
+        #task-list li .actions {
             display: flex;
             gap: 8px;
         }
 
+        /* Модальные окна */
         .modal {
             display: none;
             position: fixed;
@@ -520,10 +437,6 @@
             z-index: 1000;
             justify-content: center;
             align-items: center;
-        }
-
-        body.light-theme .modal {
-            background: rgba(0, 0, 0, 0.6);
         }
 
         .modal-content {
@@ -542,11 +455,6 @@
             transition: transform 0.3s ease, opacity 0.3s ease;
         }
 
-        body.light-theme .modal-content {
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(64, 196, 255, 0.5);
-        }
-
         .modal.active .modal-content {
             transform: scale(1);
             opacity: 1;
@@ -560,10 +468,6 @@
             font-weight: 400;
         }
 
-        body.light-theme .modal-content h2 {
-            color: #0288D1;
-        }
-
         .modal-content select {
             margin-bottom: 8px;
         }
@@ -575,18 +479,10 @@
             line-height: 1.4;
         }
 
-        body.light-theme .modal-content .exercise-tracker {
-            color: #0A0A12;
-        }
-
         .modal-content .exercise-timer {
             font-size: 14px;
             color: #40C4FF;
             margin: 6px 0;
-        }
-
-        body.light-theme .modal-content .exercise-timer {
-            color: #0288D1;
         }
 
         .modal-content textarea {
@@ -609,11 +505,7 @@
             font-size: 11px;
         }
 
-        body.light-theme .modal-content .tag {
-            background: rgba(64, 196, 255, 0.3);
-            color: #0288D1;
-        }
-
+        /* Сетка заметок */
         #notes-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -634,11 +526,6 @@
             transition: transform 0.3s ease;
         }
 
-        body.light-theme .note-card {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(64, 196, 255, 0.5);
-        }
-
         .note-card:hover {
             transform: scale(1.05);
         }
@@ -655,10 +542,6 @@
             flex-grow: 1;
         }
 
-        body.light-theme .note-card p {
-            color: #0A0A12;
-        }
-
         .note-card .tags {
             margin: 5px 0;
         }
@@ -668,19 +551,10 @@
             color: #B388FF;
         }
 
-        body.light-theme .note-card .tag {
-            background: rgba(179, 136, 255, 0.3);
-            color: #7E57C2;
-        }
-
         .note-card small {
             color: #90A4AE;
             font-size: 10px;
             margin-top: 5px;
-        }
-
-        body.light-theme .note-card small {
-            color: #455A64;
         }
 
         .note-card .actions {
@@ -690,6 +564,7 @@
             justify-content: flex-end;
         }
 
+        /* Дневник настроения */
         .mood-container {
             display: flex;
             flex-wrap: wrap;
@@ -714,10 +589,7 @@
             background: rgba(64, 196, 255, 0.2);
         }
 
-        body.light-theme .mood-emoji.selected {
-            background: rgba(64, 196, 255, 0.3);
-        }
-
+        /* Анимация этапов */
         .stage, .tab-content {
             display: none;
             animation: dissolve 0.6s ease-out;
@@ -727,6 +599,7 @@
             display: block;
         }
 
+        /* Рабочая зона */
         .work-header {
             display: flex;
             justify-content: space-between;
@@ -736,11 +609,6 @@
             background: rgba(40, 40, 60, 0.5);
             border-radius: 8px;
             border: 1px solid rgba(64, 196, 255, 0.2);
-        }
-
-        body.light-theme .work-header {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(64, 196, 255, 0.5);
         }
 
         .productivity-meter {
@@ -758,10 +626,6 @@
             overflow: hidden;
         }
 
-        body.light-theme .productivity-bar {
-            background: rgba(0, 0, 0, 0.1);
-        }
-
         .productivity-fill {
             width: 0%;
             height: 100%;
@@ -777,16 +641,8 @@
             color: #90A4AE;
         }
 
-        body.light-theme .work-timer {
-            color: #455A64;
-        }
-
         .work-timer i {
             color: #40C4FF;
-        }
-
-        body.light-theme .work-timer i {
-            color: #0288D1;
         }
 
         .task-controls {
@@ -794,6 +650,13 @@
             flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 15px;
+            align-items: center;
+        }
+
+        #task-input-container {
+            flex: 1;
+            display: flex;
+            gap: 8px;
             align-items: center;
         }
 
@@ -809,6 +672,7 @@
             font-size: 12px;
         }
 
+        /* Вкладка Pomodoro */
         .pomodoro-container {
             text-align: center;
             padding: 20px;
@@ -817,22 +681,12 @@
             border: 1px solid rgba(64, 196, 255, 0.2);
         }
 
-        body.light-theme .pomodoro-container {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(64, 196, 255, 0.5);
-        }
-
         .timer-display {
             font-family: 'Orbitron', sans-serif;
             font-size: 48px;
             color: #40C4FF;
             margin-bottom: 15px;
             text-shadow: 0 0 8px rgba(64, 196, 255, 0.4);
-        }
-
-        body.light-theme .timer-display {
-            color: #0288D1;
-            text-shadow: 0 0 8px rgba(64, 196, 255, 0.6);
         }
 
         .pomodoro-controls {
@@ -848,10 +702,7 @@
             color: #E6F0FA;
         }
 
-        body.light-theme .pomodoro-stats {
-            color: #0A0A12;
-        }
-
+        /* Вкладка заметок */
         .notes-controls {
             display: flex;
             gap: 10px;
@@ -863,16 +714,12 @@
             flex: 1;
         }
 
+        /* Вкладка статистики */
         .stats-container {
             padding: 15px;
             background: rgba(40, 40, 60, 0.5);
             border-radius: 10px;
             border: 1px solid rgba(64, 196, 255, 0.2);
-        }
-
-        body.light-theme .stats-container {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(64, 196, 255, 0.5);
         }
 
         .stats-filter {
@@ -894,18 +741,7 @@
             font-weight: 500;
         }
 
-        body.light-theme .stats-data span {
-            color: #0288D1;
-        }
-
-        .stats-chart {
-            margin: 15px 0;
-        }
-
-        .stats-chart canvas {
-            max-width: 100%;
-        }
-
+        /* Вкладка Канбан */
         .kanban-container {
             display: flex;
             gap: 15px;
@@ -923,79 +759,17 @@
             border: 1px solid rgba(64, 196, 255, 0.2);
         }
 
-        body.light-theme .kanban-column {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(64, 196, 255, 0.5);
-        }
-
         .kanban-column h3 {
             font-size: 14px;
             margin-bottom: 10px;
             color: #40C4FF;
         }
 
-        body.light-theme .kanban-column h3 {
-            color: #0288D1;
-        }
-
         .kanban-column ul {
             min-height: 100px;
         }
 
-        .calendar-container {
-            margin: 15px 0;
-            padding: 15px;
-            background: rgba(40, 40, 60, 0.5);
-            border-radius: 8px;
-            border: 1px solid rgba(64, 196, 255, 0.2);
-        }
-
-        body.light-theme .calendar-container {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(64, 196, 255, 0.5);
-        }
-
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-        }
-
-        .calendar-day {
-            padding: 8px;
-            text-align: center;
-            border-radius: 5px;
-            background: rgba(26, 26, 46, 0.5);
-            cursor: pointer;
-        }
-
-        body.light-theme .calendar-day {
-            background: rgba(0, 0, 0, 0.1);
-        }
-
-        .calendar-day:hover {
-            background: rgba(64, 196, 255, 0.2);
-        }
-
-        .calendar-day.today {
-            background: rgba(64, 196, 255, 0.4);
-        }
-
-        .calendar-day.has-tasks {
-            border: 2px solid #40C4FF;
-        }
-
-        body.light-theme .calendar-day.has-tasks {
-            border: 2px solid #0288D1;
-        }
-
+        /* Таймер перерыва */
         #break-timer {
             position: fixed;
             bottom: 20px;
@@ -1007,11 +781,7 @@
             font-size: 14px;
         }
 
-        body.light-theme #break-timer {
-            background: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 0 10px rgba(64, 196, 255, 0.4);
-        }
-
+        /* Модальное окно уведомления */
         #break-notification-modal {
             display: none;
             position: fixed;
@@ -1026,15 +796,11 @@
             text-align: center;
         }
 
-        body.light-theme #break-notification-modal {
-            background: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 0 15px rgba(64, 196, 255, 0.4);
-        }
-
         #break-notification-modal button {
             margin-top: 10px;
         }
 
+        /* Сообщение об ошибке */
         .error-message {
             display: none;
             color: #F44336;
@@ -1045,23 +811,7 @@
             border-radius: 8px;
         }
 
-        body.light-theme .error-message {
-            background: rgba(244, 67, 54, 0.2);
-        }
-
-        .settings-bar {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .settings-bar button {
-            padding: 6px 12px;
-            font-size: 12px;
-        }
-
+        /* Адаптивность */
         @media (max-width: 600px) {
             .container {
                 width: 95%;
@@ -1125,15 +875,6 @@
             .kanban-column {
                 min-width: 100%;
             }
-
-            .calendar-grid {
-                grid-template-columns: repeat(7, 1fr);
-            }
-
-            .calendar-day {
-                padding: 5px;
-                font-size: 12px;
-            }
         }
     </style>
 </head>
@@ -1141,27 +882,17 @@
     <!-- Звёздный фон -->
     <div class="stars" id="stars"></div>
 
-    <!-- Панель настроек -->
-    <div class="settings-bar">
-        <button class="secondary" onclick="toggleTheme()"><i class="fas fa-adjust"></i> Тема</button>
-        <button class="secondary" onclick="openSettingsModal()"><i class="fas fa-cog"></i> Настройки</button>
-        <select id="language-select" onchange="changeLanguage(this.value)">
-            <option value="ru">Русский</option>
-            <option value="en">English</option>
-        </select>
-    </div>
-
     <!-- Контейнер приложения -->
     <div class="container">
         <div class="error-message" id="error-message"></div>
         <!-- Навигатор этапов -->
         <div class="stage-nav">
-            <span id="nav-start" class="active"><i class="fas fa-play"></i> <span class="lang" data-lang-ru="Старт" data-lang-en="Start">Старт</span></span>
-            <span id="nav-setup"><i class="fas fa-cog"></i> <span class="lang" data-lang-ru="Настройка" data-lang-en="Setup">Настройка</span></span>
-            <span id="nav-work"><i class="fas fa-briefcase"></i> <span class="lang" data-lang-ru="Работа" data-lang-en="Work">Работа</span></span>
-            <span id="nav-break"><i class="fas fa-coffee"></i> <span class="lang" data-lang-ru="Перерыв" data-lang-en="Break">Перерыв</span></span>
-            <span id="nav-end-shift"><i class="fas fa-sign-out-alt"></i> <span class="lang" data-lang-ru="Завершение" data-lang-en="End Shift">Завершение</span></span>
-            <span id="nav-family"><i class="fas fa-users"></i> <span class="lang" data-lang-ru="Семья" data-lang-en="Family">Семья</span></span>
+            <span id="nav-start" class="active"><i class="fas fa-play"></i> Старт</span>
+            <span id="nav-setup"><i class="fas fa-cog"></i> Настройка</span>
+            <span id="nav-work"><i class="fas fa-briefcase"></i> Работа</span>
+            <span id="nav-break"><i class="fas fa-coffee"></i> Перерыв</span>
+            <span id="nav-end-shift"><i class="fas fa-sign-out-alt"></i> Завершение</span>
+            <span id="nav-family"><i class="fas fa-users"></i> Семья</span>
         </div>
 
         <!-- Прогресс-бар -->
@@ -1172,41 +903,42 @@
         <!-- Старт смены -->
         <div id="start-stage" class="stage active">
             <h1>CalmFlow</h1>
-            <p class="slogan lang" data-lang-ru="Разделяя работу и дом" data-lang-en="Separating Work and Home">Разделяя работу и дом</p>
-            <button class="primary" onclick="checkDayChange()"><span class="lang" data-lang-ru="Начать смену" data-lang-en="Start Shift">Начать смену</span></button>
+            <p class="slogan">Разделяя работу и дом</p>
+            <button class="primary" onclick="checkDayChange()">Начать смену</button>
             <input type="file" id="import-all-file" accept=".json" style="display: none;" onchange="importAllData()">
-            <button class="secondary" onclick="document.getElementById('import-all-file').click()"><span class="lang" data-lang-ru="Импортировать данные" data-lang-en="Import Data">Импортировать данные</span></button>
+            <button class="secondary" onclick="document.getElementById('import-all-file').click()">Импортировать данные</button>
         </div>
 
         <!-- Настройка работы -->
         <div id="setup-stage" class="stage">
-            <h2 class="lang" data-lang-ru="Настройка работы" data-lang-en="Work Setup">Настройка работы</h2>
+            <h2>Настройка работы</h2>
             <div class="tabs">
-                <button class="tab-btn active" onclick="showTab('setup-time', this)"><i class="fas fa-clock"></i> <span class="lang" data-lang-ru="Время" data-lang-en="Time">Время</span></button>
-                <button class="tab-btn" onclick="showTab('setup-tasks', this)"><i class="fas fa-tasks"></i> <span class="lang" data-lang-ru="Задачи" data-lang-en="Tasks">Задачи</span></button>
+                <button class="tab-btn active" onclick="showTab('setup-time', this)"><i class="fas fa-clock"></i> Время</button>
+                <button class="tab-btn" onclick="showTab('setup-tasks', this)"><i class="fas fa-tasks"></i> Задачи</button>
             </div>
             <div id="setup-time" class="tab-content active">
-                <label><span class="lang" data-lang-ru="Работа с" data-lang-en="Work from">Работа с</span> <input type="time" id="work-start"> <span class="lang" data-lang-ru="до" data-lang-en="to">до</span> <input type="time" id="work-end"></label>
+                <label>Работа с <input type="time" id="work-start"> до <input type="time" id="work-end"></label>
                 <p id="time-remaining"></p>
-                <label><span class="lang" data-lang-ru="Перерывы каждые" data-lang-en="Breaks every">Перерывы каждые</span> <input type="time" id="break-interval" value="01:00"></label>
-                <button class="secondary" onclick="applyDoctorBreaks()"><span class="lang" data-lang-ru="Рекомендации врача" data-lang-en="Doctor's Recommendation">Рекомендации врача</span></button>
-                <button class="secondary" onclick="requestNotifications()"><span class="lang" data-lang-ru="Разрешить уведомления" data-lang-en="Allow Notifications">Разрешить уведомления</span></button>
-                <button class="primary" onclick="saveTimeSettings()"><span class="lang" data-lang-ru="Сохранить" data-lang-en="Save">Сохранить</span></button>
+                <label>Перерывы каждые <input type="time" id="break-interval" value="01:00"></label>
+                <button class="secondary" onclick="applyDoctorBreaks()">Рекомендации врача</button>
+                <button class="secondary" onclick="requestNotifications()">Разрешить уведомления</button>
+                <button class="primary" onclick="saveTimeSettings()">Сохранить</button>
             </div>
             <div id="setup-tasks" class="tab-content">
-                <input type="text" id="key-task" class="lang" data-lang-ru="Ключевая задача дня" data-lang-en="Key Task of the Day" placeholder="Ключевая задача дня">
-                <button class="primary" onclick="addKeyTask()"><span class="lang" data-lang-ru="Добавить задачу" data-lang-en="Add Task">Добавить задачу</span></button>
+                <input type="text" id="key-task" placeholder="Ключевая задача дня">
+                <button class="primary" onclick="addKeyTask()">Добавить задачу</button>
                 <ul id="key-task-list"></ul>
             </div>
-            <button class="primary" onclick="showStage('work')"><span class="lang" data-lang-ru="Начать работу" data-lang-en="Start Work">Начать работу</span></button>
+            <button class="primary" onclick="showStage('work')">Начать работу</button>
         </div>
 
         <!-- Выполнение работы -->
         <div id="work-stage" class="stage">
-            <h2 class="lang" data-lang-ru="Рабочая зона" data-lang-en="Work Zone">Рабочая зона</h2>
+            <h2>Рабочая зона</h2>
+            <!-- Панель управления рабочей зоны -->
             <div class="work-header">
                 <div class="productivity-meter">
-                    <span class="lang" data-lang-ru="Продуктивность:" data-lang-en="Productivity:">Продуктивность:</span>
+                    <span>Продуктивность:</span>
                     <div class="productivity-bar">
                         <div class="productivity-fill" id="productivity-fill"></div>
                     </div>
@@ -1219,83 +951,96 @@
                 </div>
             </div>
 
+            <!-- Вкладки рабочей зоны -->
             <div class="tabs">
                 <button class="tab-btn active" onclick="showTab('work-tasks', this)">
-                    <i class="fas fa-tasks"></i> <span class="lang" data-lang-ru="Задачи" data-lang-en="Tasks">Задачи</span>
+                    <i class="fas fa-tasks"></i> Задачи
                 </button>
                 <button class="tab-btn" onclick="showTab('work-kanban', this)">
-                    <i class="fas fa-columns"></i> <span class="lang" data-lang-ru="Канбан" data-lang-en="Kanban">Канбан</span>
+                    <i class="fas fa-columns"></i> Канбан
                 </button>
                 <button class="tab-btn" onclick="showTab('work-pomodoro', this)">
-                    <i class="fas fa-stopwatch"></i> <span class="lang" data-lang-ru="Pomodoro" data-lang-en="Pomodoro">Pomodoro</span>
+                    <i class="fas fa-stopwatch"></i> Pomodoro
                 </button>
                 <button class="tab-btn" onclick="showTab('work-notes', this)">
-                    <i class="fas fa-sticky-note"></i> <span class="lang" data-lang-ru="Заметки" data-lang-en="Notes">Заметки</span>
+                    <i class="fas fa-sticky-note"></i> Заметки
                 </button>
                 <button class="tab-btn" onclick="showTab('work-stats', this)">
-                    <i class="fas fa-chart-line"></i> <span class="lang" data-lang-ru="Статистика" data-lang-en="Stats">Статистика</span>
-                </button>
-                <button class="tab-btn" onclick="showTab('work-calendar', this)">
-                    <i class="fas fa-calendar-alt"></i> <span class="lang" data-lang-ru="Календарь" data-lang-en="Calendar">Календарь</span>
-                </button>
-                <button class="tab-btn" onclick="showTab('work-archive', this)">
-                    <i class="fas fa-archive"></i> <span class="lang" data-lang-ru="Архив" data-lang-en="Archive">Архив</span>
+                    <i class="fas fa-chart-line"></i> Статистика
                 </button>
             </div>
 
+            <!-- Вкладка задач -->
             <div id="work-tasks" class="tab-content active">
                 <div class="task-controls">
-                    <button class="primary" onclick="openTaskModal('new')"><i class="fas fa-plus"></i> <span class="lang" data-lang-ru="Новая задача" data-lang-en="New Task">Новая задача</span></button>
+                    <div id="task-input-container">
+                        <input type="text" id="task" placeholder="Новая задача (Ctrl+Enter)" list="task-suggestions">
+                        <datalist id="task-suggestions"></datalist>
+                        <button class="priority-btn priority-low" data-priority="low" title="Низкий приоритет">
+                            <i class="fas fa-circle"></i>
+                        </button>
+                        <button class="priority-btn priority-medium" data-priority="medium" title="Средний приоритет">
+                            <i class="fas fa-circle"></i>
+                        </button>
+                        <button class="priority-btn priority-high" data-priority="high" title="Высокий приоритет">
+                            <i class="fas fa-circle"></i>
+                        </button>
+                        <button id="add-task-btn" class="primary">
+                            <i class="fas fa-plus"></i> Добавить
+                        </button>
+                    </div>
                     <div class="task-filter">
                         <select id="task-filter-priority">
-                            <option value="all" class="lang" data-lang-ru="Все приоритеты" data-lang-en="All Priorities">Все приоритеты</option>
-                            <option value="low" class="lang" data-lang-ru="Низкий" data-lang-en="Low">Низкий</option>
-                            <option value="medium" class="lang" data-lang-ru="Средний" data-lang-en="Medium">Средний</option>
-                            <option value="high" class="lang" data-lang-ru="Высокий" data-lang-en="High">Высокий</option>
+                            <option value="all">Все приоритеты</option>
+                            <option value="low">Низкий</option>
+                            <option value="medium">Средний</option>
+                            <option value="high">Высокий</option>
                         </select>
                         <select id="task-filter-status">
-                            <option value="all" class="lang" data-lang-ru="Все статусы" data-lang-en="All Statuses">Все статусы</option>
-                            <option value="completed" class="lang" data-lang-ru="Выполненные" data-lang-en="Completed">Выполненные</option>
-                            <option value="pending" class="lang" data-lang-ru="Невыполненные" data-lang-en="Pending">Невыполненные</option>
+                            <option value="all">Все статусы</option>
+                            <option value="completed">Выполненные</option>
+                            <option value="pending">Невыполненные</option>
                         </select>
                         <button class="secondary" onclick="clearCompletedTasks()">
-                            <i class="fas fa-trash-alt"></i> <span class="lang" data-lang-ru="Очистить выполненные" data-lang-en="Clear Completed">Очистить выполненные</span>
+                            <i class="fas fa-trash-alt"></i> Очистить выполненные
                         </button>
                     </div>
                 </div>
                 <ul id="task-list" class="sortable"></ul>
             </div>
 
+            <!-- Вкладка Канбан -->
             <div id="work-kanban" class="tab-content">
                 <div class="kanban-container">
                     <div class="kanban-column" data-status="todo">
-                        <h3 class="lang" data-lang-ru="К выполнению" data-lang-en="To Do">К выполнению</h3>
+                        <h3>К выполнению</h3>
                         <ul id="kanban-todo" class="sortable"></ul>
                     </div>
                     <div class="kanban-column" data-status="in-progress">
-                        <h3 class="lang" data-lang-ru="В процессе" data-lang-en="In Progress">В процессе</h3>
+                        <h3>В процессе</h3>
                         <ul id="kanban-in-progress" class="sortable"></ul>
                     </div>
                     <div class="kanban-column" data-status="done">
-                        <h3 class="lang" data-lang-ru="Выполнено" data-lang-en="Done">Выполнено</h3>
+                        <h3>Выполнено</h3>
                         <ul id="kanban-done" class="sortable"></ul>
                     </div>
                 </div>
             </div>
 
+            <!-- Вкладка Pomodoro -->
             <div id="work-pomodoro" class="tab-content">
                 <div class="pomodoro-container">
                     <div class="pomodoro-timer">
                         <div id="timer" class="timer-display">25:00</div>
                         <div class="pomodoro-controls">
                             <button class="primary" onclick="startPomodoro()">
-                                <i class="fas fa-play"></i> <span class="lang" data-lang-ru="Старт" data-lang-en="Start">Старт</span>
+                                <i class="fas fa-play"></i> Старт
                             </button>
                             <button class="secondary" onclick="pausePomodoro()">
-                                <i class="fas fa-pause"></i> <span class="lang" data-lang-ru="Пауза" data-lang-en="Pause">Пауза</span>
+                                <i class="fas fa-pause"></i> Пауза
                             </button>
                             <button class="secondary" onclick="resetPomodoro()">
-                                <i class="fas fa-redo"></i> <span class="lang" data-lang-ru="Сброс" data-lang-en="Reset">Сброс</span>
+                                <i class="fas fa-redo"></i> Сброс
                             </button>
                         </div>
                     </div>
@@ -1303,150 +1048,123 @@
                         <div class="progress-fill" id="pomodoro-progress"></div>
                     </div>
                     <div class="pomodoro-stats">
-                        <p><span class="lang" data-lang-ru="Сессий завершено:" data-lang-en="Sessions completed:">Сессий завершено:</span> <span id="pomodoro-sessions">0</span></p>
+                        <p>Сессий завершено: <span id="pomodoro-sessions">0</span></p>
                     </div>
                 </div>
             </div>
 
+            <!-- Вкладка заметок -->
             <div id="work-notes" class="tab-content">
                 <div class="notes-controls">
-                    <input type="text" id="note-search" class="lang" data-lang-ru="Поиск заметок..." data-lang-en="Search notes..." placeholder="Поиск заметок...">
+                    <input type="text" id="note-search" placeholder="Поиск заметок...">
                     <button class="primary" onclick="openNoteModal('new')">
-                        <i class="fas fa-plus"></i> <span class="lang" data-lang-ru="Новая заметка" data-lang-en="New Note">Новая заметка</span>
+                        <i class="fas fa-plus"></i> Новая заметка
                     </button>
                 </div>
                 <div id="notes-list"></div>
             </div>
 
+            <!-- Вкладка статистики -->
             <div id="work-stats" class="tab-content">
                 <div class="stats-container">
-                    <h3 class="lang" data-lang-ru="Статистика продуктивности" data-lang-en="Productivity Statistics">Статистика продуктивности</h3>
+                    <h3>Статистика продуктивности</h3>
                     <div class="stats-filter">
                         <select id="stats-filter-work">
-                            <option value="today" class="lang" data-lang-ru="Сегодня" data-lang-en="Today">Сегодня</option>
-                            <option value="week" class="lang" data-lang-ru="Неделя" data-lang-en="Week">Неделя</option>
-                            <option value="month" class="lang" data-lang-ru="Месяц" data-lang-en="Month">Месяц</option>
+                            <option value="today">Сегодня</option>
+                            <option value="week">Неделя</option>
+                            <option value="month">Месяц</option>
                         </select>
                     </div>
                     <div class="stats-data">
-                        <p><span class="lang" data-lang-ru="Задач выполнено:" data-lang-en="Tasks completed:">Задач выполнено:</span> <span id="stats-tasks-completed">0</span></p>
-                        <p><span class="lang" data-lang-ru="Всего задач:" data-lang-en="Total tasks:">Всего задач:</span> <span id="stats-tasks-total">0</span></p>
-                        <p><span class="lang" data-lang-ru="Pomodoro сессий:" data-lang-en="Pomodoro sessions:">Pomodoro сессий:</span> <span id="stats-pomodoro-sessions">0</span></p>
+                        <p>Задач выполнено: <span id="stats-tasks-completed">0</span></p>
+                        <p>Всего задач: <span id="stats-tasks-total">0</span></p>
+                        <p>Pomodoro сессий: <span id="stats-pomodoro-sessions">0</span></p>
                         <div class="progress-bar">
                             <div class="progress-fill" id="stats-progress-work"></div>
                         </div>
-                        <div class="stats-chart">
-                            <canvas id="productivity-chart"></canvas>
-                        </div>
                     </div>
                 </div>
             </div>
 
-            <div id="work-calendar" class="tab-content">
-                <div class="calendar-container">
-                    <div class="calendar-header">
-                        <button class="secondary" onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
-                        <h3 id="calendar-month"></h3>
-                        <button class="secondary" onclick="changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
-                    </div>
-                    <div class="calendar-grid" id="calendar-grid"></div>
-                    <div id="calendar-tasks"></div>
-                </div>
-            </div>
-
-            <div id="work-archive" class="tab-content">
-                <h3 class="lang" data-lang-ru="Архив задач" data-lang-en="Task Archive">Архив задач</h3>
-                <ul id="archive-list"></ul>
-            </div>
-
+            <!-- Кнопки навигации -->
             <div class="work-footer">
                 <button class="secondary" onclick="showStage('break')">
-                    <i class="fas fa-coffee"></i> <span class="lang" data-lang-ru="Перерыв" data-lang-en="Break">Перерыв</span>
+                    <i class="fas fa-coffee"></i> Перерыв
                 </button>
                 <button class="primary" onclick="showStage('end-shift')">
-                    <i class="fas fa-sign-out-alt"></i> <span class="lang" data-lang-ru="Завершить смену" data-lang-en="End Shift">Завершить смену</span>
+                    <i class="fas fa-sign-out-alt"></i> Завершить смену
                 </button>
             </div>
 
-            <div id="break-timer" class="lang" data-lang-ru="До перерыва: 60:00" data-lang-en="Time to break: 60:00">До перерыва: 60:00</div>
+            <!-- Таймер перерыва -->
+            <div id="break-timer">До перерыва: 60:00</div>
         </div>
 
         <!-- Перерывы -->
         <div id="break-stage" class="stage">
-            <h2 class="lang" data-lang-ru="Перерыв" data-lang-en="Break">Перерыв</h2>
+            <h2>Перерыв</h2>
             <div class="tabs">
-                <button class="tab-btn active" onclick="showTab('break-exercise', this)"><i class="fas fa-running"></i> <span class="lang" data-lang-ru="Упражнения" data-lang-en="Exercises">Упражнения</span></button>
-                <button class="tab-btn" onclick="showTab('break-relax', this)"><i class="fas fa-spa"></i> <span class="lang" data-lang-ru="Расслабление" data-lang-en="Relaxation">Расслабление</span></button>
+                <button class="tab-btn active" onclick="showTab('break-exercise', this)"><i class="fas fa-running"></i> Упражнения</button>
+                <button class="tab-btn" onclick="showTab('break-relax', this)"><i class="fas fa-spa"></i> Расслабление</button>
             </div>
             <div id="break-exercise" class="tab-content active">
-                <button class="primary" onclick="openExerciseModal('breathing')"><span class="lang" data-lang-ru="Дыхательные упражнения" data-lang-en="Breathing Exercises">Дыхательные упражнения</span></button>
-                <button class="primary" onclick="openExerciseModal('eyes')"><span class="lang" data-lang-ru="Упражнения для глаз" data-lang-en="Eye Exercises">Упражнения для глаз</span></button>
-                <button class="primary" onclick="openExerciseModal('body')"><span class="lang" data-lang-ru="Упражнения для тела" data-lang-en="Body Exercises">Упражнения для тела</span></button>
+                <button class="primary" onclick="openExerciseModal('breathing')">Дыхательные упражнения</button>
+                <button class="primary" onclick="openExerciseModal('eyes')">Упражнения для глаз</button>
+                <button class="primary" onclick="openExerciseModal('body')">Упражнения для тела</button>
             </div>
             <div id="break-relax" class="tab-content">
-                <p class="lang" data-lang-ru="Расслабьтесь и отдохните." data-lang-en="Relax and take a break.">Расслабьтесь и отдохните.</p>
-                <button class="secondary" onclick="playRelaxSound()"><span class="lang" data-lang-ru="Включить звуки природы" data-lang-en="Play Nature Sounds">Включить звуки природы</span></button>
+                <p>Расслабьтесь и отдохните.</p>
+                <button class="secondary" onclick="playRelaxSound()">Включить звуки природы</button>
             </div>
-            <button class="primary" onclick="showStage('work')"><span class="lang" data-lang-ru="Вернуться к работе" data-lang-en="Return to Work">Вернуться к работе</span></button>
+            <button class="primary" onclick="showStage('work')">Вернуться к работе</button>
         </div>
 
         <!-- Завершение смены -->
         <div id="end-shift-stage" class="stage">
-            <h2 class="lang" data-lang-ru="Завершение смены" data-lang-en="End of Shift">Завершение смены</h2>
+            <h2>Завершение смены</h2>
             <div class="tabs">
-                <button class="tab-btn active" onclick="showTab('end-results', this)"><i class="fas fa-chart-bar"></i> <span class="lang" data-lang-ru="Итоги" data-lang-en="Results">Итоги</span></button>
-                <button class="tab-btn" onclick="showTab('end-ritual', this)"><i class="fas fa-pray"></i> <span class="lang" data-lang-ru="Ритуал" data-lang-en="Ritual">Ритуал</span></button>
-                <button class="tab-btn" onclick="showTab('end-plans', this)"><i class="fas fa-calendar-alt"></i> <span class="lang" data-lang-ru="Планы" data-lang-en="Plans">Планы</span></button>
+                <button class="tab-btn active" onclick="showTab('end-results', this)"><i class="fas fa-chart-bar"></i> Итоги</button>
+                <button class="tab-btn" onclick="showTab('end-ritual', this)"><i class="fas fa-pray"></i> Ритуал</button>
+                <button class="tab-btn" onclick="showTab('end-plans', this)"><i class="fas fa-calendar-alt"></i> Планы</button>
             </div>
             <div id="end-results" class="tab-content active">
                 <div id="results"></div>
                 <select id="stats-filter">
-                    <option value="day" class="lang" data-lang-ru="День" data-lang-en="Day">День</option>
-                    <option value="week" class="lang" data-lang-ru="Неделя" data-lang-en="Week">Неделя</option>
-                    <option value="month" class="lang" data-lang-ru="Месяц" data-lang-en="Month">Месяц</option>
+                    <option value="day">День</option>
+                    <option value="week">Неделя</option>
+                    <option value="month">Месяц</option>
                 </select>
                 <div class="progress-bar">
                     <div class="progress-fill" id="stats-progress"></div>
                 </div>
-                <button class="secondary" onclick="exportAllData()"><span class="lang" data-lang-ru="Экспортировать все данные" data-lang-en="Export All Data">Экспортировать все данные</span></button>
-                <button class="secondary" onclick="sendEmailReport()"><span class="lang" data-lang-ru="Отправить отчёт на email" data-lang-en="Send Report to Email">Отправить отчёт на email</span></button>
+                <button class="secondary" onclick="exportAllData()">Экспортировать все данные</button>
             </div>
             <div id="end-ritual" class="tab-content">
                 <div class="checklist">
-                    <label><input type="checkbox" class="end-checklist"> <span class="lang" data-lang-ru="Закрыть рабочие вкладки" data-lang-en="Close work tabs">Закрыть рабочие вкладки</span></label>
-                    <label><input type="checkbox" class="end-checklist"> <span class="lang" data-lang-ru="Проверить почту" data-lang-en="Check email">Проверить почту</span></label>
-                    <label><input type="checkbox" class="end-checklist"> <span class="lang" data-lang-ru="Убрать материалы" data-lang-en="Clear materials">Убрать материалы</span></label>
+                    <label><input type="checkbox" class="end-checklist"> Закрыть рабочие вкладки</label>
+                    <label><input type="checkbox" class="end-checklist"> Проверить почту</label>
+                    <label><input type="checkbox" class="end-checklist"> Убрать материалы</label>
                 </div>
-                <button class="primary" onclick="startBreathing()"><span class="lang" data-lang-ru="Дыхательное упражнение" data-lang-en="Breathing Exercise">Дыхательное упражнение</span></button>
+                <button class="primary" onclick="startBreathing()">Дыхательное упражнение</button>
             </div>
             <div id="end-plans" class="tab-content">
-                <textarea id="tomorrow-plan" class="lang" data-lang-ru="Планы на завтра..." data-lang-en="Plans for tomorrow..." placeholder="Планы на завтра..."></textarea>
-                <input type="date" id="plan-date">
-                <div id="smart-suggestions"></div>
-                <button class="primary" onclick="saveTomorrowPlan()"><span class="lang" data-lang-ru="Сохранить" data-lang-en="Save">Сохранить</span></button>
+                <textarea id="tomorrow-plan" placeholder="Планы на завтра..."></textarea>
+                <button class="primary" onclick="saveTomorrowPlan()">Сохранить</button>
             </div>
-            <button class="primary" onclick="showStage('family')"><span class="lang" data-lang-ru="Подготовка к семье" data-lang-en="Prepare for Family">Подготовка к семье</span></button>
+            <button class="primary" onclick="showStage('family')">Подготовка к семье</button>
         </div>
 
         <!-- Подготовка к семье -->
         <div id="family-stage" class="stage">
-            <h2 class="lang" data-lang-ru="Время для семьи" data-lang-en="Family Time">Время для семьи</h2>
+            <h2>Время для семьи</h2>
             <div id="family-prepare" class="tab-content active">
                 <select id="family-activity">
-                    <option value="relations" class="lang" data-lang-ru="Совет для общения" data-lang-en="Communication Tip">Совет для общения</option>
-                    <option value="activity" class="lang" data-lang-ru="Совместная активность" data-lang-en="Joint Activity">Совместная активность</option>
-                    <option value="custom" class="lang" data-lang-ru="Своя активность" data-lang-en="Custom Activity">Своя активность</option>
+                    <option value="relations">Совет для общения</option>
+                    <option value="activity">Совместная активность</option>
                 </select>
-                <input type="text" id="custom-family-activity" class="lang" data-lang-ru="Опишите свою активность..." data-lang-en="Describe your activity..." placeholder="Опишите свою активность..." style="display: none;">
-                <button class="primary" onclick="startFamilyActivity()"><span class="lang" data-lang-ru="Начать" data-lang-en="Start">Начать</span></button>
+                <button class="primary" onclick="startFamilyActivity()">Начать</button>
                 <div id="family-tracker"></div>
-                <div class="family-timer">
-                    <p><span class="lang" data-lang-ru="Время с семьёй:" data-lang-en="Time with family:">Время с семьёй:</span> <span id="family-time">00:00</span></p>
-                    <button class="secondary" onclick="startFamilyTimer()"><span class="lang" data-lang-ru="Начать таймер" data-lang-en="Start Timer">Начать таймер</span></button>
-                    <button class="secondary" onclick="pauseFamilyTimer()"><span class="lang" data-lang-ru="Пауза" data-lang-en="Pause">Пауза</span></button>
-                    <button class="secondary" onclick="resetFamilyTimer()"><span class="lang" data-lang-ru="Сброс" data-lang-en="Reset">Сброс</span></button>
-                </div>
-                <button class="primary" onclick="showFamilyStep('mood')"><span class="lang" data-lang-ru="Сохранить настроение" data-lang-en="Save Mood">Сохранить настроение</span></button>
+                <button class="primary" onclick="showFamilyStep('mood')">Сохранить настроение</button>
             </div>
             <div id="family-mood" class="tab-content">
                 <div class="mood-container">
@@ -1456,809 +1174,503 @@
                     <span class="mood-emoji" data-mood="😍">😍</span>
                     <span class="mood-emoji" data-mood="😠">😠</span>
                 </div>
-                <textarea id="mood-tracker" class="lang" data-lang-ru="Опиши свои эмоции..." data-lang-en="Describe your emotions..." placeholder="Опиши свои эмоции..."></textarea>
-                <button class="primary" onclick="saveMood()"><span class="lang" data-lang-ru="Сохранить" data-lang-en="Save">Сохранить</span></button>
-                <button class="primary" onclick="showFamilyStep('export')"><span class="lang" data-lang-ru="Экспортировать" data-lang-en="Export">Экспортировать</span></button>
+                <textarea id="mood-tracker" placeholder="Опиши свои эмоции..."></textarea>
+                <button class="primary" onclick="saveMood()">Сохранить</button>
+                <button class="primary" onclick="showFamilyStep('export')">Экспортировать</button>
             </div>
             <div id="family-export" class="tab-content">
-                <button class="primary" onclick="exportAllData()"><span class="lang" data-lang-ru="Экспортировать все данные" data-lang-en="Export All Data">Экспортировать все данные</span></button>
-                <button class="primary" onclick="showFamilyStep('complete')"><span class="lang" data-lang-ru="Завершить" data-lang-en="Complete">Завершить</span></button>
+                <button class="primary" onclick="exportAllData()">Экспортировать все данные</button>
+                <button class="primary" onclick="showFamilyStep('complete')">Завершить</button>
             </div>
             <div id="family-complete" class="tab-content">
-                <p class="lang" data-lang-ru="Чудесный день завершён!" data-lang-en="Wonderful day completed!">Чудесный день завершён!</p>
-                <button class="primary" onclick="showStage('start')"><span class="lang" data-lang-ru="Завершить день" data-lang-en="End Day">Завершить день</span></button>
-            </div>
-        </div>
-
-        <!-- Модальное окно для задач -->
-        <div id="task-modal" class="modal">
-            <div class="modal-content">
-                <h2 class="lang" data-lang-ru="Новая задача" data-lang-en="New Task">Новая задача</h2>
-                <input type="text" id="task-text" class="lang" data-lang-ru="Название задачи" data-lang-en="Task Name" placeholder="Название задачи">
-                <select id="task-priority">
-                    <option value="low" class="lang" data-lang-ru="Низкий" data-lang-en="Low">Низкий</option>
-                    <option value="medium" class="lang" data-lang-ru="Средний" data-lang-en="Medium">Средний</option>
-                    <option value="high" class="lang" data-lang-ru="Высокий" data-lang-en="High">Высокий</option>
-                </select>
-                <input type="date" id="task-deadline">
-                <input type="text" id="task-tags" class="lang" data-lang-ru="Теги (через запятую)" data-lang-en="Tags (comma-separated)" placeholder="Теги (через запятую)">
-                <div class="tags" id="task-tags-list"></div>
-                <button class="primary" onclick="saveTask()"><span class="lang" data-lang-ru="Сохранить" data-lang-en="Save">Сохранить</span></button>
-                <button class="secondary" onclick="closeTaskModal()"><span class="lang" data-lang-ru="Закрыть" data-lang-en="Close">Закрыть</span></button>
+                <p>Чудесный день завершён!</p>
+                <button class="primary" onclick="showStage('start')">Завершить день</button>
             </div>
         </div>
 
         <!-- Модальное окно для заметок -->
         <div id="note-modal" class="modal">
             <div class="modal-content">
-                <h2 class="lang" data-lang-ru="Заметка" data-lang-en="Note">Заметка</h2>
-                <textarea id="note-text" class="lang" data-lang-ru="Текст заметки" data-lang-en="Note Text" placeholder="Текст заметки"></textarea>
-                <input type="text" id="note-tags" class="lang" data-lang-ru="Теги (через запятую)" data-lang-en="Tags (comma-separated)" placeholder="Теги (через запятую)">
+                <h2>Заметка</h2>
+                <textarea id="note-text" placeholder="Текст заметки"></textarea>
+                <input type="text" id="note-tags" placeholder="Теги (через запятую)">
                 <div class="tags" id="note-tags-list"></div>
-                <button class="primary" onclick="saveNote()"><span class="lang" data-lang-ru="Сохранить" data-lang-en="Save">Сохранить</span></button>
-                <button class="secondary" onclick="closeNoteModal()"><span class="lang" data-lang-ru="Закрыть" data-lang-en="Close">Закрыть</span></button>
+                <button class="primary" onclick="saveNote()">Сохранить</button>
+                <button class="secondary" onclick="closeNoteModal()">Закрыть</button>
             </div>
         </div>
 
         <!-- Модальные окна для упражнений -->
         <div id="breathing-modal" class="modal">
             <div class="modal-content">
-                <h2 class="lang" data-lang-ru="Дыхательные упражнения" data-lang-en="Breathing Exercises">Дыхательные упражнения</h2>
+                <h2>Дыхательные упражнения</h2>
                 <select id="breathing-exercise">
-                    <option value="box" class="lang" data-lang-ru="Квадратное дыхание" data-lang-en="Box Breathing">Квадратное дыхание</option>
-                    <option value="478" class="lang" data-lang-ru="Дыхание 4-7-8" data-lang-en="4-7-8 Breathing">Дыхание 4-7-8</option>
-                    <option value="basic" class="lang" data-lang-ru="Базовое дыхание" data-lang-en="Basic Breathing">Базовое дыхание</option>
+                    <option value="box">Квадратное дыхание</option>
+                    <option value="478">Дыхание 4-7-8</option>
+                    <option value="basic">Базовое дыхание</option>
                 </select>
-                <button class="primary" onclick="startBreakExercise('breathing')"><span class="lang" data-lang-ru="Начать" data-lang-en="Start">Начать</span></button>
+                <button class="primary" onclick="startBreakExercise('breathing')">Начать</button>
                 <div id="breathing-tracker" class="exercise-tracker"></div>
                 <div id="breathing-timer" class="exercise-timer"></div>
-                <button class="secondary" onclick="closeExerciseModal('breathing')"><span class="lang" data-lang-ru="Закрыть" data-lang-en="Close">Закрыть</span></button>
+                <button class="secondary" onclick="closeExerciseModal('breathing')">Закрыть</button>
             </div>
         </div>
         <div id="eyes-modal" class="modal">
             <div class="modal-content">
-                <h2 class="lang" data-lang-ru="Упражнения для глаз" data-lang-en="Eye Exercises">Упражнения для глаз</h2>
+                <h2>Упражнения для глаз</h2>
                 <select id="eyes-exercise">
-                    <option value="eyes" class="lang" data-lang-ru="Базовое упражнение для глаз" data-lang-en="Basic Eye Exercise">Базовое упражнение для глаз</option>
-                    <option value="blink" class="lang" data-lang-ru="Быстрое моргание" data-lang-en="Quick Blinking">Быстрое моргание</option>
+                    <option value="eyes">Базовое упражнение для глаз</option>
+                    <option value="blink">Быстрое моргание</option>
                 </select>
-                <button class="primary" onclick="startBreakExercise('eyes')"><span class="lang" data-lang-ru="Начать" data-lang-en="Start">Начать</span></button>
+                <button class="primary" onclick="startBreakExercise('eyes')">Начать</button>
                 <div id="eyes-tracker" class="exercise-tracker"></div>
-                <button class="secondary" onclick="closeExerciseModal('eyes')"><span class="lang" data-lang-ru="Закрыть" data-lang-en="Close">Закрыть</span></button>
+                <button class="secondary" onclick="closeExerciseModal('eyes')">Закрыть</button>
             </div>
         </div>
         <div id="body-modal" class="modal">
             <div class="modal-content">
-                <h2 class="lang" data-lang-ru="Упражнения для тела" data-lang-en="Body Exercises">Упражнения для тела</h2>
+                <h2>Упражнения для тела</h2>
                 <select id="body-exercise">
-                    <option value="body" class="lang" data-lang-ru="Упражнение для тела" data-lang-en="Body Exercise">Упражнение для тела</option>
-                    <option value="neck" class="lang" data-lang-ru="Упражнение для шеи" data-lang-en="Neck Exercise">Упражнение для шеи</option>
-                    <option value="wrists" class="lang" data-lang-ru="Упражнение для запястий" data-lang-en="Wrist Exercise">Упражнение для запястий</option>
+                    <option value="body">Упражнение для тела</option>
+                    <option value="neck">Упражнение для шеи</option>
+                    <option value="wrists">Упражнение для запястий</option>
                 </select>
-                <button class="primary" onclick="startBreakExercise('body')"><span class="lang" data-lang-ru="Начать" data-lang-en="Start">Начать</span></button>
+                <button class="primary" onclick="startBreakExercise('body')">Начать</button>
                 <div id="body-tracker" class="exercise-tracker"></div>
-                <div id="body-timer" class="exercise-timer"></div>
-                <button class="secondary" onclick="closeExerciseModal('body')"><span class="lang" data-lang-ru="Закрыть" data-lang-en="Close">Закрыть</span></button>
+                <button class="secondary" onclick="closeExerciseModal('body')">Закрыть</button>
             </div>
         </div>
 
-        <!-- Модальное окно уведомления о перерыве -->
+        <!-- Модальное окно для уведомления о перерыве -->
         <div id="break-notification-modal">
-            <p class="lang" data-lang-ru="Время для перерыва! Хотите отдохнуть?" data-lang-en="Time for a break! Want to rest?">Время для перерыва! Хотите отдохнуть?</p>
-            <button class="primary" onclick="closeBreakNotification()"><span class="lang" data-lang-ru="Начать перерыв" data-lang-en="Start Break">Начать перерыв</span></button>
-        </div>
-
-        <!-- Модальное окно настроек -->
-        <div id="settings-modal" class="modal">
-            <div class="modal-content">
-                <h2 class="lang" data-lang-ru="Настройки" data-lang-en="Settings">Настройки</h2>
-                <label><span class="lang" data-lang-ru="Цвет низкого приоритета" data-lang-en="Low Priority Color">Цвет низкого приоритета</span>
-                    <input type="color" id="low-priority-color" value="#4CAF50">
-                </label>
-                <label><span class="lang" data-lang-ru="Цвет среднего приоритета" data-lang-en="Medium Priority Color">Цвет среднего приоритета</span>
-                    <input type="color" id="medium-priority-color" value="#FFCA28">
-                </label>
-                <label><span class="lang" data-lang-ru="Цвет высокого приоритета" data-lang-en="High Priority Color">Цвет высокого приоритета</span>
-                    <input type="color" id="high-priority-color" value="#F44336">
-                </label>
-                <button class="primary" onclick="saveSettings()"><span class="lang" data-lang-ru="Сохранить" data-lang-en="Save">Сохранить</span></button>
-                <button class="secondary" onclick="closeSettingsModal()"><span class="lang" data-lang-ru="Закрыть" data-lang-en="Close">Закрыть</span></button>
-            </div>
+            <p>Время перерыва!</p>
+            <button class="primary" onclick="closeBreakNotification()">ОК</button>
         </div>
     </div>
 
-    <!-- Подключение Chart.js для графиков -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         // Глобальные переменные
         let tasks = JSON.parse(localStorage.getItem('work-tasks')) || [];
-        let archivedTasks = JSON.parse(localStorage.getItem('archived-tasks')) || [];
         let keyTasks = JSON.parse(localStorage.getItem('key-tasks')) || [];
         let notes = JSON.parse(localStorage.getItem('work-notes')) || [];
-        let pomodoroSessions = JSON.parse(localStorage.getItem('pomodoro-sessions')) || 0;
-        let pomodoroTime = 25 * 60;
-        let pomodoroInterval;
-        let isPomodoroRunning = false;
-        let workStart = '09:00';
-        let workEnd = '17:00';
-        let breakInterval = '01:00';
+        let taskHistory = JSON.parse(localStorage.getItem('taskHistory')) || [];
+        let completedTasks = tasks.filter(t => t.completed).length;
+        let workStart, workEnd, breakInterval;
         let breakTimeLeft = 60 * 60;
-        let currentPriority = 'medium';
-        let selectedMood = null;
-        let currentStage = 'start';
-        let currentTab = {};
-        let currentTaskIndex = null;
+        let currentPriority = 'low';
         let currentNoteIndex = null;
-        let currentExercise = null;
-        let familyTime = 0;
-        let familyTimerInterval;
-        let productivityHistory = JSON.parse(localStorage.getItem('productivity-history')) || [];
-        let calendarDate = new Date();
-
-        // Локализация
-        const translations = {
-            ru: {
-                "Старт": "Старт",
-                "Настройка": "Настройка",
-                "Работа": "Работа",
-                "Перерыв": "Перерыв",
-                "Завершение": "Завершение",
-                "Семья": "Семья",
-                "Разделяя работу и дом": "Разделяя работу и дом",
-                "Начать смену": "Начать смену",
-                "Импортировать данные": "Импортировать данные",
-                "Настройка работы": "Настройка работы",
-                "Время": "Время",
-                "Задачи": "Задачи",
-                "Работа с": "Работа с",
-                "до": "до",
-                "Перерывы каждые": "Перерывы каждые",
-                "Рекомендации врача": "Рекомендации врача",
-                "Разрешить уведомления": "Разрешить уведомления",
-                "Сохранить": "Сохранить",
-                "Ключевая задача дня": "Ключевая задача дня",
-                "Добавить задачу": "Добавить задачу",
-                "Начать работу": "Начать работу",
-                "Рабочая зона": "Рабочая зона",
-                "Продуктивность:": "Продуктивность:",
-                "Задачи": "Задачи",
-                "Канбан": "Канбан",
-                "Pomodoro": "Pomodoro",
-                "Заметки": "Заметки",
-                "Статистика": "Статистика",
-                "Календарь": "Календарь",
-                "Архив": "Архив",
-                "Новая задача": "Новая задача",
-                "Все приоритеты": "Все приоритеты",
-                "Низкий": "Низкий",
-                "Средний": "Средний",
-                "Высокий": "Высокий",
-                "Все статусы": "Все статусы",
-                "Выполненные": "Выполненные",
-                "Невыполненные": "Невыполненные",
-                "Очистить выполненные": "Очистить выполненные",
-                "К выполнению": "К выполнению",
-                "В процессе": "В процессе",
-                "Выполнено": "Выполнено",
-                "Старт": "Старт",
-                "Пауза": "Пауза",
-                "Сброс": "Сброс",
-                "Сессий завершено:": "Сессий завершено:",
-                "Поиск заметок...": "Поиск заметок...",
-                "Новая заметка": "Новая заметка",
-                "Статистика продуктивности": "Статистика продуктивности",
-                "Сегодня": "Сегодня",
-                "Неделя": "Неделя",
-                "Месяц": "Месяц",
-                "Задач выполнено:": "Задач выполнено:",
-                "Всего задач:": "Всего задач:",
-                "Pomodoro сессий:": "Pomodoro сессий:",
-                "Архив задач": "Архив задач",
-                "Перерыв": "Перерыв",
-                "До перерыва: 60:00": "До перерыва: 60:00",
-                "Упражнения": "Упражнения",
-                "Расслабление": "Расслабление",
-                "Дыхательные упражнения": "Дыхательные упражнения",
-                "Упражнения для глаз": "Упражнения для глаз",
-                "Упражнения для тела": "Упражнения для тела",
-                "Расслабьтесь и отдохните.": "Расслабьтесь и отдохните.",
-                "Включить звуки природы": "Включить звуки природы",
-                "Вернуться к работе": "Вернуться к работе",
-                "Завершение смены": "Завершение смены",
-                "Итоги": "Итоги",
-                "Ритуал": "Ритуал",
-                "Планы": "Планы",
-                "Экспортировать все данные": "Экспортировать все данные",
-                "Отправить отчёт на email": "Отправить отчёт на email",
-                "Закрыть рабочие вкладки": "Закрыть рабочие вкладки",
-                "Проверить почту": "Проверить почту",
-                "Убрать материалы": "Убрать материалы",
-                "Дыхательное упражнение": "Дыхательное упражнение",
-                "Планы на завтра...": "Планы на завтра...",
-                "Подготовка к семье": "Подготовка к семье",
-                "Время для семьи": "Время для семьи",
-                "Совет для общения": "Совет для общения",
-                "Совместная активность": "Совместная активность",
-                "Своя активность": "Своя активность",
-                "Опишите свою активность...": "Опишите свою активность...",
-                "Начать": "Начать",
-                "Время с семьёй:": "Время с семьёй:",
-                "Начать таймер": "Начать таймер",
-                "Пауза": "Пауза",
-                "Сброс": "Сброс",
-                "Сохранить настроение": "Сохранить настроение",
-                "Опиши свои эмоции...": "Опиши свои эмоции...",
-                "Экспортировать": "Экспортировать",
-                "Чудесный день завершён!": "Чудесный день завершён!",
-                "Завершить день": "Завершить день",
-                "Название задачи": "Название задачи",
-                "Теги (через запятую)": "Теги (через запятую)",
-                "Закрыть": "Закрыть",
-                "Заметка": "Заметка",
-                "Текст заметки": "Текст заметки",
-                "Квадратное дыхание": "Квадратное дыхание",
-                "Дыхание 4-7-8": "Дыхание 4-7-8",
-                "Базовое дыхание": "Базовое дыхание",
-                "Базовое упражнение для глаз": "Базовое упражнение для глаз",
-                "Быстрое моргание": "Быстрое моргание",
-                "Упражнение для тела": "Упражнение для тела",
-                "Упражнение для шеи": "Упражнение для шеи",
-                "Упражнение для запястий": "Упражнение для запястий",
-                "Время для перерыва! Хотите отдохнуть?": "Время для перерыва! Хотите отдохнуть?",
-                "Начать перерыв": "Начать перерыв",
-                "Настройки": "Настройки",
-                "Цвет низкого приоритета": "Цвет низкого приоритета",
-                "Цвет среднего приоритета": "Цвет среднего приоритета",
-                "Цвет высокого приоритета": "Цвет высокого приоритета"
-            },
-            en: {
-                "Старт": "Start",
-                "Настройка": "Setup",
-                "Работа": "Work",
-                "Перерыв": "Break",
-                "Завершение": "End Shift",
-                "Семья": "Family",
-                "Разделяя работу и дом": "Separating Work and Home",
-                "Начать смену": "Start Shift",
-                "Импортировать данные": "Import Data",
-                "Настройка работы": "Work Setup",
-                "Время": "Time",
-                "Задачи": "Tasks",
-                "Работа с": "Work from",
-                "до": "to",
-                "Перерывы каждые": "Breaks every",
-                "Рекомендации врача": "Doctor's Recommendation",
-                "Разрешить уведомления": "Allow Notifications",
-                "Сохранить": "Save",
-                "Ключевая задача дня": "Key Task of the Day",
-                "Добавить задачу": "Add Task",
-                "Начать работу": "Start Work",
-                "Рабочая зона": "Work Zone",
-                "Продуктивность:": "Productivity:",
-                "Задачи": "Tasks",
-                "Канбан": "Kanban",
-                "Pomodoro": "Pomodoro",
-                "Заметки": "Notes",
-                "Статистика": "Stats",
-                "Календарь": "Calendar",
-                "Архив": "Archive",
-                "Новая задача": "New Task",
-                "Все приоритеты": "All Priorities",
-                "Низкий": "Low",
-                "Средний": "Medium",
-                "Высокий": "High",
-                "Все статусы": "All Statuses",
-                "Выполненные": "Completed",
-                "Невыполненные": "Pending",
-                "Очистить выполненные": "Clear Completed",
-                "К выполнению": "To Do",
-                "В процессе": "In Progress",
-                "Выполнено": "Done",
-                "Старт": "Start",
-                "Пауза": "Pause",
-                "Сброс": "Reset",
-                "Сессий завершено:": "Sessions completed:",
-                "Поиск заметок...": "Search notes...",
-                "Новая заметка": "New Note",
-                "Статистика продуктивности": "Productivity Statistics",
-                "Сегодня": "Today",
-                "Неделя": "Week",
-                "Месяц": "Month",
-                "Задач выполнено:": "Tasks completed:",
-                "Всего задач:": "Total tasks:",
-                "Pomodoro сессий:": "Pomodoro sessions:",
-                "Архив задач": "Task Archive",
-                "Перерыв": "Break",
-                "До перерыва: 60:00": "Time to break: 60:00",
-                "Упражнения": "Exercises",
-                "Расслабление": "Relaxation",
-                "Дыхательные упражнения": "Breathing Exercises",
-                "Упражнения для глаз": "Eye Exercises",
-                "Упражнения для тела": "Body Exercises",
-                "Расслабьтесь и отдохните.": "Relax and take a break.",
-                "Включить звуки природы": "Play Nature Sounds",
-                "Вернуться к работе": "Return to Work",
-                "Завершение смены": "End of Shift",
-                "Итоги": "Results",
-                "Ритуал": "Ritual",
-                "Планы": "Plans",
-                "Экспортировать все данные": "Export All Data",
-                "Отправить отчёт на email": "Send Report to Email",
-                "Закрыть рабочие вкладки": "Close work tabs",
-                "Проверить почту": "Check email",
-                "Убрать материалы": "Clear materials",
-                "Дыхательное упражнение": "Breathing Exercise",
-                "Планы на завтра...": "Plans for tomorrow...",
-                "Подготовка к семье": "Prepare for Family",
-                "Время для семьи": "Family Time",
-                "Совет для общения": "Communication Tip",
-                "Совместная активность": "Joint Activity",
-                "Своя активность": "Custom Activity",
-                "Опишите свою активность...": "Describe your activity...",
-                "Начать": "Start",
-                "Время с семьёй:": "Time with family:",
-                "Начать таймер": "Start Timer",
-                "Пауза": "Pause",
-                "Сброс": "Reset",
-                "Сохранить настроение": "Save Mood",
-                "Опиши свои эмоции...": "Describe your emotions...",
-                "Экспортировать": "Export",
-                "Чудесный день завершён!": "Wonderful day completed!",
-                "Завершить день": "End Day",
-                "Название задачи": "Task Name",
-                "Теги (через запятую)": "Tags (comma-separated)",
-                "Закрыть": "Close",
-                "Заметка": "Note",
-                "Текст заметки": "Note Text",
-                "Квадратное дыхание": "Box Breathing",
-                "Дыхание 4-7-8": "4-7-8 Breathing",
-                "Базовое дыхание": "Basic Breathing",
-                "Базовое упражнение для глаз": "Basic Eye Exercise",
-                "Быстрое моргание": "Quick Blinking",
-                "Упражнение для тела": "Body Exercise",
-                "Упражнение для шеи": "Neck Exercise",
-                "Упражнение для запястий": "Wrist Exercise",
-                "Время для перерыва! Хотите отдохнуть?": "Time for a break! Want to rest?",
-                "Начать перерыв": "Start Break",
-                "Настройки": "Settings",
-                "Цвет низкого приоритета": "Low Priority Color",
-                "Цвет среднего приоритета": "Medium Priority Color",
-                "Цвет высокого приоритета": "High Priority Color"
-            }
-        };
-
-        // Функция смены языка
-        function changeLanguage(lang) {
-            document.querySelectorAll('.lang').forEach(element => {
-                const key = element.getAttribute('data-lang-ru');
-                if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-                    element.placeholder = translations[lang][key];
-                } else {
-                    element.textContent = translations[lang][key];
-                }
-            });
-            localStorage.setItem('language', lang);
-        }
-
-        // Установка языка при загрузке
-        const savedLanguage = localStorage.getItem('language') || 'ru';
-        document.getElementById('language-select').value = savedLanguage;
-        changeLanguage(savedLanguage);
-
-        // Генерация динамического favicon
-        function createFavicon() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 32;
-            canvas.height = 32;
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#40C4FF';
-            ctx.beginPath();
-            ctx.arc(16, 16, 14, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#0A0A12';
-            ctx.font = '20px Arial';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText('C', 16, 16);
-            const favicon = document.getElementById('favicon');
-            favicon.href = canvas.toDataURL('image/png');
-        }
-
-        // Генерация звёздного фона
-        function initStars() {
-            const starsContainer = document.getElementById('stars');
-            for (let i = 0; i < 150; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.width = `${Math.random() * 3 + 1}px`;
-                star.style.height = star.style.width;
-                star.style.left = `${Math.random() * 100}%`;
-                star.style.top = `${Math.random() * 100}%`;
-                if (Math.random() > 0.7) star.classList.add('glow');
-                star.addEventListener('click', () => {
-                    star.style.animation = 'burst 0.5s forwards';
-                    setTimeout(() => star.remove(), 500);
-                });
-                starsContainer.appendChild(star);
-            }
-            for (let i = 0; i < 3; i++) {
-                const fallingStar = document.createElement('div');
-                fallingStar.className = 'falling-star';
-                fallingStar.style.left = `${Math.random() * 100}%`;
-                fallingStar.style.animationDelay = `${Math.random() * 5}s`;
-                starsContainer.appendChild(fallingStar);
-            }
-            for (let i = 0; i < 2; i++) {
-                const flare = document.createElement('div');
-                flare.className = 'flare';
-                flare.style.left = `${Math.random() * 100}%`;
-                flare.style.top = `${Math.random() * 100}%`;
-                flare.style.animationDelay = `${Math.random() * 10}s`;
-                starsContainer.appendChild(flare);
-            }
-        }
+        let selectedMood = null;
+        let pomodoroTime = 25 * 60;
+        let isPomodoroRunning = false;
+        let pomodoroInterval;
+        let pomodoroSessions = JSON.parse(localStorage.getItem('pomodoro-sessions')) || 0;
+        let lastUsedDate = localStorage.getItem('last-used-date');
+        let importedData = JSON.parse(localStorage.getItem('imported-data')) || [];
 
         // Отображение ошибок
         function showError(message) {
             const errorDiv = document.getElementById('error-message');
             errorDiv.textContent = message;
             errorDiv.style.display = 'block';
-            setTimeout(() => {
-                errorDiv.style.display = 'none';
-            }, 5000);
+            console.error(message);
+            setTimeout(() => errorDiv.style.display = 'none', 5000);
         }
 
-        // Смена темы
-        function toggleTheme() {
-            document.body.classList.toggle('light-theme');
-            localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+        // Создание динамического favicon
+        function createFavicon() {
+            try {
+                const canvas = document.createElement('canvas');
+                canvas.width = 32;
+                canvas.height = 32;
+                const ctx = canvas.getContext('2d');
+
+                ctx.fillStyle = '#0A0A12';
+                ctx.fillRect(0, 0, 32, 32);
+
+                const gradient = ctx.createLinearGradient(0, 0, 32, 32);
+                gradient.addColorStop(0, '#40C4FF');
+                gradient.addColorStop(1, '#B388FF');
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.moveTo(16, 2);
+                ctx.lineTo(20, 12);
+                ctx.lineTo(30, 12);
+                ctx.lineTo(22, 18);
+                ctx.lineTo(26, 28);
+                ctx.lineTo(16, 22);
+                ctx.lineTo(6, 28);
+                ctx.lineTo(10, 18);
+                ctx.lineTo(2, 12);
+                ctx.lineTo(12, 12);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.shadowColor = '#40C4FF';
+                ctx.shadowBlur = 8;
+                ctx.fill();
+
+                const faviconLink = document.getElementById('favicon');
+                faviconLink.href = canvas.toDataURL('image/png');
+            } catch (error) {
+                showError(`Ошибка создания favicon: ${error.message}`);
+            }
         }
 
-        // Загрузка темы при старте
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'light') {
-            document.body.classList.add('light-theme');
+        // Инициализация звёздного фона
+        function initStars() {
+            try {
+                const starsContainer = document.getElementById('stars');
+                starsContainer.innerHTML = '';
+                for (let i = 0; i < 100; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    if (Math.random() < 0.2) star.classList.add('glow');
+                    const size = Math.random() * 2 + 0.5;
+                    star.style.width = `${size}px`;
+                    star.style.height = `${size}px`;
+                    star.style.left = `${Math.random() * 100}%`;
+                    star.style.top = `${Math.random() * 100}%`;
+                    star.style.animationDelay = `${Math.random() * 5}s`;
+                    star.style.opacity = Math.random() * 0.6 + 0.4;
+                    star.addEventListener('click', () => {
+                        const burst = document.createElement('div');
+                        burst.style.position = 'absolute';
+                        burst.style.left = star.style.left;
+                        burst.style.top = star.style.top;
+                        burst.style.width = '20px';
+                        burst.style.height = '20px';
+                        burst.style.background = 'radial-gradient(circle, #40C4FF, transparent)';
+                        burst.style.animation = 'burst 0.5s ease-out';
+                        starsContainer.appendChild(burst);
+                        star.style.transform = 'scale(0)';
+                        star.style.opacity = '0';
+                        setTimeout(() => {
+                            burst.remove();
+                            star.remove();
+                        }, 500);
+                    });
+                    starsContainer.appendChild(star);
+                }
+                for (let i = 0; i < 4; i++) {
+                    const fallingStar = document.createElement('div');
+                    fallingStar.className = 'falling-star';
+                    fallingStar.style.left = `${Math.random() * 100}%`;
+                    fallingStar.style.animationDelay = `${Math.random() * 10}s`;
+                    starsContainer.appendChild(fallingStar);
+                }
+            } catch (error) {
+                showError(`Ошибка инициализации звёзд: ${error.message}`);
+            }
         }
 
         // Проверка смены дня
         function checkDayChange() {
-            const lastDate = localStorage.getItem('last-date');
-            const today = new Date().toISOString().split('T')[0];
-            if (lastDate && lastDate !== today) {
-                if (confirm('Начался новый день. Хотите импортировать данные прошлого дня?')) {
-                    document.getElementById('import-all-file').click();
-                    return;
-                } else {
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                if (lastUsedDate && lastUsedDate !== today) {
+                    alert('Новый день! Экспортируйте данные прошлого дня или импортируйте сохранённые данные.');
+                    exportAllData();
                     tasks = [];
-                    keyTasks = [];
                     notes = [];
+                    keyTasks = [];
                     pomodoroSessions = 0;
                     localStorage.setItem('work-tasks', JSON.stringify(tasks));
-                    localStorage.setItem('key-tasks', JSON.stringify(keyTasks));
                     localStorage.setItem('work-notes', JSON.stringify(notes));
+                    localStorage.setItem('key-tasks', JSON.stringify(keyTasks));
                     localStorage.setItem('pomodoro-sessions', JSON.stringify(pomodoroSessions));
                 }
+                lastUsedDate = today;
+                localStorage.setItem('last-used-date', lastUsedDate);
+                showStage('setup');
+            } catch (error) {
+                showError(`Ошибка проверки смены дня: ${error.message}`);
             }
-            localStorage.setItem('last-date', today);
-            showStage('setup');
         }
 
-        // Отображение этапа
+        // Переключение этапов
         function showStage(stage) {
             try {
                 document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
-                document.querySelectorAll('.stage-nav span').forEach(s => s.classList.remove('active'));
-                document.getElementById(`${stage}-stage`).classList.add('active');
-                document.getElementById(`nav-${stage}`).classList.add('active');
-                currentStage = stage;
-
-                // Открытие первого подэтапа по умолчанию
                 const stageElement = document.getElementById(`${stage}-stage`);
-                const firstTabBtn = stageElement.querySelector('.tabs .tab-btn');
-                if (firstTabBtn && !currentTab[stage]) {
-                    firstTabBtn.click();
-                }
-
-                // Обновление прогресса
-                const stages = ['start', 'setup', 'work', 'break', 'end-shift', 'family'];
-                const currentIndex = stages.indexOf(stage);
-                const progress = (currentIndex / (stages.length - 1)) * 100;
-                document.getElementById('progress-fill').style.width = `${progress}%`;
-
-                // Обновление данных
-                if (stage === 'work') {
-                    updateWorkStats();
-                    updateProductivity();
-                    renderCalendar();
-                    renderArchive();
-                } else if (stage === 'end-shift') {
-                    updateResults();
-                }
+                stageElement.classList.add('active');
+                document.querySelectorAll('.stage-nav span').forEach(s => s.classList.remove('active'));
+                document.getElementById(`nav-${stage}`).classList.add('active');
+                if (stage === 'family') showFamilyStep('prepare');
+                updateProgress();
             } catch (error) {
-                showError(`Ошибка смены этапа: ${error.message}`);
+                showError(`Ошибка переключения этапа: ${error.message}`);
             }
         }
 
-        // Отображение вкладки
-        function showTab(tabId, button) {
+        // Переключение вкладок
+        function showTab(tab, btn) {
             try {
-                const stage = currentStage;
-                document.querySelectorAll(`#${stage}-stage .tab-content`).forEach(t => t.classList.remove('active'));
-                document.querySelectorAll(`#${stage}-stage .tab-btn`).forEach(b => b.classList.remove('active'));
-                document.getElementById(tabId).classList.add('active');
-                button.classList.add('active');
-                currentTab[stage] = tabId;
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                const tabElement = document.getElementById(tab);
+                tabElement.classList.add('active');
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                if (tab === 'work-kanban') renderKanban();
+                if (tab === 'work-stats') updateWorkStats();
             } catch (error) {
-                showError(`Ошибка смены вкладки: ${error.message}`);
+                showError(`Ошибка переключения вкладки: ${error.message}`);
             }
         }
 
-        // Настройка времени
+        // Переключение шагов семьи
+        function showFamilyStep(step) {
+            try {
+                document.querySelectorAll('#family-stage .tab-content').forEach(t => t.classList.remove('active'));
+                const stepElement = document.getElementById(`family-${step}`);
+                stepElement.classList.add('active');
+            } catch (error) {
+                showError(`Ошибка переключения шага семьи: ${error.message}`);
+            }
+        }
+
+        // Управление временем
         function saveTimeSettings() {
             try {
                 workStart = document.getElementById('work-start').value;
                 workEnd = document.getElementById('work-end').value;
                 breakInterval = document.getElementById('break-interval').value;
-                localStorage.setItem('work-time', JSON.stringify({ start: workStart, end: workEnd, break: breakInterval }));
-                const [hours, minutes] = breakInterval.split(':').map(Number);
-                breakTimeLeft = (hours * 60 + minutes) * 60;
-                alert('Настройки времени сохранены!');
+                if (workStart && workEnd && breakInterval) {
+                    localStorage.setItem('work-time', JSON.stringify({ start: workStart, end: workEnd, break: breakInterval }));
+                    updateTimeRemaining();
+                    const [hours, minutes] = breakInterval.split(':').map(Number);
+                    breakTimeLeft = (hours * 60 + minutes) * 60;
+                    alert('Настройки времени сохранены!');
+                } else {
+                    alert('Заполните все поля времени.');
+                }
             } catch (error) {
-                showError(`Ошибка сохранения настроек времени: ${error.message}`);
+                showError(`Ошибка сохранения времени: ${error.message}`);
             }
         }
 
-        // Рекомендации врача по перерывам
+        function updateTimeRemaining() {
+            try {
+                if (!workStart || !workEnd) return;
+                const now = new Date();
+                const [startH, startM] = workStart.split(':').map(Number);
+                const [endH, endM] = workEnd.split(':').map(Number);
+                const start = new Date(now);
+                start.setHours(startH, startM, 0, 0);
+                const end = new Date(now);
+                end.setHours(endH, endM, 0, 0);
+                if (end < start) end.setDate(end.getDate() + 1);
+                const remaining = end - now;
+                const timeRemaining = document.getElementById('time-remaining');
+                if (remaining > 0) {
+                    const hours = Math.floor(remaining / 3600000);
+                    const minutes = Math.floor((remaining % 3600000) / 60000);
+                    timeRemaining.textContent = `Осталось: ${hours}ч ${minutes}м`;
+                } else {
+                    timeRemaining.textContent = 'День завершён!';
+                }
+                updateCurrentTime();
+            } catch (error) {
+                showError(`Ошибка обновления времени: ${error.message}`);
+            }
+        }
+
+        function updateCurrentTime() {
+            try {
+                const currentTime = document.getElementById('current-time');
+                const now = new Date();
+                currentTime.textContent = now.toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' });
+            } catch (error) {
+                showError(`Ошибка обновления текущего времени: ${error.message}`);
+            }
+        }
+
         function applyDoctorBreaks() {
             try {
-                document.getElementById('break-interval').value = '00:45';
-                breakInterval = '00:45';
-                breakTimeLeft = 45 * 60;
-                alert('Установлены рекомендации врача: перерыв каждые 45 минут.');
+                document.getElementById('break-interval').value = '00:50';
+                alert('Перерывы каждые 50 минут (рекомендация врача).');
             } catch (error) {
                 showError(`Ошибка применения рекомендаций врача: ${error.message}`);
             }
         }
 
-        // Добавление ключевой задачи
+        setInterval(updateTimeRemaining, 1000);
+
+        // Прогресс
+        function updateProgress() {
+            try {
+                const progressFill = document.getElementById('progress-fill');
+                const progress = tasks.length ? completedTasks / tasks.length : 0;
+                progressFill.style.width = `${progress * 100}%`;
+                updateProductivity();
+            } catch (error) {
+                showError(`Ошибка обновления прогресса: ${error.message}`);
+            }
+        }
+
+        function updateProductivity() {
+            try {
+                const productivityFill = document.getElementById('productivity-fill');
+                const productivityPercentage = document.getElementById('productivity-percentage');
+                const productivity = tasks.length ? (completedTasks / tasks.length) * 100 : 0;
+                productivityFill.style.width = `${productivity}%`;
+                productivityPercentage.textContent = `${Math.round(productivity)}%`;
+            } catch (error) {
+                showError(`Ошибка обновления продуктивности: ${error.message}`);
+            }
+        }
+
+        // Ключевые задачи
         function addKeyTask() {
             try {
-                const task = document.getElementById('key-task').value;
-                if (task.trim()) {
-                    keyTasks.push(task);
-                    localStorage.setItem('key-tasks', JSON.stringify(keyTasks));
+                const taskInput = document.getElementById('key-task');
+                const taskText = taskInput.value.trim();
+                if (taskText) {
+                    keyTasks.push({ text: taskText, completed: false, date: new Date().toISOString().split('T')[0] });
+                    taskInput.value = '';
+                    saveKeyTasks();
                     renderKeyTasks();
-                    document.getElementById('key-task').value = '';
                 }
             } catch (error) {
                 showError(`Ошибка добавления ключевой задачи: ${error.message}`);
             }
         }
 
-        // Рендеринг ключевых задач
         function renderKeyTasks() {
             try {
-                const keyTaskList = document.getElementById('key-task-list');
-                keyTaskList.innerHTML = '';
+                const taskList = document.getElementById('key-task-list');
+                taskList.innerHTML = '';
                 keyTasks.forEach((task, index) => {
                     const li = document.createElement('li');
-                    li.textContent = task;
-                    const deleteBtn = document.createElement('button');
-                    deleteBtn.className = 'secondary';
-                    deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
-                    deleteBtn.onclick = () => {
-                        keyTasks.splice(index, 1);
-                        localStorage.setItem('key-tasks', JSON.stringify(keyTasks));
-                        renderKeyTasks();
-                    };
-                    li.appendChild(deleteBtn);
-                    keyTaskList.appendChild(li);
+                    li.className = 'medium';
+                    li.innerHTML = `
+                        <span>${task.text}</span>
+                        <button class="secondary" data-text="Удалить" onclick="deleteKeyTask(${index})"><i class="fas fa-trash"></i> Удалить</button>
+                    `;
+                    taskList.appendChild(li);
                 });
             } catch (error) {
                 showError(`Ошибка рендеринга ключевых задач: ${error.message}`);
             }
         }
 
-        // Открытие модального окна для задачи
-        function openTaskModal(mode, index = null) {
+        function deleteKeyTask(index) {
             try {
-                const modal = document.getElementById('task-modal');
-                modal.style.display = 'flex';
-                setTimeout(() => modal.classList.add('active'), 10);
-                currentTaskIndex = index;
-                if (mode === 'edit' && index !== null) {
-                    const task = tasks[index];
-                    document.getElementById('task-text').value = task.text;
-                    document.getElementById('task-priority').value = task.priority;
-                    document.getElementById('task-deadline').value = task.deadline || '';
-                    document.getElementById('task-tags').value = task.tags.join(', ');
-                    renderTaskTags(task.tags.join(', '));
-                } else {
-                    document.getElementById('task-text').value = '';
-                    document.getElementById('task-priority').value = 'medium';
-                    document.getElementById('task-deadline').value = '';
-                    document.getElementById('task-tags').value = '';
-                    renderTaskTags('');
-                }
+                keyTasks.splice(index, 1);
+                saveKeyTasks();
+                renderKeyTasks();
             } catch (error) {
-                showError(`Ошибка открытия модального окна задачи: ${error.message}`);
+                showError(`Ошибка удаления ключевой задачи: ${error.message}`);
             }
         }
 
-        // Закрытие модального окна задачи
-        function closeTaskModal() {
+        function saveKeyTasks() {
             try {
-                const modal = document.getElementById('task-modal');
-                modal.classList.remove('active');
-                setTimeout(() => modal.style.display = 'none', 300);
+                localStorage.setItem('key-tasks', JSON.stringify(keyTasks));
             } catch (error) {
-                showError(`Ошибка закрытия модального окна задачи: ${error.message}`);
+                showError(`Ошибка сохранения ключевых задач: ${error.message}`);
             }
         }
 
-        // Рендеринг тегов задачи
-        function renderTaskTags(value) {
+        // Задачи
+        function updateSuggestions() {
             try {
-                const tagsList = document.getElementById('task-tags-list');
-                tagsList.innerHTML = '';
-                const tags = value.split(',').map(tag => tag.trim()).filter(tag => tag);
-                tags.forEach(tag => {
-                    const tagElement = document.createElement('span');
-                    tagElement.className = 'tag';
-                    tagElement.textContent = tag;
-                    tagsList.appendChild(tagElement);
+                const datalist = document.getElementById('task-suggestions');
+                datalist.innerHTML = '';
+                taskHistory.forEach(task => {
+                    const option = document.createElement('option');
+                    option.value = task;
+                    datalist.appendChild(option);
                 });
             } catch (error) {
-                showError(`Ошибка рендеринга тегов задачи: ${error.message}`);
+                showError(`Ошибка обновления предложений задач: ${error.message}`);
             }
         }
 
-        // Сохранение задачи
-        function saveTask() {
+        function addTask() {
             try {
-                const text = document.getElementById('task-text').value;
-                const priority = document.getElementById('task-priority').value;
-                const deadline = document.getElementById('task-deadline').value;
-                const tags = document.getElementById('task-tags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
-                if (text.trim()) {
-                    const task = { text, priority, completed: false, status: 'todo', deadline, tags };
-                    if (currentTaskIndex !== null) {
-                        tasks[currentTaskIndex] = task;
-                    } else {
-                        tasks.push(task);
+                const taskInput = document.getElementById('task');
+                const taskText = taskInput.value.trim();
+                if (taskText) {
+                    tasks.push({
+                        text: taskText,
+                        priority: currentPriority,
+                        completed: false,
+                        date: new Date().toISOString().split('T')[0],
+                        status: 'todo'
+                    });
+                    if (!taskHistory.includes(taskText)) {
+                        taskHistory.push(taskText);
+                        if (taskHistory.length > 10) taskHistory.shift();
+                        localStorage.setItem('taskHistory', JSON.stringify(taskHistory));
+                        updateSuggestions();
                     }
-                    localStorage.setItem('work-tasks', JSON.stringify(tasks));
+                    taskInput.value = '';
+                    saveTasks();
                     renderTasks();
                     renderKanban();
-                    closeTaskModal();
-                } else {
-                    alert('Введите название задачи.');
                 }
             } catch (error) {
-                showError(`Ошибка сохранения задачи: ${error.message}`);
+                showError(`Ошибка добавления задачи: ${error.message}`);
             }
         }
 
-        // Рендеринг задач
         function renderTasks() {
             try {
                 const taskList = document.getElementById('task-list');
+                taskList.innerHTML = '';
                 const priorityFilter = document.getElementById('task-filter-priority').value;
                 const statusFilter = document.getElementById('task-filter-status').value;
-                taskList.innerHTML = '';
-                tasks.filter(task => {
-                    const matchesPriority = priorityFilter === 'all' || task.priority === priorityFilter;
-                    const matchesStatus = statusFilter === 'all' || (statusFilter === 'completed' && task.completed) || (statusFilter === 'pending' && !task.completed);
-                    return matchesPriority && matchesStatus;
-                }).forEach((task, index) => {
+
+                let filteredTasks = tasks;
+                if (priorityFilter !== 'all') {
+                    filteredTasks = filteredTasks.filter(task => task.priority === priorityFilter);
+                }
+                if (statusFilter !== 'all') {
+                    filteredTasks = filteredTasks.filter(task => (statusFilter === 'completed' ? task.completed : !task.completed));
+                }
+
+                filteredTasks.forEach((task, index) => {
                     const li = document.createElement('li');
                     li.className = `${task.priority} ${task.completed ? 'completed' : ''}`;
                     li.draggable = true;
-                    li.dataset.index = index;
                     li.innerHTML = `
                         <div class="task-details">
                             <span>${task.text}</span>
-                            <div class="task-meta">
-                                ${task.deadline ? `Дедлайн: ${task.deadline}` : ''}
-                                ${task.tags.length ? `Теги: ${task.tags.join(', ')}` : ''}
-                            </div>
+                            <div class="task-meta">Дата: ${task.date} | Статус: ${task.status}</div>
                         </div>
                         <div class="actions">
-                            <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${index})">
-                            <button class="secondary" onclick="openTaskModal('edit', ${index})"><i class="fas fa-edit"></i></button>
-                            <button class="secondary" onclick="deleteTask(${index})"><i class="fas fa-trash"></i></button>
+                            <button class="secondary" data-text="${task.completed ? 'Отменить' : 'Завершить'}" onclick="toggleTask(${index})"><i class="fas fa-check"></i> ${task.completed ? 'Отменить' : 'Завершить'}</button>
+                            <button class="secondary" data-text="Удалить" onclick="deleteTask(${index})"><i class="fas fa-trash"></i> Удалить</button>
                         </div>
                     `;
-                    li.addEventListener('dragstart', handleDragStart);
-                    li.addEventListener('dragover', handleDragOver);
-                    li.addEventListener('drop', handleDrop);
-                    li.addEventListener('dragend', handleDragEnd);
+                    li.addEventListener('dragstart', (e) => {
+                        e.dataTransfer.setData('index', index);
+                        li.classList.add('dragging');
+                    });
+                    li.addEventListener('dragend', () => li.classList.remove('dragging'));
+                    li.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        li.classList.add('drop-target');
+                    });
+                    li.addEventListener('dragleave', () => li.classList.remove('drop-target'));
+                    li.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        li.classList.remove('drop-target');
+                        const fromIndex = e.dataTransfer.getData('index');
+                        const toIndex = index;
+                        [tasks[fromIndex], tasks[toIndex]] = [tasks[toIndex], tasks[fromIndex]];
+                        saveTasks();
+                        renderTasks();
+                    });
                     taskList.appendChild(li);
                 });
+                completedTasks = tasks.filter(t => t.completed).length;
+                updateProgress();
             } catch (error) {
                 showError(`Ошибка рендеринга задач: ${error.message}`);
             }
         }
 
-        // Переключение состояния задачи
-        function toggleTask(index) {
-            try {
-                tasks[index].completed = !tasks[index].completed;
-                tasks[index].status = tasks[index].completed ? 'done' : 'todo';
-                localStorage.setItem('work-tasks', JSON.stringify(tasks));
-                if (tasks[index].completed) {
-                    archiveTask(index);
-                }
-                renderTasks();
-                renderKanban();
-                updateWorkStats();
-                updateProductivity();
-            } catch (error) {
-                showError(`Ошибка переключения задачи: ${error.message}`);
-            }
-        }
-
-        // Удаление задачи
-        function deleteTask(index) {
-            try {
-                tasks.splice(index, 1);
-                localStorage.setItem('work-tasks', JSON.stringify(tasks));
-                renderTasks();
-                renderKanban();
-                updateWorkStats();
-            } catch (error) {
-                showError(`Ошибка удаления задачи: ${error.message}`);
-            }
-        }
-
-        // Очистка выполненных задач
-        function clearCompletedTasks() {
-            try {
-                tasks = tasks.filter(task => !task.completed);
-                localStorage.setItem('work-tasks', JSON.stringify(tasks));
-                renderTasks();
-                renderKanban();
-                updateWorkStats();
-            } catch (error) {
-                showError(`Ошибка очистки выполненных задач: ${error.message}`);
-            }
-        }
-
-        // Перетаскивание задач
-        let draggedItem = null;
-
-        function handleDragStart(e) {
-            draggedItem = e.target;
-            setTimeout(() => draggedItem.style.display = 'none', 0);
-        }
-
-        function handleDragOver(e) {
-            e.preventDefault();
-            e.target.closest('li')?.classList.add('drop-target');
-        }
-
-        function handleDrop(e) {
-            e.preventDefault();
-            const dropTarget = e.target.closest('li');
-            if (dropTarget && draggedItem) {
-                const allItems = [...document.querySelectorAll('#task-list li')];
-                const draggedIndex = parseInt(draggedItem.dataset.index);
-                const dropIndex = parseInt(dropTarget.dataset.index);
-                const [draggedTask] = tasks.splice(draggedIndex, 1);
-                tasks.splice(dropIndex, 0, draggedTask);
-                localStorage.setItem('work-tasks', JSON.stringify(tasks));
-                renderTasks();
-            }
-            document.querySelectorAll('.drop-target').forEach(item => item.classList.remove('drop-target'));
-        }
-
-        function handleDragEnd(e) {
-            draggedItem.style.display = 'flex';
-            draggedItem = null;
-            document.querySelectorAll('.drop-target').forEach(item => item.classList.remove('drop-target'));
-        }
-
-        // Рендеринг Канбан-доски
         function renderKanban() {
             try {
                 const columns = {
@@ -2266,108 +1678,236 @@
                     'in-progress': document.getElementById('kanban-in-progress'),
                     'done': document.getElementById('kanban-done')
                 };
-                Object.keys(columns).forEach(status => {
-                    columns[status].innerHTML = '';
-                    tasks.filter(task => task.status === status).forEach((task, index) => {
-                        const globalIndex = tasks.findIndex(t => t === task);
-                        const li = document.createElement('li');
-                        li.className = `${task.priority} ${task.completed ? 'completed' : ''}`;
-                        li.draggable = true;
-                        li.dataset.index = globalIndex;
-                        li.innerHTML = `
+                Object.values(columns).forEach(column => column.innerHTML = '');
+
+                tasks.forEach((task, index) => {
+                    const li = document.createElement('li');
+                    li.className = `${task.priority} ${task.completed ? 'completed' : ''}`;
+                    li.draggable = true;
+                    li.innerHTML = `
+                        <div class="task-details">
                             <span>${task.text}</span>
-                            <div class="actions">
-                                <button class="secondary" onclick="openTaskModal('edit', ${globalIndex})"><i class="fas fa-edit"></i></button>
-                                <button class="secondary" onclick="deleteTask(${globalIndex})"><i class="fas fa-trash"></i></button>
-                            </div>
-                        `;
-                        li.addEventListener('dragstart', handleKanbanDragStart);
-                        li.addEventListener('dragover', handleKanbanDragOver);
-                        li.addEventListener('drop', handleKanbanDrop);
-                        li.addEventListener('dragend', handleKanbanDragEnd);
-                        columns[status].appendChild(li);
+                            <div class="task-meta">Дата: ${task.date}</div>
+                        </div>
+                        <div class="actions">
+                            <button class="secondary" data-text="${task.completed ? 'Отменить' : 'Завершить'}" onclick="toggleTask(${index})"><i class="fas fa-check"></i></button>
+                            <button class="secondary" data-text="Удалить" onclick="deleteTask(${index})"><i class="fas fa-trash"></i></button>
+                        </div>
+                    `;
+                    li.addEventListener('dragstart', (e) => {
+                        e.dataTransfer.setData('index', index);
+                        li.classList.add('dragging');
+                    });
+                    li.addEventListener('dragend', () => li.classList.remove('dragging'));
+                    columns[task.status].appendChild(li);
+                });
+
+                Object.entries(columns).forEach(([status, column]) => {
+                    column.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        column.parentElement.classList.add('drop-target');
+                    });
+                    column.addEventListener('dragleave', () => {
+                        column.parentElement.classList.remove('drop-target');
+                    });
+                    column.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        column.parentElement.classList.remove('drop-target');
+                        const index = e.dataTransfer.getData('index');
+                        tasks[index].status = status;
+                        if (status === 'done') tasks[index].completed = true;
+                        saveTasks();
+                        renderKanban();
+                        renderTasks();
                     });
                 });
             } catch (error) {
-                showError(`Ошибка рендеринга Канбан-доски: ${error.message}`);
+                showError(`Ошибка рендеринга Канбан: ${error.message}`);
             }
         }
 
-        // Перетаскивание в Канбан-доске
-        let draggedKanbanItem = null;
-
-        function handleKanbanDragStart(e) {
-            draggedKanbanItem = e.target;
-            setTimeout(() => draggedKanbanItem.style.display = 'none', 0);
-        }
-
-        function handleKanbanDragOver(e) {
-            e.preventDefault();
-        }
-
-        function handleKanbanDrop(e) {
-            e.preventDefault();
-            const dropTarget = e.target.closest('.kanban-column');
-            if (dropTarget && draggedKanbanItem) {
-                const status = dropTarget.dataset.status;
-                const index = parseInt(draggedKanbanItem.dataset.index);
-                tasks[index].status = status;
-                tasks[index].completed = status === 'done';
-                localStorage.setItem('work-tasks', JSON.stringify(tasks));
-                renderKanban();
+        function toggleTask(index) {
+            try {
+                tasks[index].completed = !tasks[index].completed;
+                if (tasks[index].completed) tasks[index].status = 'done';
+                else tasks[index].status = 'todo';
+                completedTasks = tasks.filter(t => t.completed).length;
+                saveTasks();
                 renderTasks();
-                updateWorkStats();
+                renderKanban();
+                updateResults();
+            } catch (error) {
+                showError(`Ошибка переключения задачи: ${error.message}`);
             }
         }
 
-        function handleKanbanDragEnd(e) {
-            draggedKanbanItem.style.display = 'flex';
-            draggedKanbanItem = null;
+        function deleteTask(index) {
+            try {
+                if (tasks[index].completed) completedTasks--;
+                tasks.splice(index, 1);
+                saveTasks();
+                renderTasks();
+                renderKanban();
+                updateResults();
+            } catch (error) {
+                showError(`Ошибка удаления задачи: ${error.message}`);
+            }
         }
 
-        // Таймер Pomodoro
+        function clearCompletedTasks() {
+            try {
+                tasks = tasks.filter(task => !task.completed);
+                completedTasks = 0;
+                saveTasks();
+                renderTasks();
+                renderKanban();
+                updateResults();
+            } catch (error) {
+                showError(`Ошибка очистки выполненных задач: ${error.message}`);
+            }
+        }
+
+        function saveTasks() {
+            try {
+                localStorage.setItem('work-tasks', JSON.stringify(tasks));
+            } catch (error) {
+                showError(`Ошибка сохранения задач: ${error.message}`);
+            }
+        }
+
+        // Pomodoro
         function startPomodoro() {
-            if (!isPomodoroRunning) {
-                isPomodoroRunning = true;
-                pomodoroInterval = setInterval(() => {
-                    pomodoroTime--;
-                    updatePomodoroTimer();
-                    if (pomodoroTime <= 0) {
-                        clearInterval(pomodoroInterval);
-                        pomodoroSessions++;
-                        localStorage.setItem('pomodoro-sessions', JSON.stringify(pomodoroSessions));
-                        document.getElementById('pomodoro-sessions').textContent = pomodoroSessions;
-                        isPomodoroRunning = false;
-                        pomodoroTime = 25 * 60;
-                        updatePomodoroTimer();
-                        updateWorkStats();
-                        alert('Pomodoro сессия завершена! Сделайте перерыв.');
-                    }
-                }, 1000);
+            try {
+                if (!isPomodoroRunning) {
+                    const [hours, minutes] = (breakInterval || '01:00').split(':').map(Number);
+                    pomodoroTime = (hours * 60 + minutes) * 60;
+                    isPomodoroRunning = true;
+                    pomodoroInterval = setInterval(() => {
+                        pomodoroTime--;
+                        updateTimer();
+                        updatePomodoroProgress();
+                        if (pomodoroTime <= 0) {
+                            clearInterval(pomodoroInterval);
+                            isPomodoroRunning = false;
+                            pomodoroSessions++;
+                            localStorage.setItem('pomodoro-sessions', JSON.stringify(pomodoroSessions));
+                            document.getElementById('pomodoro-sessions').textContent = pomodoroSessions;
+                            pomodoroTime = (hours * 60 + minutes) * 60;
+                            updateTimer();
+                            alert('Pomodoro завершён! Время для перерыва.');
+                            showStage('break');
+                        }
+                    }, 1000);
+                }
+            } catch (error) {
+                showError(`Ошибка запуска Pomodoro: ${error.message}`);
             }
         }
 
         function pausePomodoro() {
-            clearInterval(pomodoroInterval);
-            isPomodoroRunning = false;
+            try {
+                if (isPomodoroRunning) {
+                    clearInterval(pomodoroInterval);
+                    isPomodoroRunning = false;
+                }
+            } catch (error) {
+                showError(`Ошибка паузы Pomodoro: ${error.message}`);
+            }
         }
 
         function resetPomodoro() {
-            clearInterval(pomodoroInterval);
-            isPomodoroRunning = false;
-            pomodoroTime = 25 * 60;
-            updatePomodoroTimer();
+            try {
+                clearInterval(pomodoroInterval);
+                isPomodoroRunning = false;
+                const [hours, minutes] = (breakInterval || '01:00').split(':').map(Number);
+                pomodoroTime = (hours * 60 + minutes) * 60;
+                updateTimer();
+                updatePomodoroProgress();
+            } catch (error) {
+                showError(`Ошибка сброса Pomodoro: ${error.message}`);
+            }
         }
 
-        function updatePomodoroTimer() {
-            const minutes = Math.floor(pomodoroTime / 60);
-            const seconds = pomodoroTime % 60;
-            document.getElementById('timer').textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-            const progress = ((25 * 60 - pomodoroTime) / (25 * 60)) * 100;
-            document.getElementById('pomodoro-progress').style.width = `${progress}%`;
+        function updateTimer() {
+            try {
+                const timer = document.getElementById('timer');
+                const minutes = Math.floor(pomodoroTime / 60);
+                const seconds = pomodoroTime % 60;
+                timer.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            } catch (error) {
+                showError(`Ошибка обновления таймера: ${error.message}`);
+            }
         }
 
-        // Рендеринг заметок
+        function updatePomodoroProgress() {
+            try {
+                const progressFill = document.getElementById('pomodoro-progress');
+                const [hours, minutes] = (breakInterval || '01:00').split(':').map(Number);
+                const total = (hours * 60 + minutes) * 60;
+                const progress = (total - pomodoroTime) / total;
+                progressFill.style.width = `${progress * 100}%`;
+            } catch (error) {
+                showError(`Ошибка обновления прогресса Pomodoro: ${error.message}`);
+            }
+        }
+
+        // Заметки
+        function openNoteModal(type, index = null) {
+            try {
+                const modal = document.getElementById('note-modal');
+                const text = document.getElementById('note-text');
+                const tags = document.getElementById('note-tags');
+                currentNoteIndex = type === 'new' ? null : index;
+                text.value = type === 'new' ? '' : notes[index].text;
+                tags.value = type === 'new' ? '' : notes[index].tags.join(', ');
+                modal.style.display = 'flex';
+                setTimeout(() => modal.classList.add('active'), 10);
+                renderNoteTags(tags.value);
+                text.focus();
+            } catch (error) {
+                showError(`Ошибка открытия модального окна заметок: ${error.message}`);
+            }
+        }
+
+        function renderNoteTags(tagsString) {
+            try {
+                const tagsList = document.getElementById('note-tags-list');
+                tagsList.innerHTML = '';
+                if (tagsString) {
+                    tagsString.split(',').map(tag => tag.trim()).filter(tag => tag).forEach(tag => {
+                        const span = document.createElement('span');
+                        span.className = 'tag';
+                        span.textContent = tag;
+                        tagsList.appendChild(span);
+                    });
+                }
+            } catch (error) {
+                showError(`Ошибка рендеринга тегов заметок: ${error.message}`);
+            }
+        }
+
+        function saveNote() {
+            try {
+                const text = document.getElementById('note-text').value.trim();
+                const tags = document.getElementById('note-tags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
+                if (!text) {
+                    alert('Введите текст заметки.');
+                    return;
+                }
+                const note = { text, tags, date: new Date().toISOString().split('T')[0] };
+                if (currentNoteIndex === null) {
+                    notes.push(note);
+                } else {
+                    notes[currentNoteIndex] = note;
+                }
+                localStorage.setItem('work-notes', JSON.stringify(notes));
+                renderNotes();
+                closeNoteModal();
+            } catch (error) {
+                showError(`Ошибка сохранения заметки: ${error.message}`);
+            }
+        }
+
         function renderNotes() {
             try {
                 const notesList = document.getElementById('notes-list');
@@ -2393,84 +1933,6 @@
             }
         }
 
-        // Открытие модального окна заметки
-        function openNoteModal(mode, index = null) {
-            try {
-                const modal = document.getElementById('note-modal');
-                modal.style.display = 'flex';
-                setTimeout(() => modal.classList.add('active'), 10);
-                currentNoteIndex = index;
-                if (mode === 'edit' && index !== null) {
-                    const note = notes[index];
-                    document.getElementById('note-text').value = note.text;
-                    document.getElementById('note-tags').value = note.tags.join(', ');
-                    renderNoteTags(note.tags.join(', '));
-                } else {
-                    document.getElementById('note-text').value = '';
-                    document.getElementById('note-tags').value = '';
-                    renderNoteTags('');
-                }
-            } catch (error) {
-                showError(`Ошибка открытия модального окна заметки: ${error.message}`);
-            }
-        }
-
-        // Закрытие модального окна заметки
-        function closeNoteModal() {
-            try {
-                const modal = document.getElementById('note-modal');
-                modal.classList.remove('active');
-                setTimeout(() => modal.style.display = 'none', 300);
-            } catch (error) {
-                showError(`Ошибка закрытия модального окна заметки: ${error.message}`);
-            }
-        }
-
-        // Рендеринг тегов заметки
-        function renderNoteTags(value) {
-            try {
-                const tagsList = document.getElementById('note-tags-list');
-                tagsList.innerHTML = '';
-                const tags = value.split(',').map(tag => tag.trim()).filter(tag => tag);
-                tags.forEach(tag => {
-                    const tagElement = document.createElement('span');
-                    tagElement.className = 'tag';
-                    tagElement.textContent = tag;
-                    tagsList.appendChild(tagElement);
-                });
-            } catch (error) {
-                showError(`Ошибка рендеринга тегов заметки: ${error.message}`);
-            }
-        }
-
-        // Сохранение заметки
-        function saveNote() {
-            try {
-                const text = document.getElementById('note-text').value;
-                const tags = document.getElementById('note-tags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
-                if (text.trim()) {
-                    const note = {
-                        text,
-                        tags,
-                        date: new Date().toLocaleDateString()
-                    };
-                    if (currentNoteIndex !== null) {
-                        notes[currentNoteIndex] = note;
-                    } else {
-                        notes.push(note);
-                    }
-                    localStorage.setItem('work-notes', JSON.stringify(notes));
-                    renderNotes();
-                    closeNoteModal();
-                } else {
-                    alert('Введите текст заметки.');
-                }
-            } catch (error) {
-                showError(`Ошибка сохранения заметки: ${error.message}`);
-            }
-        }
-
-        // Удаление заметки
         function deleteNote(index) {
             try {
                 notes.splice(index, 1);
@@ -2481,25 +1943,26 @@
             }
         }
 
-        // Обновление статистики
+        function closeNoteModal() {
+            try {
+                const modal = document.getElementById('note-modal');
+                modal.classList.remove('active');
+                setTimeout(() => modal.style.display = 'none', 300);
+            } catch (error) {
+                showError(`Ошибка закрытия модального окна заметок: ${error.message}`);
+            }
+        }
+
+        document.getElementById('note-tags').addEventListener('input', (e) => {
+            renderNoteTags(e.target.value);
+        });
+
+        // Статистика
         function updateWorkStats() {
             try {
                 const filter = document.getElementById('stats-filter-work').value;
-                let filteredTasks = tasks;
-                const today = new Date().toISOString().split('T')[0];
-                if (filter === 'today') {
-                    filteredTasks = tasks.filter(t => t.deadline === today);
-                } else if (filter === 'week') {
-                    const weekAgo = new Date();
-                    weekAgo.setDate(weekAgo.getDate() - 7);
-                    filteredTasks = tasks.filter(t => new Date(t.deadline) >= weekAgo);
-                } else if (filter === 'month') {
-                    const monthAgo = new Date();
-                    monthAgo.setMonth(monthAgo.getMonth() - 1);
-                    filteredTasks = tasks.filter(t => new Date(t.deadline) >= monthAgo);
-                }
-                const completed = filteredTasks.filter(t => t.completed).length;
-                const total = filteredTasks.length;
+                const completed = tasks.filter(t => t.completed).length;
+                const total = tasks.length;
                 const sessions = pomodoroSessions;
 
                 document.getElementById('stats-tasks-completed').textContent = completed;
@@ -2508,74 +1971,12 @@
 
                 const progress = total ? (completed / total) * 100 : 0;
                 document.getElementById('stats-progress-work').style.width = `${progress}%`;
-
-                // Обновление графика
-                updateProductivityChart();
             } catch (error) {
                 showError(`Ошибка обновления статистики: ${error.message}`);
             }
         }
 
-        // Обновление графика продуктивности
-        function updateProductivityChart() {
-            try {
-                const ctx = document.getElementById('productivity-chart').getContext('2d');
-                const labels = productivityHistory.map(entry => entry.date);
-                const data = productivityHistory.map(entry => entry.completed);
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Выполненные задачи',
-                            data: data,
-                            borderColor: '#40C4FF',
-                            backgroundColor: 'rgba(64, 196, 255, 0.2)',
-                            fill: true,
-                            tension: 0.3
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: { display: true, text: 'Задачи' }
-                            },
-                            x: {
-                                title: { display: true, text: 'Дата' }
-                            }
-                        }
-                    }
-                });
-            } catch (error) {
-                showError(`Ошибка обновления графика продуктивности: ${error.message}`);
-            }
-        }
-
-        // Обновление продуктивности
-        function updateProductivity() {
-            try {
-                const completed = tasks.filter(t => t.completed).length;
-                const total = tasks.length;
-                const productivity = total ? (completed / total) * 100 : 0;
-                document.getElementById('productivity-percentage').textContent = `${Math.round(productivity)}%`;
-                document.getElementById('productivity-fill').style.width = `${productivity}%`;
-
-                // Сохранение истории продуктивности
-                const today = new Date().toISOString().split('T')[0];
-                const existingEntry = productivityHistory.find(entry => entry.date === today);
-                if (existingEntry) {
-                    existingEntry.completed = completed;
-                } else {
-                    productivityHistory.push({ date: today, completed });
-                }
-                localStorage.setItem('productivity-history', JSON.stringify(productivityHistory));
-            } catch (error) {
-                showError(`Ошибка обновления продуктивности: ${error.message}`);
-            }
-        }
-
-        // Таймер перерыва
+        // Перерывы
         function requestNotifications() {
             try {
                 if ('Notification' in window) {
@@ -2600,7 +2001,7 @@
                 breakTimeLeft--;
                 const minutes = Math.floor(breakTimeLeft / 60);
                 const seconds = breakTimeLeft % 60;
-                breakTimer.textContent = translations[savedLanguage]["До перерыва: 60:00"].replace('60:00', `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`);
+                breakTimer.textContent = `До перерыва: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
                 if (breakTimeLeft <= 0) {
                     showBreakNotification();
                     const [hours, minutes] = breakInterval.split(':').map(Number);
@@ -2641,10 +2042,6 @@
         // Упражнения
         function openExerciseModal(type) {
             try {
-                if (currentExercise) {
-                    alert('Завершите текущее упражнение перед началом нового.');
-                    return;
-                }
                 const modal = document.getElementById(`${type}-modal`);
                 modal.style.display = 'flex';
                 setTimeout(() => modal.classList.add('active'), 10);
@@ -2657,10 +2054,7 @@
             try {
                 const modal = document.getElementById(`${type}-modal`);
                 modal.classList.remove('active');
-                setTimeout(() => {
-                    modal.style.display = 'none';
-                    currentExercise = null;
-                }, 300);
+                setTimeout(() => modal.style.display = 'none', 300);
             } catch (error) {
                 showError(`Ошибка закрытия модального окна упражнений: ${error.message}`);
             }
@@ -2668,44 +2062,23 @@
 
         function startBreakExercise(type) {
             try {
-                if (currentExercise) {
-                    alert('Завершите текущее упражнение перед началом нового.');
-                    return;
-                }
-                currentExercise = type;
                 const exercise = document.getElementById(`${type}-exercise`).value;
                 const tracker = document.getElementById(`${type}-tracker`);
                 const timer = document.getElementById(`${type}-timer`);
 
                 let instructions = '';
                 let duration = 60;
-                let cycleSteps = [];
 
                 if (type === 'breathing') {
                     if (exercise === 'box') {
                         instructions = 'Вдох (4с), задержка (4с), выдох (4с), задержка (4с).';
                         duration = 60;
-                        cycleSteps = [
-                            { step: 'Вдох', duration: 4 },
-                            { step: 'Задержка', duration: 4 },
-                            { step: 'Выдох', duration: 4 },
-                            { step: 'Задержка', duration: 4 }
-                        ];
                     } else if (exercise === '478') {
                         instructions = 'Вдох (4с), задержка (7с), выдох (8с).';
                         duration = 60;
-                        cycleSteps = [
-                            { step: 'Вдох', duration: 4 },
-                            { step: 'Задержка', duration: 7 },
-                            { step: 'Выдох', duration: 8 }
-                        ];
                     } else {
                         instructions = 'Медленный вдох через нос, медленный выдох через рот.';
                         duration = 60;
-                        cycleSteps = [
-                            { step: 'Вдох', duration: 5 },
-                            { step: 'Выдох', duration: 5 }
-                        ];
                     }
                 } else if (type === 'eyes') {
                     if (exercise === 'eyes') {
@@ -2730,27 +2103,15 @@
 
                 tracker.textContent = instructions;
                 let timeLeft = duration;
-                let cycleIndex = 0;
-                let stepTimeLeft = cycleSteps.length ? cycleSteps[0].duration : 0;
-                timer.textContent = cycleSteps.length ? `${cycleSteps[0].step}: ${stepTimeLeft}с` : `Осталось: ${timeLeft}с`;
+                timer.textContent = `Осталось: ${timeLeft}с`;
 
                 const interval = setInterval(() => {
                     timeLeft--;
-                    if (cycleSteps.length) {
-                        stepTimeLeft--;
-                        if (stepTimeLeft <= 0) {
-                            cycleIndex = (cycleIndex + 1) % cycleSteps.length;
-                            stepTimeLeft = cycleSteps[cycleIndex].duration;
-                        }
-                        timer.textContent = `${cycleSteps[cycleIndex].step}: ${stepTimeLeft}с`;
-                    } else {
-                        timer.textContent = `Осталось: ${timeLeft}с`;
-                    }
+                    timer.textContent = `Осталось: ${timeLeft}с`;
                     if (timeLeft <= 0) {
                         clearInterval(interval);
                         tracker.textContent = 'Упражнение завершено!';
                         timer.textContent = '';
-                        currentExercise = null;
                     }
                 }, 1000);
             } catch (error) {
@@ -2764,142 +2125,6 @@
                 audio.play().catch(error => showError(`Ошибка воспроизведения звука: ${error.message}`));
             } catch (error) {
                 showError(`Ошибка воспроизведения звука: ${error.message}`);
-            }
-        }
-
-        // Рендеринг календаря
-        function renderCalendar() {
-            try {
-                const calendarGrid = document.getElementById('calendar-grid');
-                const calendarMonth = document.getElementById('calendar-month');
-                calendarGrid.innerHTML = '';
-
-                const year = calendarDate.getFullYear();
-                const month = calendarDate.getMonth();
-                calendarMonth.textContent = `${calendarDate.toLocaleString('default', { month: 'long' })} ${year}`;
-
-                const firstDay = new Date(year, month, 1).getDay();
-                const daysInMonth = new Date(year, month + 1, 0).getDate();
-                const today = new Date().toISOString().split('T')[0];
-
-                // Добавление пустых ячеек перед началом месяца
-                for (let i = 0; i < (firstDay === 0 ? 6 : firstDay - 1); i++) {
-                    const emptyDay = document.createElement('div');
-                    calendarGrid.appendChild(emptyDay);
-                }
-
-                // Добавление дней месяца
-                for (let day = 1; day <= daysInMonth; day++) {
-                    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                    const dayElement = document.createElement('div');
-                    dayElement.className = 'calendar-day';
-                    dayElement.textContent = day;
-                    if (dateStr === today) {
-                        dayElement.classList.add('today');
-                    }
-                    if (tasks.some(task => task.deadline === dateStr)) {
-                        dayElement.classList.add('has-tasks');
-                    }
-                    dayElement.onclick = () => showTasksForDate(dateStr);
-                    calendarGrid.appendChild(dayElement);
-                }
-            } catch (error) {
-                showError(`Ошибка рендеринга календаря: ${error.message}`);
-            }
-        }
-
-        function changeMonth(delta) {
-            calendarDate.setMonth(calendarDate.getMonth() + delta);
-            renderCalendar();
-        }
-
-        function showTasksForDate(date) {
-            try {
-                const tasksForDate = tasks.filter(task => task.deadline === date);
-                const calendarTasks = document.getElementById('calendar-tasks');
-                calendarTasks.innerHTML = `<h3>Задачи на ${date}</h3>`;
-                if (tasksForDate.length) {
-                    const ul = document.createElement('ul');
-                    tasksForDate.forEach(task => {
-                        const li = document.createElement('li');
-                        li.className = task.priority;
-                        li.innerHTML = `<span>${task.text} (${task.completed ? 'Выполнено' : 'Невыполнено'})</span>`;
-                        ul.appendChild(li);
-                    });
-                    calendarTasks.appendChild(ul);
-                } else {
-                    calendarTasks.innerHTML += '<p>Нет задач на этот день.</p>';
-                }
-            } catch (error) {
-                showError(`Ошибка отображения задач на дату: ${error.message}`);
-            }
-        }
-
-        // Архив задач
-        function archiveTask(index) {
-            try {
-                const task = tasks[index];
-                archivedTasks.push({ ...task, archivedDate: new Date().toISOString().split('T')[0] });
-                localStorage.setItem('archived-tasks', JSON.stringify(archivedTasks));
-                tasks.splice(index, 1);
-                localStorage.setItem('work-tasks', JSON.stringify(tasks));
-                renderTasks();
-                renderKanban();
-                renderArchive();
-            } catch (error) {
-                showError(`Ошибка архивирования задачи: ${error.message}`);
-            }
-        }
-
-        function renderArchive() {
-            try {
-                const archiveList = document.getElementById('archive-list');
-                archiveList.innerHTML = '';
-                archivedTasks.forEach((task, index) => {
-                    const li = document.createElement('li');
-                    li.className = `${task.priority} ${task.completed ? 'completed' : ''}`;
-                    li.innerHTML = `
-                        <div class="task-details">
-                            <span>${task.text}</span>
-                            <div class="task-meta">
-                                ${task.deadline ? `Дедлайн: ${task.deadline}` : ''}
-                                ${task.archivedDate ? `Архивировано: ${task.archivedDate}` : ''}
-                            </div>
-                        </div>
-                        <div class="actions">
-                            <button class="secondary" onclick="restoreTask(${index})"><i class="fas fa-undo"></i></button>
-                            <button class="secondary" onclick="deleteArchivedTask(${index})"><i class="fas fa-trash"></i></button>
-                        </div>
-                    `;
-                    archiveList.appendChild(li);
-                });
-            } catch (error) {
-                showError(`Ошибка рендеринга архива задач: ${error.message}`);
-            }
-        }
-
-        function restoreTask(index) {
-            try {
-                const task = archivedTasks[index];
-                tasks.push({ ...task, completed: false, status: 'todo' });
-                archivedTasks.splice(index, 1);
-                localStorage.setItem('work-tasks', JSON.stringify(tasks));
-                localStorage.setItem('archived-tasks', JSON.stringify(archivedTasks));
-                renderTasks();
-                renderKanban();
-                renderArchive();
-            } catch (error) {
-                showError(`Ошибка восстановления задачи: ${error.message}`);
-            }
-        }
-
-        function deleteArchivedTask(index) {
-            try {
-                archivedTasks.splice(index, 1);
-                localStorage.setItem('archived-tasks', JSON.stringify(archivedTasks));
-                renderArchive();
-            } catch (error) {
-                showError(`Ошибка удаления архивированной задачи: ${error.message}`);
             }
         }
 
@@ -2929,106 +2154,30 @@
             }
         }
 
-        // Умные планы на завтра
         function saveTomorrowPlan() {
             try {
                 const plan = document.getElementById('tomorrow-plan').value;
-                const planDate = document.getElementById('plan-date').value;
-                if (plan.trim() && planDate) {
-                    const existingPlans = JSON.parse(localStorage.getItem('tomorrow-plans')) || [];
-                    existingPlans.push({ date: planDate, text: plan });
-                    localStorage.setItem('tomorrow-plans', JSON.stringify(existingPlans));
-
-                    // Добавление плана как задачи на указанную дату
-                    tasks.push({
-                        text: plan,
-                        priority: 'medium',
-                        completed: false,
-                        status: 'todo',
-                        deadline: planDate,
-                        tags: ['план']
-                    });
-                    localStorage.setItem('work-tasks', JSON.stringify(tasks));
-                    renderTasks();
-                    renderKanban();
-
-                    // Умные рекомендации
-                    const suggestions = document.getElementById('smart-suggestions');
-                    suggestions.innerHTML = '<h3>Рекомендации:</h3>';
-                    const highPriorityTasks = tasks.filter(t => t.priority === 'high' && !t.completed);
-                    if (highPriorityTasks.length) {
-                        suggestions.innerHTML += '<p>У вас есть невыполненные задачи с высоким приоритетом. Рекомендуем начать с них завтра.</p>';
-                    }
-                    if (pomodoroSessions < 3) {
-                        suggestions.innerHTML += '<p>Попробуйте завтра использовать больше Pomodoro-сессий для повышения продуктивности.</p>';
-                    }
-                    alert('План на завтра сохранён!');
-                } else {
-                    alert('Введите план и выберите дату.');
-                }
+                localStorage.setItem('tomorrow-plan', plan);
+                alert('План на завтра сохранён!');
             } catch (error) {
                 showError(`Ошибка сохранения плана на завтра: ${error.message}`);
             }
         }
 
-        // Время для семьи
+        // Семья
         function startFamilyActivity() {
             try {
                 const activity = document.getElementById('family-activity').value;
-                const customActivity = document.getElementById('custom-family-activity');
                 const tracker = document.getElementById('family-tracker');
                 let message = '';
-
-                if (activity === 'custom') {
-                    message = customActivity.value || 'Опишите свою активность...';
-                    if (message !== 'Опишите свою активность...' && message.trim()) {
-                        const customActivities = JSON.parse(localStorage.getItem('custom-family-activities')) || [];
-                        customActivities.push(message);
-                        localStorage.setItem('custom-family-activities', JSON.stringify(customActivities));
-                    }
-                } else if (activity === 'relations') {
-                    message = 'Задайте друг другу вопросы: "Как прошёл твой день?" или "Что тебя сегодня вдохновило?"';
+                if (activity === 'relations') {
+                    message = 'Задайте друг другу вопросы: "Как прошёл твой день?"';
                 } else {
-                    message = 'Предложите сыграть в настольную игру, прогуляться вместе или посмотреть семейный фильм.';
+                    message = 'Предложите сыграть в настольную игру или прогуляться вместе.';
                 }
                 tracker.textContent = message;
-
-                // Показ поля для пользовательской активности
-                customActivity.style.display = activity === 'custom' ? 'block' : 'none';
             } catch (error) {
                 showError(`Ошибка запуска семейной активности: ${error.message}`);
-            }
-        }
-
-        function startFamilyTimer() {
-            if (!familyTimerInterval) {
-                familyTimerInterval = setInterval(() => {
-                    familyTime++;
-                    const minutes = Math.floor(familyTime / 60);
-                    const seconds = familyTime % 60;
-                    document.getElementById('family-time').textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-                }, 1000);
-            }
-        }
-
-        function pauseFamilyTimer() {
-            clearInterval(familyTimerInterval);
-            familyTimerInterval = null;
-        }
-
-        function resetFamilyTimer() {
-            clearInterval(familyTimerInterval);
-            familyTimerInterval = null;
-            familyTime = 0;
-            document.getElementById('family-time').textContent = '00:00';
-        }
-
-        function showFamilyStep(step) {
-            try {
-                document.querySelectorAll('#family-stage .tab-content').forEach(t => t.classList.remove('active'));
-                document.getElementById(`family-${step}`).classList.add('active');
-            } catch (error) {
-                showError(`Ошибка смены шага семейного этапа: ${error.message}`);
             }
         }
 
@@ -3069,10 +2218,7 @@
                     notes,
                     pomodoroSessions,
                     mood: JSON.parse(localStorage.getItem('mood')) || {},
-                    tomorrowPlans: JSON.parse(localStorage.getItem('tomorrow-plans')) || [],
-                    archivedTasks,
-                    customFamilyActivities: JSON.parse(localStorage.getItem('custom-family-activities')) || [],
-                    productivityHistory
+                    tomorrowPlan: localStorage.getItem('tomorrow-plan') || ''
                 };
                 const dataStr = JSON.stringify(data, null, 2);
                 const blob = new Blob([dataStr], { type: 'application/json' });
@@ -3103,22 +2249,16 @@
                         keyTasks = data.keyTasks || [];
                         notes = data.notes || [];
                         pomodoroSessions = data.pomodoroSessions || 0;
-                        archivedTasks = data.archivedTasks || [];
-                        productivityHistory = data.productivityHistory || [];
                         localStorage.setItem('work-tasks', JSON.stringify(tasks));
                         localStorage.setItem('key-tasks', JSON.stringify(keyTasks));
                         localStorage.setItem('work-notes', JSON.stringify(notes));
                         localStorage.setItem('pomodoro-sessions', JSON.stringify(pomodoroSessions));
-                        localStorage.setItem('archived-tasks', JSON.stringify(archivedTasks));
-                        localStorage.setItem('tomorrow-plans', JSON.stringify(data.tomorrowPlans || []));
-                        localStorage.setItem('custom-family-activities', JSON.stringify(data.customFamilyActivities || []));
-                        localStorage.setItem('productivity-history', JSON.stringify(productivityHistory));
                         if (data.mood) localStorage.setItem('mood', JSON.stringify(data.mood));
+                        if (data.tomorrowPlan) localStorage.setItem('tomorrow-plan', data.tomorrowPlan);
                         renderTasks();
                         renderKeyTasks();
                         renderNotes();
                         renderKanban();
-                        renderArchive();
                         updateResults();
                         document.getElementById('pomodoro-sessions').textContent = pomodoroSessions;
                         alert('Данные успешно импортированы!');
@@ -3132,107 +2272,28 @@
             }
         }
 
-        // Отправка отчёта на email (симуляция)
-        function sendEmailReport() {
-            try {
-                const completed = tasks.filter(t => t.completed).length;
-                const total = tasks.length;
-                const report = `
-                    Отчёт CalmFlow за ${new Date().toLocaleDateString()}
-                    Задач выполнено: ${completed} из ${total}
-                    Pomodoro сессий: ${pomodoroSessions}
-                    Ключевых задач: ${keyTasks.length}
-                `;
-                alert(`Симуляция отправки отчёта на email:\n${report}`);
-            } catch (error) {
-                showError(`Ошибка отправки отчёта на email: ${error.message}`);
-            }
-        }
-
-        // Настройки
-        function openSettingsModal() {
-            try {
-                const modal = document.getElementById('settings-modal');
-                modal.style.display = 'flex';
-                setTimeout(() => modal.classList.add('active'), 10);
-                document.getElementById('low-priority-color').value = localStorage.getItem('low-priority-color') || '#4CAF50';
-                document.getElementById('medium-priority-color').value = localStorage.getItem('medium-priority-color') || '#FFCA28';
-                document.getElementById('high-priority-color').value = localStorage.getItem('high-priority-color') || '#F44336';
-            } catch (error) {
-                showError(`Ошибка открытия модального окна настроек: ${error.message}`);
-            }
-        }
-
-        function closeSettingsModal() {
-            try {
-                const modal = document.getElementById('settings-modal');
-                modal.classList.remove('active');
-                setTimeout(() => modal.style.display = 'none', 300);
-            } catch (error) {
-                showError(`Ошибка закрытия модального окна настроек: ${error.message}`);
-            }
-        }
-
-        function saveSettings() {
-            try {
-                const lowColor = document.getElementById('low-priority-color').value;
-                const mediumColor = document.getElementById('medium-priority-color').value;
-                const highColor = document.getElementById('high-priority-color').value;
-                localStorage.setItem('low-priority-color', lowColor);
-                localStorage.setItem('medium-priority-color', mediumColor);
-                localStorage.setItem('high-priority-color', highColor);
-
-                // Обновление стилей
-                const styleSheet = document.styleSheets[0];
-                styleSheet.insertRule(`#task-list li.low, #archive-list li.low { border-left: 3px solid ${lowColor}; }`, styleSheet.cssRules.length);
-                styleSheet.insertRule(`#task-list li.medium, #archive-list li.medium { border-left: 3px solid ${mediumColor}; }`, styleSheet.cssRules.length);
-                styleSheet.insertRule(`#task-list li.high, #archive-list li.high { border-left: 3px solid ${highColor}; }`, styleSheet.cssRules.length);
-                renderTasks();
-                renderArchive();
-                closeSettingsModal();
-            } catch (error) {
-                showError(`Ошибка сохранения настроек: ${error.message}`);
-            }
-        }
-
-        // Обновление текущего времени
-        function updateCurrentTime() {
-            try {
-                const now = new Date();
-                document.getElementById('current-time').textContent = now.toLocaleTimeString();
-                if (currentStage === 'work') {
-                    const [endHours, endMinutes] = workEnd.split(':').map(Number);
-                    const endTime = new Date();
-                    endTime.setHours(endHours, endMinutes, 0, 0);
-                    const timeDiff = (endTime - now) / 1000;
-                    if (timeDiff > 0) {
-                        const hours = Math.floor(timeDiff / 3600);
-                        const minutes = Math.floor((timeDiff % 3600) / 60);
-                        document.getElementById('time-remaining').textContent = `(Осталось: ${hours}ч ${minutes}м)`;
-                    } else {
-                        document.getElementById('time-remaining').textContent = '(Время работы истекло)';
-                    }
-                }
-            } catch (error) {
-                showError(`Ошибка обновления текущего времени: ${error.message}`);
-            }
-        }
-
-        setInterval(updateCurrentTime, 1000);
-
         // Обработчики событий
-        document.getElementById('note-tags').addEventListener('input', (e) => {
-            renderNoteTags(e.target.value);
+        document.getElementById('add-task-btn').addEventListener('click', addTask);
+        document.getElementById('task').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && e.ctrlKey) addTask();
         });
 
-        document.getElementById('task-tags').addEventListener('input', (e) => {
-            renderTaskTags(e.target.value);
+        document.querySelectorAll('.priority-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                try {
+                    document.querySelectorAll('.priority-btn').forEach(b => b.style.opacity = '0.5');
+                    btn.style.opacity = '1';
+                    currentPriority = btn.dataset.priority;
+                } catch (error) {
+                    showError(`Ошибка выбора приоритета: ${error.message}`);
+                }
+            });
         });
 
         document.getElementById('task-filter-priority').addEventListener('change', renderTasks);
         document.getElementById('task-filter-status').addEventListener('change', renderTasks);
+
         document.getElementById('note-search').addEventListener('input', renderNotes);
-        document.getElementById('family-activity').addEventListener('change', startFamilyActivity);
 
         // Инициализация
         function init() {
@@ -3250,19 +2311,20 @@
                     const [hours, minutes] = breakInterval.split(':').map(Number);
                     breakTimeLeft = (hours * 60 + minutes) * 60;
                 }
+                updateSuggestions();
                 renderTasks();
                 renderKeyTasks();
                 renderNotes();
                 renderKanban();
-                renderArchive();
-                renderCalendar();
                 updateResults();
                 document.getElementById('pomodoro-sessions').textContent = pomodoroSessions;
                 updateWorkStats();
-                updateCurrentTime();
             } catch (error) {
                 showError(`Ошибка инициализации: ${error.message}`);
             }
         }
 
-        window.onload = init
+        window.onload = init;
+    </script>
+</body>
+</html>
