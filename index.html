@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CalmFlow — Разделяя работу и дом</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* Сброс стилей */
         * {
@@ -15,8 +15,8 @@
 
         /* Основные стили */
         body {
-            background: radial-gradient(circle at center, #0B0B0F 0%, #1C1C24 100%);
-            color: #EDEDED;
+            background: radial-gradient(circle at center, #0A0A12 0%, #1A1A2E 100%);
+            color: #E6F0FA;
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
             overflow-y: auto;
@@ -25,7 +25,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            filter: sepia(0.2);
         }
 
         /* Звёздный фон */
@@ -41,44 +40,60 @@
 
         .star {
             position: absolute;
-            background: #F0F0F5;
+            background: #F5F7FA;
             border-radius: 50%;
-            box-shadow: 0 0 6px rgba(163, 191, 250, 0.3);
-            animation: twinkle 6s infinite ease-in-out;
+            box-shadow: 0 0 8px rgba(64, 196, 255, 0.4);
+            animation: twinkle 5s infinite ease-in-out;
             cursor: pointer;
             transition: transform 0.3s ease, opacity 0.3s ease;
         }
 
-        .star.pulse {
-            animation: pulse 8s infinite ease-in-out;
+        .star.glow {
+            animation: glow 10s infinite ease-in-out;
         }
 
         .star:hover {
-            transform: scale(1.3);
-            box-shadow: 0 0 10px rgba(163, 191, 250, 0.5);
+            transform: scale(1.4);
+            box-shadow: 0 0 12px rgba(64, 196, 255, 0.6);
         }
 
         .falling-star {
             position: absolute;
-            background: linear-gradient(to bottom, #F0F0F5, transparent);
+            background: linear-gradient(to bottom, #F5F7FA, transparent);
             width: 2px;
-            height: 25px;
-            animation: fall 2.5s linear infinite;
+            height: 40px;
+            animation: fall 2s linear infinite;
+        }
+
+        .flare {
+            position: absolute;
+            background: radial-gradient(circle, rgba(64, 196, 255, 0.3), transparent);
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            animation: flare 15s infinite ease-in-out;
+            opacity: 0;
         }
 
         @keyframes twinkle {
-            0%, 100% { opacity: 0.4; transform: scale(0.7); }
-            50% { opacity: 1; transform: scale(1.1); }
+            0%, 100% { opacity: 0.5; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 0.5; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1.4); }
+        @keyframes glow {
+            0%, 100% { opacity: 0.4; transform: scale(0.7); box-shadow: 0 0 8px rgba(179, 136, 255, 0.3); }
+            50% { opacity: 1; transform: scale(1.5); box-shadow: 0 0 15px rgba(179, 136, 255, 0.6); }
         }
 
         @keyframes fall {
             0% { transform: translateY(-100vh) translateX(0); opacity: 1; }
-            100% { transform: translateY(100vh) translateX(15px); opacity: 0; }
+            100% { transform: translateY(100vh) translateX(20px); opacity: 0; }
+        }
+
+        @keyframes flare {
+            0% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.5); }
         }
 
         /* Контейнер */
@@ -86,9 +101,11 @@
             max-width: 900px;
             width: 90%;
             padding: 25px;
-            background: rgba(28, 28, 36, 0.7);
+            background: rgba(26, 26, 46, 0.7);
+            backdrop-filter: blur(8px);
             border-radius: 12px;
-            box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3), -4px -4px 8px rgba(50, 50, 60, 0.2);
+            border: 1px solid rgba(64, 196, 255, 0.2);
+            box-shadow: 0 0 15px rgba(64, 196, 255, 0.1);
             text-align: center;
             animation: dissolve 0.8s ease-out;
             position: relative;
@@ -99,15 +116,22 @@
             to { opacity: 1; transform: scale(1); }
         }
 
-        /* Прогресс дня */
+        /* Прогресс-бар */
         .progress-bar {
-            position: absolute;
-            top: 0;
-            left: 0;
+            width: 100%;
+            height: 6px;
+            background: rgba(26, 26, 46, 0.5);
+            border-radius: 3px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
             width: 0%;
-            height: 3px;
-            background: linear-gradient(90deg, #D4A373, #A3BFFA);
+            height: 100%;
+            background: linear-gradient(90deg, #40C4FF, #B388FF);
             transition: width 0.5s ease;
+            box-shadow: 0 0 8px rgba(64, 196, 255, 0.5);
         }
 
         /* Навигатор */
@@ -117,14 +141,14 @@
             gap: 10px;
             padding: 8px;
             margin-bottom: 15px;
-            background: rgba(28, 28, 36, 0.5);
+            background: rgba(26, 26, 46, 0.5);
             border-radius: 10px;
-            box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.2), inset -2px -2px 4px rgba(50, 50, 60, 0.2);
+            border: 1px solid rgba(64, 196, 255, 0.2);
         }
 
         .stage-nav span {
             font-size: 13px;
-            color: #EDEDED;
+            color: #E6F0FA;
             padding: 6px 12px;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -136,13 +160,13 @@
         }
 
         .stage-nav span:hover {
-            background: rgba(212, 163, 115, 0.1);
-            transform: translateY(-1px);
+            background: rgba(64, 196, 255, 0.1);
+            transform: scale(1.05);
         }
 
         .stage-nav span.active {
-            background: rgba(212, 163, 115, 0.2);
-            color: #D4A373;
+            background: linear-gradient(135deg, #40C4FF, #B388FF);
+            color: #0A0A12;
             font-weight: 500;
         }
 
@@ -153,16 +177,16 @@
             left: 0;
             width: 100%;
             height: 2px;
-            background: #D4A373;
+            background: #40C4FF;
         }
 
         /* Заголовки */
         h1 {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Orbitron', sans-serif;
             font-size: 30px;
-            color: #D4A373;
+            color: #40C4FF;
             margin: 0 0 8px;
-            letter-spacing: 0.3px;
+            letter-spacing: 1px;
             position: relative;
             display: inline-block;
         }
@@ -170,19 +194,20 @@
         h1::before, h1::after {
             content: '';
             position: absolute;
-            width: 20px;
+            width: 30px;
             height: 1px;
-            background: #D4A373;
+            background: linear-gradient(90deg, #40C4FF, #B388FF);
             top: 50%;
+            opacity: 0.5;
         }
 
-        h1::before { left: -30px; }
-        h1::after { right: -30px; }
+        h1::before { left: -40px; }
+        h1::after { right: -40px; }
 
         h2 {
             font-family: 'Inter', sans-serif;
             font-size: 18px;
-            color: #EDEDED;
+            color: #E6F0FA;
             margin: 15px 0 8px;
             font-weight: 300;
         }
@@ -191,7 +216,7 @@
         .slogan {
             font-family: 'Inter', sans-serif;
             font-size: 13px;
-            color: #A0A0A0;
+            color: #90A4AE;
             margin-bottom: 15px;
             letter-spacing: 0.8px;
             opacity: 0;
@@ -204,8 +229,8 @@
 
         /* Кнопки */
         button {
-            background: linear-gradient(135deg, #D4A373 0%, #A3BFFA 100%);
-            color: #0B0B0F;
+            background: linear-gradient(135deg, #40C4FF 0%, #B388FF 100%);
+            color: #0A0A12;
             border: none;
             padding: 8px 18px;
             cursor: pointer;
@@ -214,14 +239,14 @@
             font-size: 13px;
             font-weight: 500;
             transition: all 0.3s ease;
-            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2), -2px -2px 4px rgba(50, 50, 60, 0.2);
+            box-shadow: 0 0 8px rgba(64, 196, 255, 0.3);
             position: relative;
             overflow: hidden;
         }
 
         button:hover {
-            transform: translateY(-1px);
-            box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3), -3px -3px 6px rgba(50, 50, 60, 0.3);
+            transform: scale(1.05);
+            box-shadow: 0 0 12px rgba(64, 196, 255, 0.5);
         }
 
         button:active::after {
@@ -248,8 +273,8 @@
 
         button.secondary {
             background: transparent;
-            color: #D4A373;
-            border: 1px solid #D4A373;
+            color: #40C4FF;
+            border: 1px solid #40C4FF;
             padding: 6px 12px;
             font-size: 12px;
             display: inline-flex;
@@ -258,12 +283,12 @@
         }
 
         button.secondary i {
-            color: #D4A373;
+            color: #40C4FF;
         }
 
         button.secondary::after {
             content: attr(data-text);
-            color: #D4A373;
+            color: #40C4FF;
             font-size: 11px;
         }
 
@@ -276,18 +301,18 @@
         }
 
         .tabs button {
-            background: rgba(28, 28, 36, 0.5);
-            color: #EDEDED;
-            border: 1px solid rgba(212, 163, 115, 0.3);
+            background: rgba(26, 26, 46, 0.5);
+            color: #E6F0FA;
+            border: 1px solid rgba(64, 196, 255, 0.3);
             padding: 6px 14px;
             border-radius: 8px;
             margin: 0;
         }
 
         .tabs button.active {
-            background: rgba(212, 163, 115, 0.2);
-            color: #D4A373;
-            border: 1px solid #D4A373;
+            background: rgba(64, 196, 255, 0.2);
+            color: #40C4FF;
+            border: 1px solid #40C4FF;
         }
 
         /* Поля ввода */
@@ -295,9 +320,9 @@
             width: 100%;
             padding: 8px;
             margin: 6px 0;
-            background: rgba(28, 28, 36, 0.5);
-            color: #EDEDED;
-            border: 1px solid rgba(212, 163, 115, 0.3);
+            background: rgba(26, 26, 46, 0.5);
+            color: #E6F0FA;
+            border: 1px solid rgba(64, 196, 255, 0.3);
             border-radius: 8px;
             font-size: 13px;
             font-family: 'Inter', sans-serif;
@@ -305,8 +330,8 @@
         }
 
         input:focus, textarea:focus, select:focus {
-            border-color: #D4A373;
-            box-shadow: 0 0 5px rgba(212, 163, 115, 0.4);
+            border-color: #40C4FF;
+            box-shadow: 0 0 5px rgba(64, 196, 255, 0.4);
             outline: none;
         }
 
@@ -329,8 +354,8 @@
             align-items: center;
             padding: 8px;
             margin: 5px 0;
-            background: rgba(40, 40, 48, 0.5);
-            border: 1px solid rgba(212, 163, 115, 0.2);
+            background: rgba(40, 40, 60, 0.5);
+            border: 1px solid rgba(64, 196, 255, 0.2);
             border-radius: 8px;
             transition: transform 0.3s ease;
         }
@@ -339,9 +364,9 @@
             transform: translateX(2px);
         }
 
-        #task-list li.low { border-left: 3px solid #81C784; }
+        #task-list li.low { border-left: 3px solid #4CAF50; }
         #task-list li.medium { border-left: 3px solid #FFCA28; }
-        #task-list li.high { border-left: 3px solid #E57373; }
+        #task-list li.high { border-left: 3px solid #F44336; }
 
         /* Модальные окна */
         .modal {
@@ -358,15 +383,16 @@
         }
 
         .modal-content {
-            background: rgba(28, 28, 36, 0.7);
+            background: rgba(26, 26, 46, 0.7);
+            backdrop-filter: blur(8px);
             padding: 18px;
-            border: 1px solid rgba(212, 163, 115, 0.3);
+            border: 1px solid rgba(64, 196, 255, 0.3);
             border-radius: 10px;
             width: 90%;
             max-width: 420px;
             max-height: 80vh;
             overflow-y: auto;
-            box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3), -4px -4px 8px rgba(50, 50, 60, 0.2);
+            box-shadow: 0 0 15px rgba(64, 196, 255, 0.2);
             transform: scale(0.9);
             opacity: 0;
             transition: transform 0.3s ease, opacity 0.3s ease;
@@ -378,9 +404,9 @@
         }
 
         .modal-content h2 {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Orbitron', sans-serif;
             font-size: 18px;
-            color: #D4A373;
+            color: #40C4FF;
             margin: 0 0 12px;
             font-weight: 400;
         }
@@ -392,13 +418,13 @@
         .modal-content .exercise-tracker {
             margin: 8px 0;
             font-size: 13px;
-            color: #EDEDED;
+            color: #E6F0FA;
             line-height: 1.4;
         }
 
         .modal-content .exercise-timer {
             font-size: 14px;
-            color: #D4A373;
+            color: #40C4FF;
             margin: 6px 0;
         }
 
@@ -415,8 +441,8 @@
         }
 
         .modal-content .tag {
-            background: rgba(212, 163, 115, 0.2);
-            color: #D4A373;
+            background: rgba(64, 196, 255, 0.2);
+            color: #40C4FF;
             padding: 3px 6px;
             border-radius: 5px;
             font-size: 11px;
@@ -432,9 +458,9 @@
         }
 
         .note-card {
-            background: rgba(40, 40, 48, 0.5);
+            background: rgba(40, 40, 60, 0.5);
             padding: 10px;
-            border: 1px solid rgba(212, 163, 115, 0.2);
+            border: 1px solid rgba(64, 196, 255, 0.2);
             border-radius: 8px;
             text-align: left;
             display: flex;
@@ -445,13 +471,13 @@
 
         .note-card:hover {
             transform: translateY(-2px) rotate(1deg);
-            box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 10px rgba(64, 196, 255, 0.3);
         }
 
         .note-card p {
             margin: 0 0 6px;
             font-size: 12px;
-            color: #EDEDED;
+            color: #E6F0FA;
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
@@ -465,11 +491,12 @@
         }
 
         .note-card .tag {
-            background: rgba(163, 191, 250, 0.2);
+            background: rgba(179, 136, 255, 0.2);
+            color: #B388FF;
         }
 
         .note-card small {
-            color: #A0A0A0;
+            color: #90A4AE;
             font-size: 10px;
             margin-top: 5px;
         }
@@ -479,23 +506,6 @@
             gap: 5px;
             margin-top: auto;
             justify-content: flex-end;
-        }
-
-        /* Прогресс */
-        .progress-container {
-            width: 100%;
-            height: 6px;
-            background: rgba(28, 28, 36, 0.5);
-            border-radius: 3px;
-            margin: 10px 0;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, #D4A373, #A3BFFA);
-            transition: width 0.5s ease;
         }
 
         /* Дневник настроения */
@@ -520,7 +530,7 @@
         }
 
         .mood-emoji.selected {
-            background: rgba(212, 163, 115, 0.2);
+            background: rgba(64, 196, 255, 0.2);
         }
 
         /* Анимация этапов */
@@ -546,8 +556,7 @@
             }
 
             .stage-nav {
-                flex-direction: column;
-                align-items: center;
+                flex-wrap: wrap;
                 gap: 6px;
             }
 
@@ -595,7 +604,6 @@
 
     <!-- Контейнер приложения -->
     <div class="container">
-        <div class="progress-bar" id="progress-bar"></div>
         <!-- Навигатор этапов -->
         <div class="stage-nav">
             <span id="nav-start" class="active"><i class="fas fa-play"></i> Старт</span>
@@ -604,6 +612,11 @@
             <span id="nav-break"><i class="fas fa-coffee"></i> Перерыв</span>
             <span id="nav-end-shift"><i class="fas fa-check-circle"></i> Завершение</span>
             <span id="nav-family"><i class="fas fa-home"></i> Семья</span>
+        </div>
+
+        <!-- Прогресс-бар -->
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
         </div>
 
         <!-- Старт смены -->
@@ -656,8 +669,8 @@
             <div id="work-pomodoro" class="tab-content">
                 <button class="primary" onclick="startPomodoro()"><i class="fas fa-play"></i> Старт Pomodoro</button>
                 <p id="timer">25:00</p>
-                <div class="progress-container">
-                    <div class="progress-fill" id="progress-fill"></div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="pomodoro-progress"></div>
                 </div>
             </div>
             <div id="work-notes" class="tab-content">
@@ -674,7 +687,7 @@
             <h2>Перерыв</h2>
             <div class="tabs">
                 <button class="tab-btn active" onclick="showTab('break-exercise', this)"><i class="fas fa-running"></i> Упражнения</button>
-                <button class="tab-btn" onclick="showTab('break-relax', this)"><i class="fas fa-gamepad"></i> Расслабление</button>
+                <button class="tab-btn" onclick="showTab('break-relax', this)"><i class="fas fa-spa"></i> Расслабление</button>
             </div>
             <div id="break-exercise" class="tab-content active">
                 <button class="primary" onclick="openExerciseModal('breathing')"><i class="fas fa-wind"></i> Дыхательные упражнения</button>
@@ -682,13 +695,7 @@
                 <button class="primary" onclick="openExerciseModal('body')"><i class="fas fa-running"></i> Упражнения для тела</button>
             </div>
             <div id="break-relax" class="tab-content">
-                <select id="relax-game">
-                    <option value="stars">Звёздное небо</option>
-                    <option value="puzzle">Пазл</option>
-                    <option value="maze">Лабиринт</option>
-                </select>
-                <button class="primary" onclick="startRelax()"><i class="fas fa-gamepad"></i> Играть</button>
-                <div id="relax-tracker"></div>
+                <p>Расслабьтесь и отдохните.</p>
             </div>
             <button class="primary" onclick="showStage('work')"><i class="fas fa-arrow-left"></i> Вернуться к работе</button>
         </div>
@@ -708,7 +715,7 @@
                     <option value="week">Неделя</option>
                     <option value="month">Месяц</option>
                 </select>
-                <div class="progress-container">
+                <div class="progress-bar">
                     <div class="progress-fill" id="stats-progress"></div>
                 </div>
                 <button class="secondary" onclick="exportResults()"><i class="fas fa-download"></i> Экспортировать</button>
@@ -736,9 +743,6 @@
             <div id="family-prepare" class="tab-content active">
                 <select id="family-activity">
                     <option value="relations">Совет для общения</option>
-                    <option value="stargame">Звёздное небо</option>
-                    <option value="puzzle">Пазл</option>
-                    <option value="maze">Лабиринт</option>
                 </select>
                 <button class="primary" onclick="startFamilyActivity()"><i class="fas fa-heart"></i> Начать</button>
                 <div id="family-tracker"></div>
@@ -824,41 +828,68 @@
         function initStars() {
             const starsContainer = document.getElementById('stars');
             starsContainer.innerHTML = '';
-            // Обычные и пульсирующие звёзды
-            for (let i = 0; i < 150; i++) {
+            for (let i = 0; i < 200; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
-                if (Math.random() < 0.1) star.classList.add('pulse');
-                const size = Math.random() * 1.8 + 0.4;
+                if (Math.random() < 0.15) star.classList.add('glow');
+                const size = Math.random() * 2 + 0.5;
                 star.style.width = `${size}px`;
                 star.style.height = `${size}px`;
                 star.style.left = `${Math.random() * 100}%`;
                 star.style.top = `${Math.random() * 100}%`;
-                star.style.animationDelay = `${Math.random() * 6}s`;
+                star.style.animationDelay = `${Math.random() * 5}s`;
                 star.style.opacity = Math.random() * 0.6 + 0.4;
                 star.addEventListener('click', () => {
+                    const burst = document.createElement('div');
+                    burst.style.position = 'absolute';
+                    burst.style.left = star.style.left;
+                    burst.style.top = star.style.top;
+                    burst.style.width = '20px';
+                    burst.style.height = '20px';
+                    burst.style.background = 'radial-gradient(circle, #40C4FF, transparent)';
+                    burst.style.animation = 'burst 0.5s ease-out';
+                    starsContainer.appendChild(burst);
                     star.style.transform = 'scale(0)';
                     star.style.opacity = '0';
-                    setTimeout(() => star.remove(), 300);
+                    setTimeout(() => {
+                        burst.remove();
+                        star.remove();
+                    }, 500);
                 });
                 starsContainer.appendChild(star);
             }
-            // Падающие звёзды
-            for (let i = 0; i < 4; i++) {
+            for (let i = 0; i < 6; i++) {
                 const fallingStar = document.createElement('div');
                 fallingStar.className = 'falling-star';
                 fallingStar.style.left = `${Math.random() * 100}%`;
-                fallingStar.style.animationDelay = `${Math.random() * 12}s`;
+                fallingStar.style.animationDelay = `${Math.random() * 10}s`;
                 starsContainer.appendChild(fallingStar);
+            }
+            for (let i = 0; i < 3; i++) {
+                const flare = document.createElement('div');
+                flare.className 'flare';
+                flare.style.left = `${Math.random() * 100}%`;
+                flare.style.top = `${Math.random() * 100}%`;
+                flare.style.animationDelay = `${Math.random() * 15}s`;
+                starsContainer.appendChild(flare);
             }
         }
 
-        // Прогресс дня
-        function updateProgressBar(stage) {
-            const stages = ['start', 'setup', 'work', 'break', 'end-shift', 'family'];
-            const index = stages.indexOf(stage);
-            const progress = (index / (stages.length - 1)) * 100;
-            document.getElementById('progress-bar').style.width = `${progress}%`;
+        // Анимация взрыва звезды
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes burst {
+                0% { transform: scale(0); opacity: 1; }
+                100% { transform: scale(2); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Прогресс
+        function updateProgress() {
+            const progressFill = document.getElementById('progress-fill');
+            const progress = completedTasks / tasks.length || 0;
+            progressFill.style.width = `${progress * 100}%`;
         }
 
         // Переключение этапов
@@ -871,7 +902,7 @@
                 document.querySelectorAll('.stage-nav span').forEach(s => s.classList.remove('active'));
                 document.getElementById(`nav-${stage}`).classList.add('active');
                 if (stage === 'family') showFamilyStep('prepare');
-                updateProgressBar(stage);
+                updateProgress();
                 console.log(`Stage switched to: ${stage}`);
             } catch (error) {
                 console.error(error);
@@ -1050,7 +1081,7 @@
                 pomodoroInterval = setInterval(() => {
                     pomodoroTime--;
                     updateTimer();
-                    updateProgress();
+                    updatePomodoroProgress();
                     if (pomodoroTime <= 0) {
                         clearInterval(pomodoroInterval);
                         isPomodoroRunning = false;
@@ -1070,10 +1101,11 @@
             timer.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
         }
 
-        // Прогресс
-        function updateProgress() {
-            const progressFill = document.getElementById('progress-fill');
-            const progress = completedTasks / tasks.length || 0;
+        function updatePomodoroProgress() {
+            const progressFill = document.getElementById('pomodoro-progress');
+            const [hours, minutes] = (breakInterval || '01:00').split(':');
+            const total = (parseInt(hours) * 60 + parseInt(minutes)) * 60;
+            const progress = (total - pomodoroTime) / total;
             progressFill.style.width = `${progress * 100}%`;
         }
 
@@ -1191,17 +1223,17 @@
                 if (exercise === 'box') {
                     phases = ['Вдох (4 сек)...', 'Задержка (4 сек)...', 'Выдох (4 сек)...', 'Задержка (4 сек)...'];
                     phaseDurations = [4, 4, 4, 4];
-                    maxPhases = 24; // 6 циклов
+                    maxPhases = 24;
                     timeLeft = 4;
                 } else if (exercise === '478') {
                     phases = ['Вдох (4 сек)...', 'Задержка (7 сек)...', 'Выдох (8 сек)...'];
                     phaseDurations = [4, 7, 8];
-                    maxPhases = 12; // 4 цикла
+                    maxPhases = 12;
                     timeLeft = 4;
                 } else if (exercise === 'basic') {
                     phases = ['Вдох (4 сек)...', 'Задержка (4 сек)...', 'Выдох (4 сек)...', 'Задержка (4 сек)...'];
                     phaseDurations = [4, 4, 4, 4];
-                    maxPhases = 16; // 4 цикла
+                    maxPhases = 16;
                     timeLeft = 4;
                 }
 
@@ -1261,132 +1293,6 @@
             }
         }
 
-        // Игры
-        function startRelax() {
-            const game = document.getElementById('relax-game').value;
-            const tracker = document.getElementById('relax-tracker');
-            tracker.innerHTML = '';
-
-            if (game === 'stars') {
-                tracker.innerHTML = 'Собери звёзды за 15 секунд!';
-                const stars = Array.from(document.querySelectorAll('.star'));
-                let count = 0;
-                stars.forEach(star => {
-                    star.style.pointerEvents = 'auto';
-                    star.style.transition = 'transform 0.5s, opacity 0.5s';
-                    const clickHandler = () => {
-                        star.style.transform = 'scale(0)';
-                        star.style.opacity = '0';
-                        count++;
-                        setTimeout(() => star.remove(), 500);
-                    };
-                    star.addEventListener('click', clickHandler);
-                    star.clickHandler = clickHandler;
-                });
-                setTimeout(() => {
-                    tracker.innerHTML = `Собрано звёзд: ${count}.`;
-                    initStars();
-                }, 15000);
-
-            } else if (game === 'puzzle') {
-                tracker.innerHTML = 'Собери пазл за 15 секунд!';
-                const puzzle = document.createElement('div');
-                puzzle.innerHTML = `
-                    <style>
-                        .puzzle-container { display: grid; grid-template-columns: repeat(2, 35px); gap: 3px; margin: 6px auto; }
-                        .puzzle-piece { width: 35px; height: 35px; background: rgba(212, 163, 115, 0.2); cursor: pointer; border-radius: 5px; border: 1px solid #D4A373; }
-                        .puzzle-piece.correct { background: #81C784; }
-                    </style>
-                    <div class="puzzle-container">
-                        <div class="puzzle-piece" data-index="0"></div>
-                        <div class="puzzle-piece" data-index="1"></div>
-                        <div class="puzzle-piece" data-index="2"></div>
-                        <div class="puzzle-piece" data-index="3"></div>
-                    </div>
-                `;
-                tracker.appendChild(puzzle);
-                let correct = [false, false, false, false];
-                puzzle.querySelectorAll('.puzzle-piece').forEach(piece => {
-                    piece.addEventListener('click', () => {
-                        const index = parseInt(piece.dataset.index);
-                        correct[index] = !correct[index];
-                        piece.classList.toggle('correct');
-                    });
-                });
-                setTimeout(() => {
-                    tracker.innerHTML = `Пазл собран: ${correct.filter(c => c).length}/4.`;
-                }, 15000);
-
-            } else if (game === 'maze') {
-                tracker.innerHTML = 'Проведи шарик через лабиринт!';
-                const maze = document.createElement('canvas');
-                maze.width = 160;
-                maze.height = 160;
-                maze.style.border = '1px solid #D4A373';
-                tracker.appendChild(maze);
-                const ctx = maze.getContext('2d');
-                const ball = { x: 15, y: 15, r: 4 };
-                const target = { x: 145, y: 145, r: 4 };
-                const walls = [
-                    { x: 0, y: 35, w: 100, h: 8 },
-                    { x: 35, y: 70, w: 100, h: 8 },
-                    { x: 0, y: 105, w: 100, h: 8 }
-                ];
-                let moving = false;
-
-                function drawMaze() {
-                    ctx.clearRect(0, 0, maze.width, maze.height);
-                    ctx.fillStyle = '#D4A373';
-                    walls.forEach(wall => ctx.fillRect(wall.x, wall.y, wall.w, wall.h));
-                    ctx.beginPath();
-                    ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
-                    ctx.fillStyle = '#D4A373';
-                    ctx.fill();
-                    ctx.beginPath();
-                    ctx.arc(target.x, target.y, target.r, 0, Math.PI * 2);
-                    ctx.fillStyle = '#81C784';
-                    ctx.fill();
-                }
-
-                maze.addEventListener('mousedown', (e) => {
-                    const rect = maze.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    if (Math.hypot(x - ball.x, y - ball.y) < ball.r) moving = true;
-                });
-
-                maze.addEventListener('mouseup', () => moving = false);
-
-                maze.addEventListener('mousemove', (e) => {
-                    if (moving) {
-                        const rect = maze.getBoundingClientRect();
-                        const newX = e.clientX - rect.left;
-                        const newY = e.clientY - rect.top;
-                        const collision = walls.some(wall => 
-                            newX - ball.r > wall.x && newX + ball.r < wall.x + wall.w &&
-                            newY - ball.r > wall.y && newY + ball.r < wall.y + wall.h
-                        );
-                        if (!collision) {
-                            ball.x = newX;
-                            ball.y = newY;
-                        }
-                        drawMaze();
-                        if (Math.hypot(ball.x - target.x, ball.y - target.y) < 8) {
-                            tracker.innerHTML = 'Лабиринт пройден!';
-                            moving = false;
-                        }
-                    }
-                });
-
-                drawMaze();
-                setTimeout(() => {
-                    if (Math.hypot(ball.x - target.x, ball.y - target.y) >= 8) {
-                        tracker.innerHTML = 'Попробуй ещё!';
-                    }
-                }, 20000);
-            }
-        }
-
         // Семейные активности
         const relationTips = [
             'Сделай комплимент близкому.',
@@ -1394,7 +1300,6 @@
             'Расскажи о своём дне.',
             'Сходите на прогулку.',
             'Посмотрите фильм.',
-            'Поиграйте в игру.',
             'Обсудите планы.'
         ];
 
@@ -1403,8 +1308,6 @@
             const tracker = document.getElementById('family-tracker');
             if (activity === 'relations') {
                 tracker.innerHTML = relationTips[Math.floor(Math.random() * relationTips.length)];
-            } else {
-                startRelax();
             }
         }
 
@@ -1593,11 +1496,15 @@
             renderTasks();
             renderNotes();
             updateResults();
-            document.getElementById('tomorrow-plan').value = localStorage.getItem('tomorrow-plan') || '';
             document.getElementById('note-search').addEventListener('input', renderNotes);
+            document.getElementById('stats-filter').addEventListener('change', updateProgressStats);
+            document.getElementById('task').addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.key === 'Enter') addTask();
+            });
+            console.log('CalmFlow initialized successfully');
         } catch (error) {
             console.error('Initialization error:', error);
-            alert('Ошибка инициализации.');
+            alert('Ошибка при загрузке приложения.');
         }
     </script>
 </body>
