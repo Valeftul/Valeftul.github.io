@@ -247,7 +247,7 @@
             color: #b0b8c1;
         }
 
-        /* Модальные заметки */
+        /* Модальные окна */
         .modal {
             display: none;
             position: fixed;
@@ -271,6 +271,30 @@
             max-height: 80vh;
             overflow-y: auto;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            color: #f3e8d6;
+            margin: 0 0 15px;
+        }
+
+        .modal-content select {
+            margin-bottom: 10px;
+        }
+
+        .modal-content .exercise-tracker {
+            margin: 15px 0;
+            font-size: 14px;
+            color: #f5f5f5;
+            line-height: 1.5;
+        }
+
+        .modal-content .exercise-timer {
+            font-size: 16px;
+            color: #f3e8d6;
+            margin: 10px 0;
         }
 
         .modal-content textarea {
@@ -310,7 +334,6 @@
             text-align: left;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
             min-height: 150px;
         }
 
@@ -323,41 +346,28 @@
             display: -webkit-box;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
+            flex-grow: 1;
         }
 
         .note-card .tags {
             margin: 8px 0;
-            flex-grow: 1;
         }
 
         .note-card small {
             color: #b0b8c1;
             font-size: 12px;
-            display: block;
             margin-top: 8px;
         }
 
         .note-card .actions {
             display: flex;
             gap: 8px;
-            margin-top: 10px;
-        }
-
-        /* Категории упражнений */
-        .exercise-category {
-            margin: 15px 0;
-            padding: 15px;
-            background: rgba(30, 30, 30, 0.9);
-            border: 1px solid #b0b8c1;
-            border-radius: 6px;
-        }
-
-        .exercise-category select {
-            margin-bottom: 10px;
+            margin-top: auto;
+            justify-content: flex-end;
         }
 
         /* Таймер упражнений */
-        #exercise-timer {
+        .exercise-timer {
             font-size: 16px;
             color: #f3e8d6;
             margin: 10px 0;
@@ -629,33 +639,9 @@
                 <button class="tab-btn" onclick="showTab('break-relax', this)"><i class="fas fa-gamepad"></i> Расслабление</button>
             </div>
             <div id="break-exercise" class="tab-content active">
-                <div class="exercise-category">
-                    <h3>Дыхание</h3>
-                    <select id="breathing-exercise">
-                        <option value="breathing">Дыхательное упражнение</option>
-                    </select>
-                    <button class="primary" onclick="startBreakExercise('breathing')"><i class="fas fa-play"></i> Начать</button>
-                    <div id="breathing-tracker"></div>
-                    <div id="exercise-timer"></div>
-                </div>
-                <div class="exercise-category">
-                    <h3>Глаза</h3>
-                    <select id="eyes-exercise">
-                        <option value="eyes">Упражнение для глаз</option>
-                    </select>
-                    <button class="primary" onclick="startBreakExercise('eyes')"><i class="fas fa-play"></i> Начать</button>
-                    <div id="eyes-tracker"></div>
-                </div>
-                <div class="exercise-category">
-                    <h3>Тело</h3>
-                    <select id="body-exercise">
-                        <option value="body">Упражнение для тела</option>
-                        <option value="neck">Упражнение для шеи</option>
-                        <option value="wrists">Упражнение для запястий</option>
-                    </select>
-                    <button class="primary" onclick="startBreakExercise('body')"><i class="fas fa-play"></i> Начать</button>
-                    <div id="body-tracker"></div>
-                </div>
+                <button class="primary" onclick="openExerciseModal('breathing')"><i class="fas fa-wind"></i> Дыхательные упражнения</button>
+                <button class="primary" onclick="openExerciseModal('eyes')"><i class="fas fa-eye"></i> Упражнения для глаз</button>
+                <button class="primary" onclick="openExerciseModal('body')"><i class="fas fa-running"></i> Упражнения для тела</button>
             </div>
             <div id="break-relax" class="tab-content">
                 <select id="relax-game">
@@ -753,7 +739,46 @@
                 <button class="secondary" onclick="closeNoteModal()"><i class="fas fa-times"></i> Закрыть</button>
             </div>
         </div>
-    </div>
+
+        <!-- Модальные окна для упражнений -->
+        <div id="breathing-modal" class="modal">
+            <div class="modal-content">
+                <h2>Дыхательные упражнения</h2>
+                <select id="breathing-exercise">
+                    <option value="box">Квадратное дыхание</option>
+                    <option value="478">Дыхание 4-7-8</option>
+                    <option value="basic">Базовое дыхание</option>
+                </select>
+                <button class="primary" onclick="startBreakExercise('breathing')"><i class="fas fa-play"></i> Начать</button>
+                <div id="breathing-tracker" class="exercise-tracker"></div>
+                <div id="breathing-timer" class="exercise-timer"></div>
+                <button class="secondary" onclick="closeExerciseModal('breathing')"><i class="fas fa-times"></i> Закрыть</button>
+            </div>
+        </div>
+        <div id="eyes-modal" class="modal">
+            <div class="modal-content">
+                <h2>Упражнения для глаз</h2>
+                <select id="eyes-exercise">
+                    <option value="eyes">Базовое упражнение для глаз</option>
+                </select>
+                <button class="primary" onclick="startBreakExercise('eyes')"><i class="fas fa-play"></i> Начать</button>
+                <div id="eyes-tracker" class="exercise-tracker"></div>
+                <button class="secondary" onclick="closeExerciseModal('eyes')"><i class="fas fa-times"></i> Закрыть</button>
+            </div>
+        </div>
+        <div id="body-modal" class="modal">
+            <div class="modal-content">
+                <h2>Упражнения для тела</h2>
+                <select id="body-exercise">
+                    <option value="body">Упражнение для тела</option>
+                    <option value="neck">Упражнение для шеи</option>
+                    <option value="wrists">Упражнение для запястий</option>
+                </select>
+                <button class="primary" onclick="startBreakExercise('body')"><i class="fas fa-play"></i> Начать</button>
+                <div id="body-tracker" class="exercise-tracker"></div>
+                <button class="secondary" onclick="closeExerciseModal('body')"><i class="fas fa-times"></i> Закрыть</button>
+            </div>
+        </div>
 
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <script>
@@ -1087,37 +1112,72 @@
         }
 
         // Упражнения
+        function openExerciseModal(category) {
+            const modal = document.getElementById(`${category}-modal`);
+            modal.style.display = 'flex';
+            document.getElementById(`${category}-tracker`).innerHTML = '';
+            if (category === 'breathing') document.getElementById('breathing-timer').innerHTML = '';
+            console.log(`Opening exercise modal: ${category}`);
+        }
+
+        function closeExerciseModal(category) {
+            const modal = document.getElementById(`${category}-modal`);
+            modal.style.display = 'none';
+            console.log(`Closing exercise modal: ${category}`);
+        }
+
         function startBreakExercise(category) {
             const exercise = document.getElementById(`${category}-exercise`).value;
             const tracker = document.getElementById(`${category}-tracker`);
-            const timer = document.getElementById('exercise-timer');
+            const timer = category === 'breathing' ? document.getElementById('breathing-timer') : null;
             console.log(`Starting exercise: ${exercise}`);
             tracker.innerHTML = '';
-            timer.innerHTML = '';
+            if (timer) timer.innerHTML = '';
 
-            if (exercise === 'breathing') {
+            if (category === 'breathing') {
                 tracker.innerHTML = 'Подготовьтесь к дыхательному упражнению: сядьте прямо, расслабьтесь.';
                 let phase = 0;
-                let timeLeft = 4;
-                const phases = ['Вдох (4 сек)...', 'Задержка (4 сек)...', 'Выдох (4 сек)...', 'Задержка (4 сек)...'];
+                let timeLeft = 0;
+                let phases = [];
+                let phaseDurations = [];
+                let maxPhases = 0;
+
+                if (exercise === 'box') {
+                    phases = ['Вдох (4 сек)...', 'Задержка (4 сек)...', 'Выдох (4 сек)...', 'Задержка (4 сек)...'];
+                    phaseDurations = [4, 4, 4, 4];
+                    maxPhases = 24; // 6 циклов по 4 фазы
+                    timeLeft = 4;
+                } else if (exercise === '478') {
+                    phases = ['Вдох (4 сек)...', 'Задержка (7 сек)...', 'Выдох (8 сек)...'];
+                    phaseDurations = [4, 7, 8];
+                    maxPhases = 12; // 4 цикла по 3 фазы
+                    timeLeft = 4;
+                } else if (exercise === 'basic') {
+                    phases = ['Вдох (4 сек)...', 'Задержка (4 сек)...', 'Выдох (4 сек)...', 'Задержка (4 сек)...'];
+                    phaseDurations = [4, 4, 4, 4];
+                    maxPhases = 16; // 4 цикла по 4 фазы
+                    timeLeft = 4;
+                }
+
                 timer.innerHTML = `Осталось: ${timeLeft} сек`;
                 const interval = setInterval(() => {
                     if (timeLeft <= 0) {
                         phase++;
-                        timeLeft = 4;
-                        if (phase >= 16) {
+                        if (phase >= maxPhases) {
                             clearInterval(interval);
                             tracker.innerHTML = 'Дыши легко, ты восстановился!';
                             timer.innerHTML = '';
                             return;
                         }
-                        tracker.innerHTML = phases[phase % 4];
+                        timeLeft = phaseDurations[phase % phaseDurations.length];
+                        tracker.innerHTML = phases[phase % phases.length];
+                        timer.innerHTML = `Осталось: ${timeLeft} сек`;
                     }
                     timeLeft--;
                     timer.innerHTML = `Осталось: ${timeLeft} сек`;
                 }, 1000);
 
-            } else if (exercise === 'eyes') {
+            } else if (category === 'eyes' && exercise === 'eyes') {
                 tracker.innerHTML = `
                     Посмотри влево (2 сек), вправо (2 сек), вверх (2 сек), вниз (2 сек).<br>
                     Повтори 5 раз.<br>
@@ -1127,35 +1187,35 @@
                     tracker.innerHTML = 'Глаза отдохнули! Моргни несколько раз.';
                 }, 40000);
 
-            } else if (exercise === 'body') {
-                tracker.innerHTML = `
-                    Потяни руки вверх (3 сек), затем в стороны (3 сек).<br>
-                    Повтори 3 подхода.<br>
-                    Двигайся плавно, чувствуй мышцы.
-                `;
-                setTimeout(() => {
-                    tracker.innerHTML = 'Тело размято! Сделай лёгкую встряску.';
-                }, 18000);
-
-            } else if (exercise === 'neck') {
-                tracker.innerHTML = `
-                    Поверни голову влево (2 сек), вправо (2 сек), наклони к плечам (2 сек).<br>
-                    Повтори 4 раза.<br>
-                    Двигайся осторожно, без рывков.
-                `;
-                setTimeout(() => {
-                    tracker.innerHTML = 'Шея расслаблена! Сделай лёгкий массаж.';
-                }, 24000);
-
-            } else if (exercise === 'wrists') {
-                tracker.innerHTML = `
-                    Вращай запястья по часовой стрелке (5 сек), затем против (5 сек).<br>
-                    Повтори 3 раза.<br>
-                    Держи руки расслабленными.
-                `;
-                setTimeout(() => {
-                    tracker.innerHTML = 'Запястья готовы! Потри ладони.';
-                }, 30000);
+            } else if (category === 'body') {
+                if (exercise === 'body') {
+                    tracker.innerHTML = `
+                        Потяни руки вверх (3 сек), затем в стороны (3 сек).<br>
+                        Повтори 3 подхода.<br>
+                        Двигайся плавно, чувствуй мышцы.
+                    `;
+                    setTimeout(() => {
+                        tracker.innerHTML = 'Тело размято! Сделай лёгкую встряску.';
+                    }, 18000);
+                } else if (exercise === 'neck') {
+                    tracker.innerHTML = `
+                        Поверни голову влево (2 сек), вправо (2 сек), наклони к плечам (2 сек).<br>
+                        Повтори 4 раза.<br>
+                        Двигайся осторожно, без рывков.
+                    `;
+                    setTimeout(() => {
+                        tracker.innerHTML = 'Шея расслаблена! Сделай лёгкий массаж.';
+                    }, 24000);
+                } else if (exercise === 'wrists') {
+                    tracker.innerHTML = `
+                        Вращай запястья по часовой стрелке (5 сек), затем против (5 сек).<br>
+                        Повтори 3 раза.<br>
+                        Держи руки расслабленными.
+                    `;
+                    setTimeout(() => {
+                        tracker.innerHTML = 'Запястья готовы! Потри ладони.';
+                    }, 30000);
+                }
             }
         }
 
@@ -1367,6 +1427,7 @@
                         return;
                     }
                     tracker.innerHTML = phases[phase % 4];
+                    timer.innerHTML = `Осталось: ${timeLeft} сек`;
                 }
                 timeLeft--;
                 timer.innerHTML = `Осталось: ${timeLeft} сек`;
