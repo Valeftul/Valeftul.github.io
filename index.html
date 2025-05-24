@@ -27,6 +27,19 @@
             align-items: center;
         }
 
+        /* Резервный фон, если звёзды не загрузятся */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="10" cy="10" r="0.5" fill="white"/><circle cx="50" cy="50" r="0.7" fill="white"/><circle cx="80" cy="20" r="0.6" fill="white"/></svg>') repeat;
+            opacity: 0.1;
+            z-index: -2;
+        }
+
         /* Звёздный фон */
         .stars {
             position: fixed;
@@ -94,6 +107,11 @@
             0% { opacity: 0; transform: scale(0.5); }
             50% { opacity: 0.3; transform: scale(1); }
             100% { opacity: 0; transform: scale(0.5); }
+        }
+
+        @keyframes burst {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
         }
 
         /* Контейнер */
@@ -596,6 +614,17 @@
                 grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             }
         }
+
+        /* Сообщение об ошибке */
+        .error-message {
+            display: none;
+            color: #F44336;
+            font-size: 14px;
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(244, 67, 54, 0.1);
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
@@ -604,14 +633,15 @@
 
     <!-- Контейнер приложения -->
     <div class="container">
+        <div class="error-message" id="error-message"></div>
         <!-- Навигатор этапов -->
         <div class="stage-nav">
-            <span id="nav-start" class="active"><i class="fas fa-play"></i> Старт</span>
-            <span id="nav-setup"><i class="fas fa-cog"></i> Настройка</span>
-            <span id="nav-work"><i class="fas fa-tasks"></i> Работа</span>
-            <span id="nav-break"><i class="fas fa-coffee"></i> Перерыв</span>
-            <span id="nav-end-shift"><i class="fas fa-check-circle"></i> Завершение</span>
-            <span id="nav-family"><i class="fas fa-home"></i> Семья</span>
+            <span id="nav-start" class="active">Старт</span>
+            <span id="nav-setup">Настройка</span>
+            <span id="nav-work">Работа</span>
+            <span id="nav-break">Перерыв</span>
+            <span id="nav-end-shift">Завершение</span>
+            <span id="nav-family">Семья</span>
         </div>
 
         <!-- Прогресс-бар -->
@@ -623,38 +653,38 @@
         <div id="start-stage" class="stage active">
             <h1>CalmFlow</h1>
             <p class="slogan">Разделяя работу и дом</p>
-            <button class="primary" onclick="showStage('setup')"><i class="fas fa-play"></i> Начать смену</button>
+            <button class="primary" onclick="showStage('setup')">Начать смену</button>
         </div>
 
         <!-- Настройка работы -->
         <div id="setup-stage" class="stage">
             <h2>Настройка работы</h2>
             <div class="tabs">
-                <button class="tab-btn active" onclick="showTab('setup-time', this)"><i class="fas fa-clock"></i> Время</button>
-                <button class="tab-btn" onclick="showTab('setup-tasks', this)"><i class="fas fa-list"></i> Задачи</button>
+                <button class="tab-btn active" onclick="showTab('setup-time', this)">Время</button>
+                <button class="tab-btn" onclick="showTab('setup-tasks', this)">Задачи</button>
             </div>
             <div id="setup-time" class="tab-content active">
                 <label>Работа с <input type="time" id="work-start"> до <input type="time" id="work-end"></label>
                 <p id="time-remaining"></p>
                 <label>Перерывы каждые <input type="time" id="break-interval" value="01:00"></label>
-                <button class="secondary" onclick="applyDoctorBreaks()"><i class="fas fa-user-md"></i> Рекомендации врача</button>
-                <button class="primary" onclick="saveTimeSettings()"><i class="fas fa-save"></i> Сохранить</button>
+                <button class="secondary" onclick="applyDoctorBreaks()">Рекомендации врача</button>
+                <button class="primary" onclick="saveTimeSettings()">Сохранить</button>
             </div>
             <div id="setup-tasks" class="tab-content">
                 <input type="text" id="key-task" placeholder="Ключевая задача дня">
-                <button class="primary" onclick="addKeyTask()"><i class="fas fa-plus"></i> Добавить задачу</button>
+                <button class="primary" onclick="addKeyTask()">Добавить задачу</button>
                 <ul id="key-task-list"></ul>
             </div>
-            <button class="primary" onclick="showStage('work')"><i class="fas fa-arrow-right"></i> Начать работу</button>
+            <button class="primary" onclick="showStage('work')">Начать работу</button>
         </div>
 
         <!-- Выполнение работы -->
         <div id="work-stage" class="stage">
             <h2>Рабочая зона</h2>
             <div class="tabs">
-                <button class="tab-btn active" onclick="showTab('work-tasks', this)"><i class="fas fa-tasks"></i> Задачи</button>
-                <button class="tab-btn" onclick="showTab('work-pomodoro', this)"><i class="fas fa-stopwatch"></i> Pomodoro</button>
-                <button class="tab-btn" onclick="showTab('work-notes', this)"><i class="fas fa-sticky-note"></i> Заметки</button>
+                <button class="tab-btn active" onclick="showTab('work-tasks', this)">Задачи</button>
+                <button class="tab-btn" onclick="showTab('work-pomodoro', this)">Pomodoro</button>
+                <button class="tab-btn" onclick="showTab('work-notes', this)">Заметки</button>
             </div>
             <div id="work-tasks" class="tab-content active">
                 <input type="text" id="task" placeholder="Новая задача (Ctrl+Enter)">
@@ -663,11 +693,11 @@
                     <option value="medium">Средний</option>
                     <option value="high">Высокий</option>
                 </select>
-                <button class="primary" onclick="addTask()"><i class="fas fa-plus"></i> Добавить задачу</button>
+                <button class="primary" onclick="addTask()">Добавить задачу</button>
                 <ul id="task-list" class="sortable"></ul>
             </div>
             <div id="work-pomodoro" class="tab-content">
-                <button class="primary" onclick="startPomodoro()"><i class="fas fa-play"></i> Старт Pomodoro</button>
+                <button class="primary" onclick="startPomodoro()">Старт Pomodoro</button>
                 <p id="timer">25:00</p>
                 <div class="progress-bar">
                     <div class="progress-fill" id="pomodoro-progress"></div>
@@ -675,38 +705,38 @@
             </div>
             <div id="work-notes" class="tab-content">
                 <input type="text" id="note-search" placeholder="Поиск заметок...">
-                <button class="primary" onclick="openNoteModal('new')"><i class="fas fa-plus"></i> Новая заметка</button>
+                <button class="primary" onclick="openNoteModal('new')">Новая заметка</button>
                 <div id="notes-list"></div>
             </div>
-            <button class="secondary" onclick="showStage('break')"><i class="fas fa-coffee"></i> Перерыв</button>
-            <button class="primary" onclick="showStage('end-shift')"><i class="fas fa-check-circle"></i> Завершить смену</button>
+            <button class="secondary" onclick="showStage('break')">Перерыв</button>
+            <button class="primary" onclick="showStage('end-shift')">Завершить смену</button>
         </div>
 
         <!-- Перерывы -->
         <div id="break-stage" class="stage">
             <h2>Перерыв</h2>
             <div class="tabs">
-                <button class="tab-btn active" onclick="showTab('break-exercise', this)"><i class="fas fa-running"></i> Упражнения</button>
-                <button class="tab-btn" onclick="showTab('break-relax', this)"><i class="fas fa-spa"></i> Расслабление</button>
+                <button class="tab-btn active" onclick="showTab('break-exercise', this)">Упражнения</button>
+                <button class="tab-btn" onclick="showTab('break-relax', this)">Расслабление</button>
             </div>
             <div id="break-exercise" class="tab-content active">
-                <button class="primary" onclick="openExerciseModal('breathing')"><i class="fas fa-wind"></i> Дыхательные упражнения</button>
-                <button class="primary" onclick="openExerciseModal('eyes')"><i class="fas fa-eye"></i> Упражнения для глаз</button>
-                <button class="primary" onclick="openExerciseModal('body')"><i class="fas fa-running"></i> Упражнения для тела</button>
+                <button class="primary" onclick="openExerciseModal('breathing')">Дыхательные упражнения</button>
+                <button class="primary" onclick="openExerciseModal('eyes')">Упражнения для глаз</button>
+                <button class="primary" onclick="openExerciseModal('body')">Упражнения для тела</button>
             </div>
             <div id="break-relax" class="tab-content">
                 <p>Расслабьтесь и отдохните.</p>
             </div>
-            <button class="primary" onclick="showStage('work')"><i class="fas fa-arrow-left"></i> Вернуться к работе</button>
+            <button class="primary" onclick="showStage('work')">Вернуться к работе</button>
         </div>
 
         <!-- Завершение смены -->
         <div id="end-shift-stage" class="stage">
             <h2>Завершение смены</h2>
             <div class="tabs">
-                <button class="tab-btn active" onclick="showTab('end-results', this)"><i class="fas fa-chart-line"></i> Итоги</button>
-                <button class="tab-btn" onclick="showTab('end-ritual', this)"><i class="fas fa-pray"></i> Ритуал</button>
-                <button class="tab-btn" onclick="showTab('end-plans', this)"><i class="fas fa-calendar-alt"></i> Планы</button>
+                <button class="tab-btn active" onclick="showTab('end-results', this)">Итоги</button>
+                <button class="tab-btn" onclick="showTab('end-ritual', this)">Ритуал</button>
+                <button class="tab-btn" onclick="showTab('end-plans', this)">Планы</button>
             </div>
             <div id="end-results" class="tab-content active">
                 <div id="results"></div>
@@ -718,9 +748,9 @@
                 <div class="progress-bar">
                     <div class="progress-fill" id="stats-progress"></div>
                 </div>
-                <button class="secondary" onclick="exportResults()"><i class="fas fa-download"></i> Экспортировать</button>
+                <button class="secondary" onclick="exportResults()">Экспортировать</button>
                 <input type="file" id="import-file" accept=".txt" multiple>
-                <button class="secondary" onclick="importResults()"><i class="fas fa-upload"></i> Импортировать</button>
+                <button class="secondary" onclick="importResults()">Импортировать</button>
             </div>
             <div id="end-ritual" class="tab-content">
                 <div class="checklist">
@@ -728,13 +758,13 @@
                     <label><input type="checkbox" class="end-checklist"> Проверить почту</label>
                     <label><input type="checkbox" class="end-checklist"> Убрать материалы</label>
                 </div>
-                <button class="primary" onclick="startBreathing()"><i class="fas fa-wind"></i> Дыхательное упражнение</button>
+                <button class="primary" onclick="startBreathing()">Дыхательное упражнение</button>
             </div>
             <div id="end-plans" class="tab-content">
                 <textarea id="tomorrow-plan" placeholder="Планы на завтра..."></textarea>
-                <button class="primary" onclick="saveTomorrowPlan()"><i class="fas fa-save"></i> Сохранить</button>
+                <button class="primary" onclick="saveTomorrowPlan()">Сохранить</button>
             </div>
-            <button class="primary" onclick="showStage('family')"><i class="fas fa-home"></i> Подготовка к семье</button>
+            <button class="primary" onclick="showStage('family')">Подготовка к семье</button>
         </div>
 
         <!-- Подготовка к семье -->
@@ -744,9 +774,9 @@
                 <select id="family-activity">
                     <option value="relations">Совет для общения</option>
                 </select>
-                <button class="primary" onclick="startFamilyActivity()"><i class="fas fa-heart"></i> Начать</button>
+                <button class="primary" onclick="startFamilyActivity()">Начать</button>
                 <div id="family-tracker"></div>
-                <button class="primary" onclick="showFamilyStep('mood')"><i class="fas fa-smile"></i> Сохранить настроение</button>
+                <button class="primary" onclick="showFamilyStep('mood')">Сохранить настроение</button>
             </div>
             <div id="family-mood" class="tab-content">
                 <div class="mood-container">
@@ -757,16 +787,16 @@
                     <span class="mood-emoji" data-mood="😊">😊</span>
                 </div>
                 <textarea id="mood-tracker" placeholder="Опиши свои эмоции..."></textarea>
-                <button class="primary" onclick="saveMood()"><i class="fas fa-save"></i> Сохранить</button>
-                <button class="primary" onclick="showFamilyStep('export')"><i class="fas fa-download"></i> Экспортировать</button>
+                <button class="primary" onclick="saveMood()">Сохранить</button>
+                <button class="primary" onclick="showFamilyStep('export')">Экспортировать</button>
             </div>
             <div id="family-export" class="tab-content">
-                <button class="primary" onclick="exportFamilyData()"><i class="fas fa-download"></i> Экспортировать</button>
-                <button class="primary" onclick="showFamilyStep('complete')"><i class="fas fa-check"></i> Завершить</button>
+                <button class="primary" onclick="exportFamilyData()">Экспортировать</button>
+                <button class="primary" onclick="showFamilyStep('complete')">Завершить</button>
             </div>
             <div id="family-complete" class="tab-content">
                 <p>Чудесный день завершён!</p>
-                <button class="primary" onclick="showStage('start')"><i class="fas fa-home"></i> Завершить день</button>
+                <button class="primary" onclick="showStage('start')">Завершить день</button>
             </div>
         </div>
 
@@ -777,8 +807,8 @@
                 <textarea id="note-text" placeholder="Текст заметки"></textarea>
                 <input type="text" id="note-tags" placeholder="Теги (через запятую)">
                 <div class="tags" id="note-tags-list"></div>
-                <button class="primary" onclick="saveNote()"><i class="fas fa-save"></i> Сохранить</button>
-                <button class="secondary" onclick="closeNoteModal()"><i class="fas fa-times"></i> Закрыть</button>
+                <button class="primary" onclick="saveNote()">Сохранить</button>
+                <button class="secondary" onclick="closeNoteModal()">Закрыть</button>
             </div>
         </div>
 
@@ -791,10 +821,10 @@
                     <option value="478">Дыхание 4-7-8</option>
                     <option value="basic">Базовое дыхание</option>
                 </select>
-                <button class="primary" onclick="startBreakExercise('breathing')"><i class="fas fa-play"></i> Начать</button>
+                <button class="primary" onclick="startBreakExercise('breathing')">Начать</button>
                 <div id="breathing-tracker" class="exercise-tracker"></div>
                 <div id="breathing-timer" class="exercise-timer"></div>
-                <button class="secondary" onclick="closeExerciseModal('breathing')"><i class="fas fa-times"></i> Закрыть</button>
+                <button class="secondary" onclick="closeExerciseModal('breathing')">Закрыть</button>
             </div>
         </div>
         <div id="eyes-modal" class="modal">
@@ -803,9 +833,9 @@
                 <select id="eyes-exercise">
                     <option value="eyes">Базовое упражнение для глаз</option>
                 </select>
-                <button class="primary" onclick="startBreakExercise('eyes')"><i class="fas fa-play"></i> Начать</button>
+                <button class="primary" onclick="startBreakExercise('eyes')">Начать</button>
                 <div id="eyes-tracker" class="exercise-tracker"></div>
-                <button class="secondary" onclick="closeExerciseModal('eyes')"><i class="fas fa-times"></i> Закрыть</button>
+                <button class="secondary" onclick="closeExerciseModal('eyes')">Закрыть</button>
             </div>
         </div>
         <div id="body-modal" class="modal">
@@ -816,80 +846,85 @@
                     <option value="neck">Упражнение для шеи</option>
                     <option value="wrists">Упражнение для запястий</option>
                 </select>
-                <button class="primary" onclick="startBreakExercise('body')"><i class="fas fa-play"></i> Начать</button>
+                <button class="primary" onclick="startBreakExercise('body')">Начать</button>
                 <div id="body-tracker" class="exercise-tracker"></div>
-                <button class="secondary" onclick="closeExerciseModal('body')"><i class="fas fa-times"></i> Закрыть</button>
+                <button class="secondary" onclick="closeExerciseModal('body')">Закрыть</button>
             </div>
         </div>
 
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <script>
+        // Отображение ошибок
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            console.error(message);
+        }
+
         // Инициализация звёзд
         function initStars() {
-            const starsContainer = document.getElementById('stars');
-            starsContainer.innerHTML = '';
-            for (let i = 0; i < 200; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                if (Math.random() < 0.15) star.classList.add('glow');
-                const size = Math.random() * 2 + 0.5;
-                star.style.width = `${size}px`;
-                star.style.height = `${size}px`;
-                star.style.left = `${Math.random() * 100}%`;
-                star.style.top = `${Math.random() * 100}%`;
-                star.style.animationDelay = `${Math.random() * 5}s`;
-                star.style.opacity = Math.random() * 0.6 + 0.4;
-                star.addEventListener('click', () => {
-                    const burst = document.createElement('div');
-                    burst.style.position = 'absolute';
-                    burst.style.left = star.style.left;
-                    burst.style.top = star.style.top;
-                    burst.style.width = '20px';
-                    burst.style.height = '20px';
-                    burst.style.background = 'radial-gradient(circle, #40C4FF, transparent)';
-                    burst.style.animation = 'burst 0.5s ease-out';
-                    starsContainer.appendChild(burst);
-                    star.style.transform = 'scale(0)';
-                    star.style.opacity = '0';
-                    setTimeout(() => {
-                        burst.remove();
-                        star.remove();
-                    }, 500);
-                });
-                starsContainer.appendChild(star);
-            }
-            for (let i = 0; i < 6; i++) {
-                const fallingStar = document.createElement('div');
-                fallingStar.className = 'falling-star';
-                fallingStar.style.left = `${Math.random() * 100}%`;
-                fallingStar.style.animationDelay = `${Math.random() * 10}s`;
-                starsContainer.appendChild(fallingStar);
-            }
-            for (let i = 0; i < 3; i++) {
-                const flare = document.createElement('div');
-                flare.className 'flare';
-                flare.style.left = `${Math.random() * 100}%`;
-                flare.style.top = `${Math.random() * 100}%`;
-                flare.style.animationDelay = `${Math.random() * 15}s`;
-                starsContainer.appendChild(flare);
+            try {
+                const starsContainer = document.getElementById('stars');
+                if (!starsContainer) {
+                    showError('Контейнер звёзд не найден.');
+                    return;
+                }
+                starsContainer.innerHTML = '';
+                for (let i = 0; i < 100; i++) { // Уменьшено до 100 для оптимизации
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    if (Math.random() < 0.2) star.classList.add('glow');
+                    const size = Math.random() * 2 + 0.5;
+                    star.style.width = `${size}px`;
+                    star.style.height = `${size}px`;
+                    star.style.left = `${Math.random() * 100}%`;
+                    star.style.top = `${Math.random() * 100}%`;
+                    star.style.animationDelay = `${Math.random() * 5}s`;
+                    star.style.opacity = Math.random() * 0.6 + 0.4;
+                    star.addEventListener('click', () => {
+                        const burst = document.createElement('div');
+                        burst.style.position = 'absolute';
+                        burst.style.left = star.style.left;
+                        burst.style.top = star.style.top;
+                        burst.style.width = '20px';
+                        burst.style.height = '20px';
+                        burst.style.background = 'radial-gradient(circle, #40C4FF, transparent)';
+                        burst.style.animation = 'burst 0.5s ease-out';
+                        starsContainer.appendChild(burst);
+                        star.style.transform = 'scale(0)';
+                        star.style.opacity = '0';
+                        setTimeout(() => {
+                            burst.remove();
+                            star.remove();
+                        }, 500);
+                    });
+                    starsContainer.appendChild(star);
+                }
+                for (let i = 0; i < 4; i++) {
+                    const fallingStar = document.createElement('div');
+                    fallingStar.className = 'falling-star';
+                    fallingStar.style.left = `${Math.random() * 100}%`;
+                    fallingStar.style.animationDelay = `${Math.random() * 10}s`;
+                    starsContainer.appendChild(fallingStar);
+                }
+                console.log('Звёздный фон инициализирован');
+            } catch (error) {
+                showError(`Ошибка инициализации звёзд: ${error.message}`);
             }
         }
 
-        // Анимация взрыва звезды
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes burst {
-                0% { transform: scale(0); opacity: 1; }
-                100% { transform: scale(2); opacity: 0; }
-            }
-        `;
-        document.head.appendChild(style);
-
         // Прогресс
+        let tasks = [];
+        let completedTasks = 0;
         function updateProgress() {
-            const progressFill = document.getElementById('progress-fill');
-            const progress = completedTasks / tasks.length || 0;
-            progressFill.style.width = `${progress * 100}%`;
+            try {
+                const progressFill = document.getElementById('progress-fill');
+                if (!progressFill) throw new Error('Прогресс-бар не найден');
+                const progress = tasks.length ? completedTasks / tasks.length : 0;
+                progressFill.style.width = `${progress * 100}%`;
+            } catch (error) {
+                showError(`Ошибка обновления прогресса: ${error.message}`);
+            }
         }
 
         // Переключение этапов
@@ -897,175 +932,244 @@
             try {
                 document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
                 const stageElement = document.getElementById(`${stage}-stage`);
-                if (!stageElement) throw new Error(`Stage ${stage} not found`);
+                if (!stageElement) throw new Error(`Этап ${stage} не найден`);
                 stageElement.classList.add('active');
                 document.querySelectorAll('.stage-nav span').forEach(s => s.classList.remove('active'));
                 document.getElementById(`nav-${stage}`).classList.add('active');
                 if (stage === 'family') showFamilyStep('prepare');
                 updateProgress();
-                console.log(`Stage switched to: ${stage}`);
+                console.log(`Этап переключён на: ${stage}`);
             } catch (error) {
-                console.error(error);
-                alert('Ошибка при переключении этапа.');
+                showError(`Ошибка переключения этапа: ${error.message}`);
             }
         }
 
         // Переключение вкладок
         function showTab(tab, btn) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.getElementById(tab).classList.add('active');
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+            try {
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                const tabElement = document.getElementById(tab);
+                if (!tabElement) throw new Error(`Вкладка ${tab} не найдена`);
+                tabElement.classList.add('active');
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            } catch (error) {
+                showError(`Ошибка переключения вкладки: ${error.message}`);
+            }
         }
 
         // Переключение шагов семьи
         function showFamilyStep(step) {
-            document.querySelectorAll('#family-stage .tab-content').forEach(t => t.classList.remove('active'));
-            document.getElementById(`family-${step}`).classList.add('active');
+            try {
+                document.querySelectorAll('#family-stage .tab-content').forEach(t => t.classList.remove('active'));
+                const stepElement = document.getElementById(`family-${step}`);
+                if (!stepElement) throw new Error(`Шаг семьи ${step} не найден`);
+                stepElement.classList.add('active');
+            } catch (error) {
+                showError(`Ошибка переключения шага семьи: ${error.message}`);
+            }
         }
 
         // Управление временем
         let workStart, workEnd, breakInterval;
         function saveTimeSettings() {
-            workStart = document.getElementById('work-start').value;
-            workEnd = document.getElementById('work-end').value;
-            breakInterval = document.getElementById('break-interval').value;
-            if (workStart && workEnd && breakInterval) {
-                localStorage.setItem('work-time', JSON.stringify({ start: workStart, end: workEnd, break: breakInterval }));
-                updateTimeRemaining();
-                alert('Настройки времени сохранены!');
-            } else {
-                alert('Заполните все поля времени.');
+            try {
+                workStart = document.getElementById('work-start').value;
+                workEnd = document.getElementById('work-end').value;
+                breakInterval = document.getElementById('break-interval').value;
+                if (workStart && workEnd && breakInterval) {
+                    localStorage.setItem('work-time', JSON.stringify({ start: workStart, end: workEnd, break: breakInterval }));
+                    updateTimeRemaining();
+                    alert('Настройки времени сохранены!');
+                } else {
+                    alert('Заполните все поля времени.');
+                }
+            } catch (error) {
+                showError(`Ошибка сохранения времени: ${error.message}`);
             }
         }
 
         function updateTimeRemaining() {
-            if (!workStart || !workEnd) return;
-            const now = new Date();
-            const [startH, startM] = workStart.split(':');
-            const [endH, endM] = workEnd.split(':');
-            const start = new Date();
-            start.setHours(startH, startM, 0, 0);
-            const end = new Date();
-            end.setHours(endH, endM, 0, 0);
-            if (end < start) end.setDate(end.getDate() + 1);
-            const remaining = end - now;
-            if (remaining > 0) {
-                const hours = Math.floor(remaining / 3600000);
-                const minutes = Math.floor((remaining % 3600000) / 60000);
-                document.getElementById('time-remaining').textContent = `Осталось: ${hours}ч ${minutes}м`;
-            } else {
-                document.getElementById('time-remaining').textContent = 'День завершён!';
+            try {
+                if (!workStart || !workEnd) return;
+                const now = new Date();
+                const [startH, startM] = workStart.split(':');
+                const [endH, endM] = workEnd.split(':');
+                const start = new Date();
+                start.setHours(startH, startM, 0, 0);
+                const end = new Date();
+                end.setHours(endH, endM, 0, 0);
+                if (end < start) end.setDate(end.getDate() + 1);
+                const remaining = end - now;
+                const timeRemaining = document.getElementById('time-remaining');
+                if (!timeRemaining) throw new Error('Элемент time-remaining не найден');
+                if (remaining > 0) {
+                    const hours = Math.floor(remaining / 3600000);
+                    const minutes = Math.floor((remaining % 3600000) / 60000);
+                    timeRemaining.textContent = `Осталось: ${hours}ч ${minutes}м`;
+                } else {
+                    timeRemaining.textContent = 'День завершён!';
+                }
+            } catch (error) {
+                showError(`Ошибка обновления времени: ${error.message}`);
             }
         }
 
         function applyDoctorBreaks() {
-            document.getElementById('break-interval').value = '00:50';
-            alert('Перерывы каждые 50 минут (рекомендация врача).');
+            try {
+                document.getElementById('break-interval').value = '00:50';
+                alert('Перерывы каждые 50 минут (рекомендация врача).');
+            } catch (error) {
+                showError(`Ошибка применения рекомендаций врача: ${error.message}`);
+            }
         }
 
-        setInterval(updateTimeRemaining, 60000);
+        setInterval(() => {
+            try {
+                updateTimeRemaining();
+            } catch (error) {
+                console.error(`Ошибка в таймере: ${error.message}`);
+            }
+        }, 60000);
 
         // Ключевые задачи
         let keyTasks = JSON.parse(localStorage.getItem('key-tasks')) || [];
         function addKeyTask() {
-            const taskInput = document.getElementById('key-task');
-            const taskText = taskInput.value.trim();
-            if (taskText) {
-                keyTasks.push({ text: taskText, completed: false });
-                taskInput.value = '';
-                saveKeyTasks();
-                renderKeyTasks();
+            try {
+                const taskInput = document.getElementById('key-task');
+                const taskText = taskInput.value.trim();
+                if (taskText) {
+                    keyTasks.push({ text: taskText, completed: false });
+                    taskInput.value = '';
+                    saveKeyTasks();
+                    renderKeyTasks();
+                }
+            } catch (error) {
+                showError(`Ошибка добавления ключевой задачи: ${error.message}`);
             }
         }
 
         function renderKeyTasks() {
-            const taskList = document.getElementById('key-task-list');
-            taskList.innerHTML = '';
-            keyTasks.forEach((task, index) => {
-                const li = document.createElement('li');
-                li.className = 'medium';
-                li.innerHTML = `
-                    <span>${task.text}</span>
-                    <button class="secondary" data-text="Удалить" onclick="deleteKeyTask(${index})"><i class="fas fa-trash"></i></button>
-                `;
-                taskList.appendChild(li);
-            });
+            try {
+                const taskList = document.getElementById('key-task-list');
+                if (!taskList) throw new Error('Список ключевых задач не найден');
+                taskList.innerHTML = '';
+                keyTasks.forEach((task, index) => {
+                    const li = document.createElement('li');
+                    li.className = 'medium';
+                    li.innerHTML = `
+                        <span>${task.text}</span>
+                        <button class="secondary" data-text="Удалить" onclick="deleteKeyTask(${index})">Удалить</button>
+                    `;
+                    taskList.appendChild(li);
+                });
+            } catch (error) {
+                showError(`Ошибка рендеринга ключевых задач: ${error.message}`);
+            }
         }
 
         function deleteKeyTask(index) {
-            keyTasks.splice(index, 1);
-            saveKeyTasks();
-            renderKeyTasks();
+            try {
+                keyTasks.splice(index, 1);
+                saveKeyTasks();
+                renderKeyTasks();
+            } catch (error) {
+                showError(`Ошибка удаления ключевой задачи: ${error.message}`);
+            }
         }
 
         function saveKeyTasks() {
-            localStorage.setItem('key-tasks', JSON.stringify(keyTasks));
+            try {
+                localStorage.setItem('key-tasks', JSON.stringify(keyTasks));
+            } catch (error) {
+                showError(`Ошибка сохранения ключевых задач: ${error.message}`);
+            }
         }
 
         // Задачи
-        let tasks = JSON.parse(localStorage.getItem('work-tasks')) || [];
-        let completedTasks = tasks.filter(t => t.completed).length;
+        tasks = JSON.parse(localStorage.getItem('work-tasks')) || [];
+        completedTasks = tasks.filter(t => t.completed).length;
 
         function addTask() {
-            const taskInput = document.getElementById('task');
-            const priority = document.getElementById('priority').value;
-            const taskText = taskInput.value.trim();
-            if (taskText) {
-                tasks.push({ text: taskText, priority: priority, completed: false, date: new Date().toISOString().split('T')[0] });
-                taskInput.value = '';
-                saveTasks();
-                renderTasks();
+            try {
+                const taskInput = document.getElementById('task');
+                const priority = document.getElementById('priority').value;
+                const taskText = taskInput.value.trim();
+                if (taskText) {
+                    tasks.push({ text: taskText, priority: priority, completed: false, date: new Date().toISOString().split('T')[0] });
+                    taskInput.value = '';
+                    saveTasks();
+                    renderTasks();
+                }
+            } catch (error) {
+                showError(`Ошибка добавления задачи: ${error.message}`);
             }
         }
 
         function renderTasks() {
-            const taskList = document.getElementById('task-list');
-            taskList.innerHTML = '';
-            tasks.forEach((task, index) => {
-                const li = document.createElement('li');
-                li.className = task.priority;
-                li.innerHTML = `
-                    <span>${task.text}</span>
-                    <div>
-                        <button class="secondary" data-text="${task.completed ? 'Отменить' : 'Завершить'}" onclick="toggleTask(${index})"><i class="fas fa-${task.completed ? 'undo' : 'check'}"></i></button>
-                        <button class="secondary" data-text="Удалить" onclick="deleteTask(${index})"><i class="fas fa-trash"></i></button>
-                    </div>
-                `;
-                li.draggable = true;
-                li.addEventListener('dragstart', (e) => e.dataTransfer.setData('index', index));
-                li.addEventListener('dragover', (e) => e.preventDefault());
-                li.addEventListener('drop', (e) => {
-                    const fromIndex = e.dataTransfer.getData('index');
-                    const toIndex = index;
-                    [tasks[fromIndex], tasks[toIndex]] = [tasks[toIndex], tasks[fromIndex]];
-                    saveTasks();
-                    renderTasks();
+            try {
+                const taskList = document.getElementById('task-list');
+                if (!taskList) throw new Error('Список задач не найден');
+                taskList.innerHTML = '';
+                tasks.forEach((task, index) => {
+                    const li = document.createElement('li');
+                    li.className = task.priority;
+                    li.innerHTML = `
+                        <span>${task.text}</span>
+                        <div>
+                            <button class="secondary" data-text="${task.completed ? 'Отменить' : 'Завершить'}" onclick="toggleTask(${index})">${task.completed ? 'Отменить' : 'Завершить'}</button>
+                            <button class="secondary" data-text="Удалить" onclick="deleteTask(${index})">Удалить</button>
+                        </div>
+                    `;
+                    li.draggable = true;
+                    li.addEventListener('dragstart', (e) => e.dataTransfer.setData('index', index));
+                    li.addEventListener('dragover', (e) => e.preventDefault());
+                    li.addEventListener('drop', (e) => {
+                        const fromIndex = e.dataTransfer.getData('index');
+                        const toIndex = index;
+                        [tasks[fromIndex], tasks[toIndex]] = [tasks[toIndex], tasks[fromIndex]];
+                        saveTasks();
+                        renderTasks();
+                    });
+                    taskList.appendChild(li);
                 });
-                taskList.appendChild(li);
-            });
+            } catch (error) {
+                showError(`Ошибка рендеринга задач: ${error.message}`);
+            }
         }
 
         function toggleTask(index) {
-            tasks[index].completed = !tasks[index].completed;
-            completedTasks = tasks.filter(t => t.completed).length;
-            saveTasks();
-            renderTasks();
-            updateProgress();
-            updateResults();
+            try {
+                tasks[index].completed = !tasks[index].completed;
+                completedTasks = tasks.filter(t => t.completed).length;
+                saveTasks();
+                renderTasks();
+                updateProgress();
+                updateResults();
+            } catch (error) {
+                showError(`Ошибка переключения задачи: ${error.message}`);
+            }
         }
 
         function deleteTask(index) {
-            if (tasks[index].completed) completedTasks--;
-            tasks.splice(index, 1);
-            saveTasks();
-            renderTasks();
-            updateProgress();
-            updateResults();
+            try {
+                if (tasks[index].completed) completedTasks--;
+                tasks.splice(index, 1);
+                saveTasks();
+                renderTasks();
+                updateProgress();
+                updateResults();
+            } catch (error) {
+                showError(`Ошибка удаления задачи: ${error.message}`);
+            }
         }
 
         function saveTasks() {
-            localStorage.setItem('work-tasks', JSON.stringify(tasks));
+            try {
+                localStorage.setItem('work-tasks', JSON.stringify(tasks));
+            } catch (error) {
+                showError(`Ошибка сохранения задач: ${error.message}`);
+            }
         }
 
         // Pomodoro
@@ -1074,39 +1178,53 @@
         let pomodoroInterval;
 
         function startPomodoro() {
-            if (!isPomodoroRunning) {
-                const [hours, minutes] = (breakInterval || '01:00').split(':');
-                pomodoroTime = (parseInt(hours) * 60 + parseInt(minutes)) * 60;
-                isPomodoroRunning = true;
-                pomodoroInterval = setInterval(() => {
-                    pomodoroTime--;
-                    updateTimer();
-                    updatePomodoroProgress();
-                    if (pomodoroTime <= 0) {
-                        clearInterval(pomodoroInterval);
-                        isPomodoroRunning = false;
-                        pomodoroTime = (parseInt(hours) * 60 + parseInt(minutes)) * 60;
+            try {
+                if (!isPomodoroRunning) {
+                    const [hours, minutes] = (breakInterval || '01:00').split(':');
+                    pomodoroTime = (parseInt(hours) * 60 + parseInt(minutes)) * 60;
+                    isPomodoroRunning = true;
+                    pomodoroInterval = setInterval(() => {
+                        pomodoroTime--;
                         updateTimer();
-                        alert('Pomodoro завершён! Время для перерыва.');
-                        showStage('break');
-                    }
-                }, 1000);
+                        updatePomodoroProgress();
+                        if (pomodoroTime <= 0) {
+                            clearInterval(pomodoroInterval);
+                            isPomodoroRunning = false;
+                            pomodoroTime = (parseInt(hours) * 60 + parseInt(minutes)) * 60;
+                            updateTimer();
+                            alert('Pomodoro завершён! Время для перерыва.');
+                            showStage('break');
+                        }
+                    }, 1000);
+                }
+            } catch (error) {
+                showError(`Ошибка запуска Pomodoro: ${error.message}`);
             }
         }
 
         function updateTimer() {
-            const timer = document.getElementById('timer');
-            const minutes = Math.floor(pomodoroTime / 60);
-            const seconds = pomodoroTime % 60;
-            timer.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            try {
+                const timer = document.getElementById('timer');
+                if (!timer) throw new Error('Таймер Pomodoro не найден');
+                const minutes = Math.floor(pomodoroTime / 60);
+                const seconds = pomodoroTime % 60;
+                timer.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            } catch (error) {
+                showError(`Ошибка обновления таймера: ${error.message}`);
+            }
         }
 
         function updatePomodoroProgress() {
-            const progressFill = document.getElementById('pomodoro-progress');
-            const [hours, minutes] = (breakInterval || '01:00').split(':');
-            const total = (parseInt(hours) * 60 + parseInt(minutes)) * 60;
-            const progress = (total - pomodoroTime) / total;
-            progressFill.style.width = `${progress * 100}%`;
+            try {
+                const progressFill = document.getElementById('pomodoro-progress');
+                if (!progressFill) throw new Error('Прогресс Pomodoro не найден');
+                const [hours, minutes] = (breakInterval || '01:00').split(':');
+                const total = (parseInt(hours) * 60 + parseInt(minutes)) * 60;
+                const progress = (total - pomodoroTime) / total;
+                progressFill.style.width = `${progress * 100}%`;
+            } catch (error) {
+                showError(`Ошибка обновления прогресса Pomodoro: ${error.message}`);
+            }
         }
 
         // Заметки
@@ -1114,182 +1232,222 @@
         let currentNoteIndex = null;
 
         function openNoteModal(type, index = null) {
-            const modal = document.getElementById('note-modal');
-            const text = document.getElementById('note-text');
-            const tags = document.getElementById('note-tags');
-            currentNoteIndex = type === 'new' ? null : index;
-            text.value = type === 'new' ? '' : notes[index].text;
-            tags.value = type === 'new' ? '' : notes[index].tags.join(', ');
-            modal.style.display = 'flex';
-            setTimeout(() => modal.classList.add('active'), 10);
-            renderNoteTags(tags.value);
-            text.focus();
+            try {
+                const modal = document.getElementById('note-modal');
+                const text = document.getElementById('note-text');
+                const tags = document.getElementById('note-tags');
+                currentNoteIndex = type === 'new' ? null : index;
+                text.value = type === 'new' ? '' : notes[index].text;
+                tags.value = type === 'new' ? '' : notes[index].tags.join(', ');
+                modal.style.display = 'flex';
+                setTimeout(() => modal.classList.add('active'), 10);
+                renderNoteTags(tags.value);
+                text.focus();
+            } catch (error) {
+                showError(`Ошибка открытия модального окна заметок: ${error.message}`);
+            }
         }
 
         function renderNoteTags(tagsString) {
-            const tagsList = document.getElementById('note-tags-list');
-            tagsList.innerHTML = '';
-            if (tagsString) {
-                tagsString.split(',').map(tag => tag.trim()).filter(tag => tag).forEach(tag => {
-                    const span = document.createElement('span');
-                    span.className = 'tag';
-                    span.textContent = tag;
-                    tagsList.appendChild(span);
-                });
+            try {
+                const tagsList = document.getElementById('note-tags-list');
+                if (!tagsList) throw new Error('Список тегов заметок не найден');
+                tagsList.innerHTML = '';
+                if (tagsString) {
+                    tagsString.split(',').map(tag => tag.trim()).filter(tag => tag).forEach(tag => {
+                        const span = document.createElement('span');
+                        span.className = 'tag';
+                        span.textContent = tag;
+                        tagsList.appendChild(span);
+                    });
+                }
+            } catch (error) {
+                showError(`Ошибка рендеринга тегов заметок: ${error.message}`);
             }
         }
 
         function saveNote() {
-            const text = document.getElementById('note-text').value.trim();
-            const tags = document.getElementById('note-tags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
-            if (!text) {
-                alert('Введите текст заметки.');
-                return;
+            try {
+                const text = document.getElementById('note-text').value.trim();
+                const tags = document.getElementById('note-tags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
+                if (!text) {
+                    alert('Введите текст заметки.');
+                    return;
+                }
+                const note = { text, tags, date: new Date().toISOString().split('T')[0] };
+                if (currentNoteIndex === null) {
+                    notes.push(note);
+                } else {
+                    notes[currentNoteIndex] = note;
+                }
+                localStorage.setItem('work-notes', JSON.stringify(notes));
+                renderNotes();
+                closeNoteModal();
+            } catch (error) {
+                showError(`Ошибка сохранения заметки: ${error.message}`);
             }
-            const note = { text, tags, date: new Date().toISOString().split('T')[0] };
-            if (currentNoteIndex === null) {
-                notes.push(note);
-            } else {
-                notes[currentNoteIndex] = note;
-            }
-            localStorage.setItem('work-notes', JSON.stringify(notes));
-            renderNotes();
-            closeNoteModal();
         }
 
         function renderNotes() {
-            const notesList = document.getElementById('notes-list');
-            const search = document.getElementById('note-search').value.toLowerCase();
-            notesList.innerHTML = '';
-            notes.filter(note => note.text.toLowerCase().includes(search) || note.tags.some(tag => tag.toLowerCase().includes(search)))
-                .forEach((note, index) => {
-                    const card = document.createElement('div');
-                    card.className = 'note-card';
-                    card.innerHTML = `
-                        <p>${note.text}</p>
-                        <div class="tags">${note.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>
-                        <small>${note.date}</small>
-                        <div class="actions">
-                            <button class="secondary" data-text="Редактировать" onclick="openNoteModal('edit', ${index})"><i class="fas fa-edit"></i></button>
-                            <button class="secondary" data-text="Удалить" onclick="deleteNote(${index})"><i class="fas fa-trash"></i></button>
-                        </div>
-                    `;
-                    notesList.appendChild(card);
-                });
+            try {
+                const notesList = document.getElementById('notes-list');
+                if (!notesList) throw new Error('Список заметок не найден');
+                const search = document.getElementById('note-search').value.toLowerCase();
+                notesList.innerHTML = '';
+                notes.filter(note => note.text.toLowerCase().includes(search) || note.tags.some(tag => tag.toLowerCase().includes(search)))
+                    .forEach((note, index) => {
+                        const card = document.createElement('div');
+                        card.className = 'note-card';
+                        card.innerHTML = `
+                            <p>${note.text}</p>
+                            <div class="tags">${note.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>
+                            <small>${note.date}</small>
+                            <div class="actions">
+                                <button class="secondary" data-text="Редактировать" onclick="openNoteModal('edit', ${index})">Редактировать</button>
+                                <button class="secondary" data-text="Удалить" onclick="deleteNote(${index})">Удалить</button>
+                            </div>
+                        `;
+                        notesList.appendChild(card);
+                    });
+            } catch (error) {
+                showError(`Ошибка рендеринга заметок: ${error.message}`);
+            }
         }
 
         function deleteNote(index) {
-            notes.splice(index, 1);
-            localStorage.setItem('work-notes', JSON.stringify(notes));
-            renderNotes();
+            try {
+                notes.splice(index, 1);
+                localStorage.setItem('work-notes', JSON.stringify(notes));
+                renderNotes();
+            } catch (error) {
+                showError(`Ошибка удаления заметки: ${error.message}`);
+            }
         }
 
         function closeNoteModal() {
-            const modal = document.getElementById('note-modal');
-            modal.classList.remove('active');
-            setTimeout(() => modal.style.display = 'none', 300);
+            try {
+                const modal = document.getElementById('note-modal');
+                modal.classList.remove('active');
+                setTimeout(() => modal.style.display = 'none', 300);
+            } catch (error) {
+                showError(`Ошибка закрытия модального окна заметок: ${error.message}`);
+            }
         }
 
         // Упражнения
         function openExerciseModal(category) {
-            const modal = document.getElementById(`${category}-modal`);
-            modal.style.display = 'flex';
-            setTimeout(() => modal.classList.add('active'), 10);
-            document.getElementById(`${category}-tracker`).innerHTML = '';
-            if (category === 'breathing') document.getElementById('breathing-timer').innerHTML = '';
+            try {
+                const modal = document.getElementById(`${category}-modal`);
+                if (!modal) throw new Error(`Модальное окно ${category} не найдено`);
+                modal.style.display = 'flex';
+                setTimeout(() => modal.classList.add('active'), 10);
+                document.getElementById(`${category}-tracker`).innerHTML = '';
+                if (category === 'breathing') document.getElementById('breathing-timer').innerHTML = '';
+            } catch (error) {
+                showError(`Ошибка открытия модального окна упражнений: ${error.message}`);
+            }
         }
 
         function closeExerciseModal(category) {
-            const modal = document.getElementById(`${category}-modal`);
-            modal.classList.remove('active');
-            setTimeout(() => modal.style.display = 'none', 300);
+            try {
+                const modal = document.getElementById(`${category}-modal`);
+                if (!modal) throw new Error(`Модальное окно ${category} не найдено`);
+                modal.classList.remove('active');
+                setTimeout(() => modal.style.display = 'none', 300);
+            } catch (error) {
+                showError(`Ошибка закрытия модального окна упражнений: ${error.message}`);
+            }
         }
 
         function startBreakExercise(category) {
-            const exercise = document.getElementById(`${category}-exercise`).value;
-            const tracker = document.getElementById(`${category}-tracker`);
-            const timer = category === 'breathing' ? document.getElementById('breathing-timer') : null;
-            tracker.innerHTML = '';
-            if (timer) timer.innerHTML = '';
+            try {
+                const exercise = document.getElementById(`${category}-exercise`).value;
+                const tracker = document.getElementById(`${category}-tracker`);
+                const timer = category === 'breathing' ? document.getElementById('breathing-timer') : null;
+                tracker.innerHTML = '';
+                if (timer) timer.innerHTML = '';
 
-            if (category === 'breathing') {
-                tracker.innerHTML = 'Сядьте прямо, расслабьтесь.';
-                let phase = 0;
-                let timeLeft = 0;
-                let phases = [];
-                let phaseDurations = [];
-                let maxPhases = 0;
+                if (category === 'breathing') {
+                    tracker.innerHTML = 'Сядьте прямо, расслабьтесь.';
+                    let phase = 0;
+                    let timeLeft = 0;
+                    let phases = [];
+                    let phaseDurations = [];
+                    let maxPhases = 0;
 
-                if (exercise === 'box') {
-                    phases = ['Вдох (4 сек)...', 'Задержка (4 сек)...', 'Выдох (4 сек)...', 'Задержка (4 сек)...'];
-                    phaseDurations = [4, 4, 4, 4];
-                    maxPhases = 24;
-                    timeLeft = 4;
-                } else if (exercise === '478') {
-                    phases = ['Вдох (4 сек)...', 'Задержка (7 сек)...', 'Выдох (8 сек)...'];
-                    phaseDurations = [4, 7, 8];
-                    maxPhases = 12;
-                    timeLeft = 4;
-                } else if (exercise === 'basic') {
-                    phases = ['Вдох (4 сек)...', 'Задержка (4 сек)...', 'Выдох (4 сек)...', 'Задержка (4 сек)...'];
-                    phaseDurations = [4, 4, 4, 4];
-                    maxPhases = 16;
-                    timeLeft = 4;
-                }
-
-                timer.innerHTML = `Осталось: ${timeLeft} сек`;
-                const interval = setInterval(() => {
-                    if (timeLeft <= 0) {
-                        phase++;
-                        if (phase >= maxPhases) {
-                            clearInterval(interval);
-                            tracker.innerHTML = 'Дыши легко!';
-                            timer.innerHTML = '';
-                            return;
-                        }
-                        timeLeft = phaseDurations[phase % phaseDurations.length];
-                        tracker.innerHTML = phases[phase % phases.length];
-                        timer.innerHTML = `Осталось: ${timeLeft} сек`;
+                    if (exercise === 'box') {
+                        phases = ['Вдох (4 сек)...', 'Задержка (4 сек)...', 'Выдох (4 сек)...', 'Задержка (4 сек)...'];
+                        phaseDurations = [4, 4, 4, 4];
+                        maxPhases = 24;
+                        timeLeft = 4;
+                    } else if (exercise === '478') {
+                        phases = ['Вдох (4 сек)...', 'Задержка (7 сек)...', 'Выдох (8 сек)...'];
+                        phaseDurations = [4, 7, 8];
+                        maxPhases = 12;
+                        timeLeft = 4;
+                    } else if (exercise === 'basic') {
+                        phases = ['Вдох (4 сек)...', 'Задержка (4 сек)...', 'Выдох (4 сек)...', 'Задержка (4 сек)...'];
+                        phaseDurations = [4, 4, 4, 4];
+                        maxPhases = 16;
+                        timeLeft = 4;
                     }
-                    timeLeft--;
+
                     timer.innerHTML = `Осталось: ${timeLeft} сек`;
-                }, 1000);
+                    const interval = setInterval(() => {
+                        if (timeLeft <= 0) {
+                            phase++;
+                            if (phase >= maxPhases) {
+                                clearInterval(interval);
+                                tracker.innerHTML = 'Дыши легко!';
+                                timer.innerHTML = '';
+                                return;
+                            }
+                            timeLeft = phaseDurations[phase % phaseDurations.length];
+                            tracker.innerHTML = phases[phase % phases.length];
+                            timer.innerHTML = `Осталось: ${timeLeft} сек`;
+                        }
+                        timeLeft--;
+                        timer.innerHTML = `Осталось: ${timeLeft} сек`;
+                    }, 1000);
 
-            } else if (category === 'eyes' && exercise === 'eyes') {
-                tracker.innerHTML = `
-                    Посмотри влево (2 сек), вправо (2 сек), вверх (2 сек), вниз (2 сек).<br>
-                    Повтори 5 раз.
-                `;
-                setTimeout(() => {
-                    tracker.innerHTML = 'Глаза отдохнули!';
-                }, 40000);
+                } else if (category === 'eyes' && exercise === 'eyes') {
+                    tracker.innerHTML = `
+                        Посмотри влево (2 сек), вправо (2 сек), вверх (2 сек), вниз (2 сек).<br>
+                        Повтори 5 раз.
+                    `;
+                    setTimeout(() => {
+                        tracker.innerHTML = 'Глаза отдохнули!';
+                    }, 40000);
 
-            } else if (category === 'body') {
-                if (exercise === 'body') {
-                    tracker.innerHTML = `
-                        Потяни руки вверх (3 сек), затем в стороны (3 сек).<br>
-                        Повтори 3 подхода.
-                    `;
-                    setTimeout(() => {
-                        tracker.innerHTML = 'Тело размято!';
-                    }, 18000);
-                } else if (exercise === 'neck') {
-                    tracker.innerHTML = `
-                        Поверни голову влево (2 сек), вправо (2 сек), наклони к плечам (2 сек).<br>
-                        Повтори 4 раза.
-                    `;
-                    setTimeout(() => {
-                        tracker.innerHTML = 'Шея расслаблена!';
-                    }, 24000);
-                } else if (exercise === 'wrists') {
-                    tracker.innerHTML = `
-                        Вращай запястья по часовой (5 сек), против (5 сек).<br>
-                        Повтори 3 раза.
-                    `;
-                    setTimeout(() => {
-                        tracker.innerHTML = 'Запястья готовы!';
-                    }, 30000);
+                } else if (category === 'body') {
+                    if (exercise === 'body') {
+                        tracker.innerHTML = `
+                            Потяни руки вверх (3 сек), затем в стороны (3 сек).<br>
+                            Повтори 3 подхода.
+                        `;
+                        setTimeout(() => {
+                            tracker.innerHTML = 'Тело размято!';
+                        }, 18000);
+                    } else if (exercise === 'neck') {
+                        tracker.innerHTML = `
+                            Поверни голову влево (2 сек), вправо (2 сек), наклони к плечам (2 сек).<br>
+                            Повтори 4 раза.
+                        `;
+                        setTimeout(() => {
+                            tracker.innerHTML = 'Шея расслаблена!';
+                        }, 24000);
+                    } else if (exercise === 'wrists') {
+                        tracker.innerHTML = `
+                            Вращай запястья по часовой (5 сек), против (5 сек).<br>
+                            Повтори 3 раза.
+                        `;
+                        setTimeout(() => {
+                            tracker.innerHTML = 'Запястья готовы!';
+                        }, 30000);
+                    }
                 }
+            } catch (error) {
+                showError(`Ошибка запуска упражнения: ${error.message}`);
             }
         }
 
@@ -1304,208 +1462,278 @@
         ];
 
         function startFamilyActivity() {
-            const activity = document.getElementById('family-activity').value;
-            const tracker = document.getElementById('family-tracker');
-            if (activity === 'relations') {
-                tracker.innerHTML = relationTips[Math.floor(Math.random() * relationTips.length)];
+            try {
+                const activity = document.getElementById('family-activity').value;
+                const tracker = document.getElementById('family-tracker');
+                if (!tracker) throw new Error('Трекер семейных активностей не найден');
+                if (activity === 'relations') {
+                    tracker.innerHTML = relationTips[Math.floor(Math.random() * relationTips.length)];
+                }
+            } catch (error) {
+                showError(`Ошибка запуска семейной активности: ${error.message}`);
             }
         }
 
         // Планы на завтра
         function saveTomorrowPlan() {
-            const plan = document.getElementById('tomorrow-plan').value;
-            localStorage.setItem('tomorrow-plan', plan);
-            alert('План сохранён!');
+            try {
+                const plan = document.getElementById('tomorrow-plan').value;
+                localStorage.setItem('tomorrow-plan', plan);
+                alert('План сохранён!');
+            } catch (error) {
+                showError(`Ошибка сохранения плана: ${error.message}`);
+            }
         }
 
         // Дневник настроения
         let selectedMood = null;
         function saveMood() {
-            const mood = document.getElementById('mood-tracker').value;
-            if (selectedMood || mood) {
-                const entry = {
-                    emoji: selectedMood,
-                    text: mood,
-                    date: new Date().toISOString().split('T')[0]
-                };
-                let stats = JSON.parse(localStorage.getItem('family-stats')) || [];
-                stats.push(entry);
-                localStorage.setItem('family-stats', JSON.stringify(stats));
-                alert('Настроение сохранено!');
-                showFamilyStep('export');
-            } else {
-                alert('Выберите эмодзи или напишите настроение.');
+            try {
+                const mood = document.getElementById('mood-tracker').value;
+                if (selectedMood || mood) {
+                    const entry = {
+                        emoji: selectedMood,
+                        text: mood,
+                        date: new Date().toISOString().split('T')[0]
+                    };
+                    let stats = JSON.parse(localStorage.getItem('family-stats')) || [];
+                    stats.push(entry);
+                    localStorage.setItem('family-stats', JSON.stringify(stats));
+                    alert('Настроение сохранено!');
+                    showFamilyStep('export');
+                } else {
+                    alert('Выберите эмодзи или напишите настроение.');
+                }
+            } catch (error) {
+                showError(`Ошибка сохранения настроения: ${error.message}`);
             }
         }
 
         document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('mood-emoji')) {
-                document.querySelectorAll('.mood-emoji').forEach(emoji => emoji.classList.remove('selected'));
-                e.target.classList.add('selected');
-                selectedMood = e.target.dataset.mood;
+            try {
+                if (e.target.classList.contains('mood-emoji')) {
+                    document.querySelectorAll('.mood-emoji').forEach(emoji => emoji.classList.remove('selected'));
+                    e.target.classList.add('selected');
+                    selectedMood = e.target.dataset.mood;
+                }
+            } catch (error) {
+                showError(`Ошибка выбора эмодзи: ${error.message}`);
             }
         });
 
         // Дыхание в ритуале
         function startBreathing() {
-            const tracker = document.getElementById('family-tracker');
-            tracker.innerHTML = 'Сядьте прямо, расслабьтесь.';
-            let phase = 0;
-            let timeLeft = 4;
-            const phases = ['Вдох (4 сек)...', 'Задержка (4 сек)...', 'Выдох (4 сек)...', 'Задержка (4 сек)...'];
-            const timer = document.createElement('div');
-            timer.id = 'exercise-timer';
-            tracker.after(timer);
-            timer.innerHTML = `Осталось: ${timeLeft} сек`;
-            const interval = setInterval(() => {
-                if (timeLeft <= 0) {
-                    phase++;
-                    timeLeft = 4;
-                    if (phase >= 16) {
-                        clearInterval(interval);
-                        tracker.innerHTML = 'Ты в гармонии!';
-                        timer.innerHTML = '';
-                        return;
-                    }
-                    tracker.innerHTML = phases[phase % 4];
-                    timer.innerHTML = `Осталось: ${timeLeft} сек`;
-                }
-                timeLeft--;
+            try {
+                const tracker = document.getElementById('family-tracker');
+                if (!tracker) throw new Error('Трекер семьи не найден');
+                tracker.innerHTML = 'Сядьте прямо, расслабьтесь.';
+                let phase = 0;
+                let timeLeft = 4;
+                const phases = ['Вдох (4 сек)...', 'Задержка (4 сек)...', 'Выдох (4 сек)...', 'Задержка (4 сек)...'];
+                const timer = document.createElement('div');
+                timer.id = 'exercise-timer';
+                tracker.after(timer);
                 timer.innerHTML = `Осталось: ${timeLeft} сек`;
-            }, 1000);
+                const interval = setInterval(() => {
+                    if (timeLeft <= 0) {
+                        phase++;
+                        timeLeft = 4;
+                        if (phase >= 16) {
+                            clearInterval(interval);
+                            tracker.innerHTML = 'Ты в гармонии!';
+                            timer.innerHTML = '';
+                            return;
+                        }
+                        tracker.innerHTML = phases[phase % 4];
+                        timer.innerHTML = `Осталось: ${timeLeft} сек`;
+                    }
+                    timeLeft--;
+                    timer.innerHTML = `Осталось: ${timeLeft} сек`;
+                }, 1000);
+            } catch (error) {
+                showError(`Ошибка запуска дыхательного упражнения: ${error.message}`);
+            }
         }
 
         // Результаты
         function updateResults() {
-            const results = document.getElementById('results');
-            results.innerHTML = `
-                <p>Задач выполнено: ${completedTasks}/${tasks.length}</p>
-                <p>Прогресс: ${Math.round((completedTasks / tasks.length) * 100) || 0}%</p>
-            `;
-            updateProgressStats();
+            try {
+                const results = document.getElementById('results');
+                if (!results) throw new Error('Контейнер результатов не найден');
+                results.innerHTML = `
+                    <p>Задач выполнено: ${completedTasks}/${tasks.length}</p>
+                    <p>Прогресс: ${Math.round((completedTasks / tasks.length) * 100) || 0}%</p>
+                `;
+                updateProgressStats();
+            } catch (error) {
+                showError(`Ошибка обновления результатов: ${error.message}`);
+            }
         }
 
         // Статистика
+        let importedData = JSON.parse(localStorage.getItem('imported-data')) || [];
         function updateProgressStats() {
-            const progressFill = document.getElementById('stats-progress');
-            const filter = document.getElementById('stats-filter').value;
-            let data = importedData.concat(tasks.map(task => ({
-                date: task.date,
-                completed: task.completed ? 1 : 0,
-                total: 1,
-                progress: task.completed ? 100 : 0
-            })));
-            const now = new Date();
-            if (filter === 'day') {
-                data = data.filter(d => d.date === now.toISOString().split('T')[0]);
-            } else if (filter === 'week') {
-                const weekAgo = new Date(now);
-                weekAgo.setDate(now.getDate() - 7);
-                data = data.filter(d => new Date(d.date) >= weekAgo);
-            } else if (filter === 'month') {
-                const monthAgo = new Date(now);
-                monthAgo.setDate(now.getDate() - 30);
-                data = data.filter(d => new Date(d.date) >= monthAgo);
+            try {
+                const progressFill = document.getElementById('stats-progress');
+                if (!progressFill) throw new Error('Прогресс статистики не найден');
+                const filter = document.getElementById('stats-filter').value;
+                let data = importedData.concat(tasks.map(task => ({
+                    date: task.date,
+                    completed: task.completed ? 1 : 0,
+                    total: 1,
+                    progress: task.completed ? 100 : 0
+                })));
+                const now = new Date();
+                if (filter === 'day') {
+                    data = data.filter(d => d.date === now.toISOString().split('T')[0]);
+                } else if (filter === 'week') {
+                    const weekAgo = new Date(now);
+                    weekAgo.setDate(now.getDate() - 7);
+                    data = data.filter(d => new Date(d.date) >= weekAgo);
+                } else if (filter === 'month') {
+                    const monthAgo = new Date(now);
+                    monthAgo.setDate(now.getDate() - 30);
+                    data = data.filter(d => new Date(d.date) >= monthAgo);
+                }
+                const total = data.reduce((sum, d) => sum + d.total, 0);
+                const completed = data.reduce((sum, d) => sum + d.completed, 0);
+                progressFill.style.width = `${(completed / total) * 100 || 0}%`;
+            } catch (error) {
+                showError(`Ошибка обновления статистики: ${error.message}`);
             }
-            const total = data.reduce((sum, d) => sum + d.total, 0);
-            const completed = data.reduce((sum, d) => sum + d.completed, 0);
-            progressFill.style.width = `${(completed / total) * 100 || 0}%`;
         }
 
         // Экспорт результатов
         function exportResults() {
-            const results = `CalmFlow — Итоги дня ${new Date().toLocaleDateString('ru')}\nЗадач выполнено: ${completedTasks}/${tasks.length}\nПрогресс: ${Math.round((completedTasks / tasks.length) * 100) || 0}%\nЗаметки:\n${notes.map(n => `[${n.date}] ${n.text} (${n.tags.join(', ')})`).join('\n') || 'Нет заметок'}\nПлан на завтра:\n${localStorage.getItem('tomorrow-plan') || 'Нет плана'}`;
-            const blob = new Blob([results], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `CalmFlow_Results_${new Date().toISOString().split('T')[0]}.txt`;
-            a.click();
-            URL.revokeObjectURL(url);
+            try {
+                const results = `CalmFlow — Итоги дня ${new Date().toLocaleDateString('ru')}\nЗадач выполнено: ${completedTasks}/${tasks.length}\nПрогресс: ${Math.round((completedTasks / tasks.length) * 100) || 0}%\nЗаметки:\n${notes.map(n => `[${n.date}] ${n.text} (${n.tags.join(', ')})`).join('\n') || 'Нет заметок'}\nПлан на завтра:\n${localStorage.getItem('tomorrow-plan') || 'Нет плана'}`;
+                const blob = new Blob([results], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `CalmFlow_Results_${new Date().toISOString().split('T')[0]}.txt`;
+                a.click();
+                URL.revokeObjectURL(url);
+            } catch (error) {
+                showError(`Ошибка экспорта результатов: ${error.message}`);
+            }
         }
 
         // Импорт результатов
-        let importedData = JSON.parse(localStorage.getItem('imported-data')) || [];
-
         function importResults() {
-            const fileInput = document.getElementById('import-file');
-            const files = fileInput.files;
-            for (let file of files) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const text = e.target.result;
-                    const dateMatch = text.match(/Итоги дня (\d{2}\.\d{2}\.\d{4})/);
-                    const tasksMatch = text.match(/Задач выполнено: (\d+)\/(\d+)/);
-                    const progressMatch = text.match(/Прогресс: (\d+)%/);
-                    if (dateMatch && tasksMatch && progressMatch) {
-                        importedData.push({
-                            date: dateMatch[1].split('.').reverse().join('-'),
-                            completed: parseInt(tasksMatch[1]),
-                            total: parseInt(tasksMatch[2]),
-                            progress: parseInt(progressMatch[1])
-                        });
-                        localStorage.setItem('imported-data', JSON.stringify(importedData));
-                        updateProgressStats();
-                    } else {
-                        alert(`Неверный формат файла: ${file.name}`);
-                    }
-                };
-                reader.readAsText(file);
+            try {
+                const fileInput = document.getElementById('import-file');
+                const files = fileInput.files;
+                for (let file of files) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const text = e.target.result;
+                            const dateMatch = text.match(/Итоги дня (\d{2}\.\d{2}\.\d{4})/);
+                            const tasksMatch = text.match(/Задач выполнено: (\d+)\/(\d+)/);
+                            const progressMatch = text.match(/Прогресс: (\d+)%/);
+                            if (dateMatch && tasksMatch && progressMatch) {
+                                importedData.push({
+                                    date: dateMatch[1].split('.').reverse().join('-'),
+                                    completed: parseInt(tasksMatch[1]),
+                                    total: parseInt(tasksMatch[2]),
+                                    progress: parseInt(progressMatch[1])
+                                });
+                                localStorage.setItem('imported-data', JSON.stringify(importedData));
+                                updateProgressStats();
+                            } else {
+                                alert(`Неверный формат файла: ${file.name}`);
+                            }
+                        } catch (error) {
+                            showError(`Ошибка обработки файла ${file.name}: ${error.message}`);
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            } catch (error) {
+                showError(`Ошибка импорта результатов: ${error.message}`);
             }
         }
 
         // Экспорт семейных данных
         function exportFamilyData() {
-            const stats = JSON.parse(localStorage.getItem('family-stats')) || [];
-            const data = `CalmFlow — Семейные итоги ${new Date().toLocaleDateString('ru')}\nНастроение:\n${stats.map(s => `[${s.date}] ${s.emoji} ${s.text}`).join('\n') || 'Нет записей'}`;
-            const blob = new Blob([data], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `CalmFlow_Family_${new Date().toISOString().split('T')[0]}.txt`;
-            a.click();
-            URL.revokeObjectURL(url);
-            showFamilyStep('complete');
+            try {
+                const stats = JSON.parse(localStorage.getItem('family-stats')) || [];
+                const data = `CalmFlow — Семейные итоги ${new Date().toLocaleDateString('ru')}\nНастроение:\n${stats.map(s => `[${s.date}] ${s.emoji} ${s.text}`).join('\n') || 'Нет записей'}`;
+                const blob = new Blob([data], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `CalmFlow_Family_${new Date().toISOString().split('T')[0]}.txt`;
+                a.click();
+                URL.revokeObjectURL(url);
+                showFamilyStep('complete');
+            } catch (error) {
+                showError(`Ошибка экспорта семейных данных: ${error.message}`);
+            }
         }
 
         // Горячие клавиши
         document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space' && document.getElementById('work-stage').classList.contains('active')) {
-                e.preventDefault();
-                startPomodoro();
-            }
-            if (e.ctrlKey && e.key === 'Enter') {
-                addTask();
+            try {
+                if (e.code === 'Space' && document.getElementById('work-stage').classList.contains('active')) {
+                    e.preventDefault();
+                    startPomodoro();
+                }
+                if (e.ctrlKey && e.key === 'Enter') {
+                    addTask();
+                }
+            } catch (error) {
+                showError(`Ошибка обработки горячих клавиш: ${error.message}`);
             }
         });
 
         // Инициализация
-        try {
-            initStars();
-            const timeSettings = JSON.parse(localStorage.getItem('work-time'));
-            if (timeSettings) {
-                document.getElementById('work-start').value = timeSettings.start;
-                document.getElementById('work-end').value = timeSettings.end;
-                document.getElementById('break-interval').value = timeSettings.break;
-                workStart = timeSettings.start;
-                workEnd = timeSettings.end;
-                breakInterval = timeSettings.break;
-                updateTimeRemaining();
+        window.onload = function() {
+            try {
+                // Проверка Font Awesome
+                if (typeof fas === 'undefined') {
+                    showError('Font Awesome не загружен. Иконки могут не отображаться.');
+                }
+
+                // Инициализация звёзд
+                initStars();
+
+                // Загрузка настроек времени
+                const timeSettings = JSON.parse(localStorage.getItem('work-time'));
+                if (timeSettings) {
+                    document.getElementById('work-start').value = timeSettings.start;
+                    document.getElementById('work-end').value = timeSettings.end;
+                    document.getElementById('break-interval').value = timeSettings.break;
+                    workStart = timeSettings.start;
+                    workEnd = timeSettings.end;
+                    breakInterval = timeSettings.break;
+                    updateTimeRemaining();
+                }
+
+                // Рендеринг данных
+                renderKeyTasks();
+                renderTasks();
+                renderNotes();
+                updateResults();
+
+                // Слушатели событий
+                document.getElementById('note-search').addEventListener('input', renderNotes);
+                document.getElementById('stats-filter').addEventListener('change', updateProgressStats);
+                document.getElementById('task').addEventListener('keydown', (e) => {
+                    if (e.ctrlKey && e.key === 'Enter') addTask();
+                });
+
+                // Навигатор этапов
+                document.querySelectorAll('.stage-nav span').forEach(span => {
+                    span.addEventListener('click', () => showStage(span.id.replace('nav-', '')));
+                });
+
+                console.log('CalmFlow успешно инициализирован');
+            } catch (error) {
+                showError(`Ошибка инициализации приложения: ${error.message}`);
             }
-            renderKeyTasks();
-            renderTasks();
-            renderNotes();
-            updateResults();
-            document.getElementById('note-search').addEventListener('input', renderNotes);
-            document.getElementById('stats-filter').addEventListener('change', updateProgressStats);
-            document.getElementById('task').addEventListener('keydown', (e) => {
-                if (e.ctrlKey && e.key === 'Enter') addTask();
-            });
-            console.log('CalmFlow initialized successfully');
-        } catch (error) {
-            console.error('Initialization error:', error);
-            alert('Ошибка при загрузке приложения.');
-        }
+        };
     </script>
 </body>
-    </html>
+        </html>
