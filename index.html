@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CalmFlow — Разделяя работу и дом</title>
-    <!-- Favicon -->
-    <link rel="icon" href="/favicon.png">
+    <!-- Динамический favicon будет установлен через JavaScript -->
+    <link rel="icon" id="favicon" type="image/png" href="">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <!-- Font Awesome CDN с fallback -->
@@ -32,7 +32,7 @@
             align-items: center;
         }
 
-        /* Резервный фон, если звёзды не загрузятся */
+        /* Резервный фон */
         body::before {
             content: '';
             position: fixed;
@@ -861,9 +861,7 @@
                 <div class="mood-container">
                     <span class="mood-emoji" data-mood="😊">😊</span>
                     <span class="mood-emoji" data-mood="😔">😔</span>
-                    <span class="mood-emoji" data-mood="😊">😊</span>
                     <span class="mood-emoji" data-mood="😴">😴</span>
-                    <span class="mood-emoji" data-mood="😊">😊</span>
                 </div>
                 <textarea id="mood-tracker" placeholder="Опиши свои эмоции..."></textarea>
                 <button class="primary" onclick="saveMood()">Сохранить</button>
@@ -946,6 +944,46 @@
             console.error(message);
         }
 
+        // Создание динамического favicon
+        function createFavicon() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 32;
+            canvas.height = 32;
+            const ctx = canvas.getContext('2d');
+
+            // Фон
+            ctx.fillStyle = '#0A0A12';
+            ctx.fillRect(0, 0, 32, 32);
+
+            // Звезда с градиентом
+            const gradient = ctx.createLinearGradient(0, 0, 32, 32);
+            gradient.addColorStop(0, '#40C4FF');
+            gradient.addColorStop(1, '#B388FF');
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.moveTo(16, 2);
+            ctx.lineTo(20, 12);
+            ctx.lineTo(30, 12);
+            ctx.lineTo(22, 18);
+            ctx.lineTo(26, 28);
+            ctx.lineTo(16, 22);
+            ctx.lineTo(6, 28);
+            ctx.lineTo(10, 18);
+            ctx.lineTo(2, 12);
+            ctx.lineTo(12, 12);
+            ctx.closePath();
+            ctx.fill();
+
+            // Неоновое свечение
+            ctx.shadowColor = '#40C4FF';
+            ctx.shadowBlur = 8;
+            ctx.fill();
+
+            // Установка favicon
+            const faviconLink = document.getElementById('favicon');
+            faviconLink.href = canvas.toDataURL('image/png');
+        }
+
         // Инициализация звёзд
         function initStars() {
             try {
@@ -999,8 +1037,8 @@
         }
 
         // Прогресс
-        let tasks = [];
-        let completedTasks = 0;
+        let tasks = JSON.parse(localStorage.getItem('work-tasks')) || [];
+        let completedTasks = tasks.filter(t => t.completed).length;
         function updateProgress() {
             try {
                 const progressFill = document.getElementById('progress-fill');
@@ -1065,8 +1103,8 @@
                 if (workStart && workEnd && breakInterval) {
                     localStorage.setItem('work-time', JSON.stringify({ start: workStart, end: workEnd, break: breakInterval }));
                     updateTimeRemaining();
-                    const [hours, minutes] = breakInterval.split(':');
-                    breakTimeLeft = (parseInt(hours) * 60 + parseInt(minutes)) * 60;
+                    const [hours, breakMinutes] = breakInterval.split(':');
+                    breakTimeLeft = (parseInt(hours) * 60 + parseInt(breakMinutes)) * 60;
                     alert('Настройки времени сохранены!');
                 } else {
                     alert('Заполните все поля времени.');
@@ -1082,9 +1120,9 @@
                 const now = new Date();
                 const [startH, startM] = workStart.split(':');
                 const [endH, endM] = workEnd.split(':');
-                const start = new Date();
+                const start = new Date(now);
                 start.setHours(startH, startM, 0, 0);
-                const end = new Date();
+                const end = new Date(now);
                 end.setHours(endH, endM, 0, 0);
                 if (end < start) end.setDate(end.getDate() + 1);
                 const remaining = end - now;
@@ -1111,13 +1149,7 @@
             }
         }
 
-        setInterval(() => {
-            try {
-                updateTimeRemaining();
-            } catch (error) {
-                console.error(`Ошибка в таймере: ${error.message}`);
-            }
-        }, 60000);
+        setInterval(updateTimeRemaining, 60000);
 
         // Ключевые задачи
         let keyTasks = JSON.parse(localStorage.getItem('key-tasks')) || [];
@@ -1174,8 +1206,6 @@
         }
 
         // Задачи
-        tasks = JSON.parse(localStorage.getItem('work-tasks')) || [];
-        completedTasks = tasks.filter(t => t.completed).length;
         let taskHistory = JSON.parse(localStorage.getItem('taskHistory')) || [];
         let currentPriority = 'low';
 
@@ -1247,8 +1277,10 @@
                     });
                     taskList.appendChild(li);
                 });
+                completedTasks = tasks.filter(t => t.completed).length;
+                updateProgress();
             } catch (error) {
-                showError(`Ошибка рендеринга задач: ${error.message}`);
+                showError(`Ошибка рenдеринга задач: ${error.message}`);
             }
         }
 
@@ -1258,7 +1290,6 @@
                 completedTasks = tasks.filter(t => t.completed).length;
                 saveTasks();
                 renderTasks();
-                updateProgress();
                 updateResults();
             } catch (error) {
                 showError(`Ошибка переключения задачи: ${error.message}`);
@@ -1271,7 +1302,6 @@
                 tasks.splice(index, 1);
                 saveTasks();
                 renderTasks();
-                updateProgress();
                 updateResults();
             } catch (error) {
                 showError(`Ошибка удаления задачи: ${error.message}`);
@@ -1606,7 +1636,7 @@
                 const mood = document.getElementById('mood-tracker').value;
                 if (selectedMood || mood) {
                     const entry = {
-                        emoji: selectedMood,
+                        emoji: selectedMood || '',
                         text: mood,
                         date: new Date().toISOString().split('T')[0]
                     };
@@ -1788,113 +1818,198 @@
         }
 
         // Таймер перерыва
-        let breakTimeLeft = 60 * 60;
+        let breakTimeLeft = 60 * 60; // Время до перерыва в секундах (по умолчанию 1 час)
+        
+        /**
+         * Обновляет таймер перерыва, показывая, сколько времени осталось до следующего перерыва.
+         * Проверяет, находится ли текущее время в рабочем диапазоне, и отображает уведомление, если время перерыва наступило.
+         */
         function updateBreakTimer() {
             try {
-                const [hours, minutes] = (breakInterval || '01:00').split(':');
-                const intervalSeconds = (parseInt(hours) * 60 + parseInt(minutes)) * 60;
-                breakTimeLeft -= 10;
-                if (breakTimeLeft <= 0) {
-                    breakTimeLeft = intervalSeconds;
-                    showBreakNotification();
+                // Проверка наличия настроек времени работы
+                if (!workStart || !workEnd) return;
+
+                const now = new Date();
+                const [startH, startM] = workStart.split(':').map(Number);
+                const [endH, endM] = workEnd.split(':').map(Number);
+
+                // Установка времени начала и конца работы
+                const start = new Date(now);
+                start.setHours(startH, startM, 0, 0);
+                const end = new Date(now);
+                end.setHours(endH, endM, 0, 0);
+
+                // Коррекция даты, если рабочий день переходит через полночь
+                if (end < start) {
+                    end.setDate(end.getDate() + 1);
                 }
+
+                const breakTimer = document.getElementById('break-timer');
+                if (!breakTimer) {
+                    throw new Error('Таймер перерыва не найден');
+                }
+
+                // Скрываем таймер, если текущее время вне рабочего диапазона
+                if (now < start || now > end) {
+                    breakTimer.style.display = 'none';
+                    return;
+                }
+
+                // Показываем таймер, если время в рабочем диапазоне
+                breakTimer.style.display = 'block';
+                breakTimeLeft--;
+
+                // Если время перерыва наступило, показываем уведомление и сбрасываем таймер
+                if (breakTimeLeft <= 0) {
+                    showBreakNotification();
+                    const [hours, minutes] = (breakInterval || '01:00').split(':').map(Number);
+                    breakTimeLeft = (hours * 60 + minutes) * 60; // Сброс таймера на заданный интервал
+                }
+
+                // Форматирование оставшегося времени
                 const minutes = Math.floor(breakTimeLeft / 60);
                 const seconds = breakTimeLeft % 60;
-                document.getElementById('break-timer').textContent = `До перерыва: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+                breakTimer.textContent = `До перерыва: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
             } catch (error) {
                 showError(`Ошибка обновления таймера перерыва: ${error.message}`);
             }
         }
 
-        // Уведомления
+        /**
+         * Показывает модальное окно с уведомлением о перерыве.
+         * Если уведомления разрешены, отправляет системное уведомление.
+         */
+        function showBreakNotification() {
+            try {
+                const notificationModal = document.getElementById('break-notification-modal');
+                if (!notificationModal) {
+                    throw new Error('Модальное окно уведомления о перерыве не найдено');
+                }
+                notificationModal.style.display = 'block';
+
+                // Отправка системного уведомления, если разрешено
+                if ('Notification' in window && Notification.permission === 'granted') {
+                    new Notification('Время для перерыва!', {
+                        body: 'Пора сделать паузу и отдохнуть.',
+                        icon: document.getElementById('favicon').href // Используем динамически созданный favicon
+                    });
+                }
+            } catch (error) {
+                showError(`Ошибка отображения уведомления о перерыве: ${error.message}`);
+            }
+        }
+
+        /**
+         * Закрывает модальное окно уведомления о перерыве и переводит пользователя на этап перерыва.
+         */
+        function closeBreakNotification() {
+            try {
+                const notificationModal = document.getElementById('break-notification-modal');
+                if (!notificationModal) {
+                    throw new Error('Модальное окно уведомления о перерыве не найдено');
+                }
+                notificationModal.style.display = 'none';
+                showStage('break'); // Переход на этап перерыва
+            } catch (error) {
+                showError(`Ошибка закрытия уведомления о перерыве: ${error.message}`);
+            }
+        }
+
+        // Запуск таймера перерыва (обновление каждую секунду)
+        setInterval(updateBreakTimer, 1000);
+
+        // Разрешение уведомлений
+        /**
+         * Запрашивает у пользователя разрешение на показ уведомлений.
+         * Информирует пользователя о результате запроса.
+         */
         function requestNotifications() {
             try {
-                if (Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+                if ('Notification' in window) {
                     Notification.requestPermission().then(permission => {
-                        if (permission === 'granted') alert('Уведомления разрешены!');
+                        if (permission === 'granted') {
+                            alert('Уведомления разрешены!');
+                        } else {
+                            alert('Уведомления не разрешены. Вы можете включить их в настройках браузера.');
+                        }
                     });
+                } else {
+                    alert('Уведомления не поддерживаются вашим браузером.');
                 }
             } catch (error) {
                 showError(`Ошибка запроса уведомлений: ${error.message}`);
             }
         }
 
-        function closeBreakNotification() {
-            try {
-                const modal = document.getElementById('break-notification-modal');
-                modal.style.display = 'none';
-                showStage('break');
-            } catch (error) {
-                showError(`Ошибка закрытия уведомления: ${error.message}`);
-            }
-        }
-
-        // Обработчики событий для задач
-        document.querySelectorAll('.priority-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.priority-btn').forEach(b => b.style.opacity = '0.6');
-                btn.style.opacity = '1';
-                currentPriority = btn.dataset.priority;
-            });
-        });
-
-        document.getElementById('task').addEventListener('keydown', (e) => {
-            if (e.ctrlKey && e.key === 'Enter') addTask();
-            if (e.key === 'Escape') e.target.value = '';
-        });
-
         // Инициализация приложения
-        window.onload = function() {
+        /**
+         * Инициализирует приложение при загрузке страницы.
+         * Загружает сохранённые данные, устанавливает обработчики событий и запускает начальные функции.
+         */
+        document.addEventListener('DOMContentLoaded', () => {
             try {
-                // Проверка Font Awesome
-                if (typeof fas === 'undefined') {
-                    showError('Font Awesome не загружен. Иконки могут не отображаться.');
-                }
+                // Создание динамического favicon
+                createFavicon();
 
-                // Инициализация звёзд
+                // Инициализация звёздного фона
                 initStars();
 
-                // Загрузка настроек времени
-                const timeSettings = JSON.parse(localStorage.getItem('work-time'));
-                if (timeSettings) {
-                    document.getElementById('work-start').value = timeSettings.start;
-                    document.getElementById('work-end').value = timeSettings.end;
-                    document.getElementById('break-interval').value = timeSettings.break;
-                    workStart = timeSettings.start;
-                    workEnd = timeSettings.end;
-                    breakInterval = timeSettings.break;
-                    updateTimeRemaining();
-                    const [hours, minutes] = breakInterval.split(':');
-                    breakTimeLeft = (parseInt(hours) * 60 + parseInt(minutes)) * 60;
-                }
-
-                // Инициализация автодополнения
-                updateSuggestions();
-
-                // Рендеринг данных
+                // Рендеринг начальных данных
                 renderKeyTasks();
                 renderTasks();
-                renderNotes();
+                updateProgress();
                 updateResults();
+                renderNotes();
+                updateSuggestions();
 
-                // Слушатели событий
-                document.getElementById('note-search').addEventListener('input', renderNotes);
-                document.getElementById('stats-filter').addEventListener('change', updateProgressStats);
-                document.getElementById('add-task-btn').addEventListener('click', addTask);
+                // Загрузка сохранённых настроек времени
+                const savedTime = JSON.parse(localStorage.getItem('work-time'));
+                if (savedTime) {
+                    workStart = savedTime.start;
+                    workEnd = savedTime.end;
+                    breakInterval = savedTime.break;
+                    document.getElementById('work-start').value = workStart;
+                    document.getElementById('work-end').value = workEnd;
+                    document.getElementById('break-interval').value = breakInterval;
+                    const [hours, minutes] = breakInterval.split(':').map(Number);
+                    breakTimeLeft = (hours * 60 + minutes) * 60; // Инициализация таймера перерыва
+                }
 
-                // Навигатор этапов
-                document.querySelectorAll('.stage-nav span').forEach(span => {
-                    span.addEventListener('click', () => showStage(span.id.replace('nav-', '')));
+                // Обработчик выбора приоритета задачи
+                document.querySelectorAll('.priority-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        currentPriority = btn.dataset.priority;
+                        document.querySelectorAll('.priority-btn').forEach(b => b.style.opacity = '0.5');
+                        btn.style.opacity = '1';
+                    });
                 });
 
-                // Запуск таймера перерыва
-                setInterval(updateBreakTimer, 10000);
+                // Быстрое добавление задачи по Ctrl+Enter
+                document.getElementById('task').addEventListener('keydown', (e) => {
+                    if (e.ctrlKey && e.key === 'Enter') {
+                        addTask();
+                    }
+                });
 
-                console.log('CalmFlow успешно инициализирован');
+                // Фильтрация заметок при вводе в поиске
+                document.getElementById('note-search').addEventListener('input', renderNotes);
+
+                // Обновление статистики при изменении фильтра
+                document.getElementById('stats-filter').addEventListener('change', updateProgressStats);
+
+                // Обновление тегов заметок в модальном окне
+                document.getElementById('note-tags').addEventListener('input', (e) => {
+                    renderNoteTags(e.target.value);
+                });
+
+                // Обработчик добавления задачи
+                document.getElementById('add-task-btn').addEventListener('click', addTask);
+
+                console.log('Приложение успешно инициализировано');
             } catch (error) {
                 showError(`Ошибка инициализации приложения: ${error.message}`);
             }
-        };
+        });
     </script>
 </body>
 </html>
