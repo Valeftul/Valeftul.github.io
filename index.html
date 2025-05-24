@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CalmFlow — Разделяя работу и дом</title>
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.png">
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome CDN с fallback -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" onload="console.log('Font Awesome loaded')" onerror="this.href='/fontawesome/css/all.min.css'">
     <style>
         /* Сброс стилей */
         * {
@@ -154,14 +159,17 @@
 
         /* Навигатор */
         .stage-nav {
+            position: sticky;
+            top: 0;
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
             padding: 8px;
             margin-bottom: 15px;
             background: rgba(26, 26, 46, 0.5);
             border-radius: 10px;
             border: 1px solid rgba(64, 196, 255, 0.2);
+            z-index: 10;
         }
 
         .stage-nav span {
@@ -180,6 +188,7 @@
         .stage-nav span:hover {
             background: rgba(64, 196, 255, 0.1);
             transform: scale(1.05);
+            box-shadow: 0 0 8px rgba(64, 196, 255, 0.4);
         }
 
         .stage-nav span.active {
@@ -260,6 +269,7 @@
             box-shadow: 0 0 8px rgba(64, 196, 255, 0.3);
             position: relative;
             overflow: hidden;
+            margin: 8px;
         }
 
         button:hover {
@@ -314,7 +324,7 @@
         .tabs {
             display: flex;
             justify-content: center;
-            gap: 8px;
+            gap: 12px;
             margin: 12px 0;
         }
 
@@ -379,12 +389,16 @@
         }
 
         #task-list li:hover, #key-task-list li:hover {
-            transform: translateX(2px);
+            transform: scale(1.05);
         }
 
         #task-list li.low { border-left: 3px solid #4CAF50; }
         #task-list li.medium { border-left: 3px solid #FFCA28; }
         #task-list li.high { border-left: 3px solid #F44336; }
+
+        #task-list li.drop-target {
+            border: 2px dashed #40C4FF;
+        }
 
         /* Модальные окна */
         .modal {
@@ -488,8 +502,7 @@
         }
 
         .note-card:hover {
-            transform: translateY(-2px) rotate(1deg);
-            box-shadow: 0 0 10px rgba(64, 196, 255, 0.3);
+            transform: scale(1.05);
         }
 
         .note-card p {
@@ -521,7 +534,7 @@
 
         .note-card .actions {
             display: flex;
-            gap: 5px;
+            gap: 12px;
             margin-top: auto;
             justify-content: flex-end;
         }
@@ -625,6 +638,69 @@
             background: rgba(244, 67, 54, 0.1);
             border-radius: 8px;
         }
+
+        /* Стили для задач */
+        #task-input-container {
+            display: flex;
+            gap: 12px;
+            margin: 10px 0;
+        }
+
+        #task {
+            flex: 1;
+        }
+
+        .priority-btn {
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .priority-low { background: #4CAF50; }
+        .priority-medium { background: #FFCA28; }
+        .priority-high { background: #F44336; }
+
+        .priority-btn:hover {
+            transform: scale(1.1);
+        }
+
+        #add-task-btn {
+            background: linear-gradient(135deg, #40C4FF, #B388FF);
+            padding: 8px;
+        }
+
+        /* Таймер перерыва */
+        #break-timer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(26, 26, 46, 0.7);
+            padding: 10px 20px;
+            border-radius: 6px;
+            box-shadow: 0 0 10px rgba(64, 196, 255, 0.2);
+            font-size: 14px;
+        }
+
+        /* Модальное окно уведомления */
+        #break-notification-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(26, 26, 46, 0.7);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(64, 196, 255, 0.2);
+            z-index: 1001;
+            text-align: center;
+        }
+
+        #break-notification-modal button {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -668,6 +744,7 @@
                 <p id="time-remaining"></p>
                 <label>Перерывы каждые <input type="time" id="break-interval" value="01:00"></label>
                 <button class="secondary" onclick="applyDoctorBreaks()">Рекомендации врача</button>
+                <button class="secondary" onclick="requestNotifications()">Разрешить уведомления</button>
                 <button class="primary" onclick="saveTimeSettings()">Сохранить</button>
             </div>
             <div id="setup-tasks" class="tab-content">
@@ -687,13 +764,14 @@
                 <button class="tab-btn" onclick="showTab('work-notes', this)">Заметки</button>
             </div>
             <div id="work-tasks" class="tab-content active">
-                <input type="text" id="task" placeholder="Новая задача (Ctrl+Enter)">
-                <select id="priority">
-                    <option value="low">Низкий</option>
-                    <option value="medium">Средний</option>
-                    <option value="high">Высокий</option>
-                </select>
-                <button class="primary" onclick="addTask()">Добавить задачу</button>
+                <div id="task-input-container">
+                    <input type="text" id="task" placeholder="Новая задача (Ctrl+Enter)" list="task-suggestions">
+                    <datalist id="task-suggestions"></datalist>
+                    <button class="priority-btn priority-low" data-priority="low" title="Низкий приоритет"><i class="fas fa-circle"></i></button>
+                    <button class="priority-btn priority-medium" data-priority="medium" title="Средний приоритет"><i class="fas fa-circle"></i></button>
+                    <button class="priority-btn priority-high" data-priority="high" title="Высокий приоритет"><i class="fas fa-circle"></i></button>
+                    <button id="add-task-btn" class="primary"><i class="fas fa-plus"></i></button>
+                </div>
                 <ul id="task-list" class="sortable"></ul>
             </div>
             <div id="work-pomodoro" class="tab-content">
@@ -710,6 +788,7 @@
             </div>
             <button class="secondary" onclick="showStage('break')">Перерыв</button>
             <button class="primary" onclick="showStage('end-shift')">Завершить смену</button>
+            <div id="break-timer">До перерыва: 60:00</div>
         </div>
 
         <!-- Перерывы -->
@@ -852,6 +931,12 @@
             </div>
         </div>
 
+        <!-- Модальное окно для уведомления о перерыве -->
+        <div id="break-notification-modal">
+            <p>Время перерыва!</p>
+            <button class="primary" onclick="closeBreakNotification()">ОК</button>
+        </div>
+
     <script>
         // Отображение ошибок
         function showError(message) {
@@ -870,7 +955,7 @@
                     return;
                 }
                 starsContainer.innerHTML = '';
-                for (let i = 0; i < 100; i++) { // Уменьшено до 100 для оптимизации
+                for (let i = 0; i < 100; i++) {
                     const star = document.createElement('div');
                     star.className = 'star';
                     if (Math.random() < 0.2) star.classList.add('glow');
@@ -980,6 +1065,8 @@
                 if (workStart && workEnd && breakInterval) {
                     localStorage.setItem('work-time', JSON.stringify({ start: workStart, end: workEnd, break: breakInterval }));
                     updateTimeRemaining();
+                    const [hours, minutes] = breakInterval.split(':');
+                    breakTimeLeft = (parseInt(hours) * 60 + parseInt(minutes)) * 60;
                     alert('Настройки времени сохранены!');
                 } else {
                     alert('Заполните все поля времени.');
@@ -1059,7 +1146,7 @@
                     li.className = 'medium';
                     li.innerHTML = `
                         <span>${task.text}</span>
-                        <button class="secondary" data-text="Удалить" onclick="deleteKeyTask(${index})">Удалить</button>
+                        <button class="secondary" data-text="Удалить" onclick="deleteKeyTask(${index})"><i class="fas fa-trash"></i> Удалить</button>
                     `;
                     taskList.appendChild(li);
                 });
@@ -1089,14 +1176,31 @@
         // Задачи
         tasks = JSON.parse(localStorage.getItem('work-tasks')) || [];
         completedTasks = tasks.filter(t => t.completed).length;
+        let taskHistory = JSON.parse(localStorage.getItem('taskHistory')) || [];
+        let currentPriority = 'low';
+
+        function updateSuggestions() {
+            const datalist = document.getElementById('task-suggestions');
+            datalist.innerHTML = '';
+            taskHistory.forEach(task => {
+                const option = document.createElement('option');
+                option.value = task;
+                datalist.appendChild(option);
+            });
+        }
 
         function addTask() {
             try {
                 const taskInput = document.getElementById('task');
-                const priority = document.getElementById('priority').value;
                 const taskText = taskInput.value.trim();
                 if (taskText) {
-                    tasks.push({ text: taskText, priority: priority, completed: false, date: new Date().toISOString().split('T')[0] });
+                    tasks.push({ text: taskText, priority: currentPriority, completed: false, date: new Date().toISOString().split('T')[0] });
+                    if (!taskHistory.includes(taskText)) {
+                        taskHistory.push(taskText);
+                        if (taskHistory.length > 10) taskHistory.shift();
+                        localStorage.setItem('taskHistory', JSON.stringify(taskHistory));
+                        updateSuggestions();
+                    }
                     taskInput.value = '';
                     saveTasks();
                     renderTasks();
@@ -1115,16 +1219,26 @@
                     const li = document.createElement('li');
                     li.className = task.priority;
                     li.innerHTML = `
-                        <span>${task.text}</span>
-                        <div>
-                            <button class="secondary" data-text="${task.completed ? 'Отменить' : 'Завершить'}" onclick="toggleTask(${index})">${task.completed ? 'Отменить' : 'Завершить'}</button>
-                            <button class="secondary" data-text="Удалить" onclick="deleteTask(${index})">Удалить</button>
+                        <span>${task.text} <i class="fas fa-circle ${task.priority}"></i></span>
+                        <div class="actions">
+                            <button class="secondary" data-text="${task.completed ? 'Отменить' : 'Завершить'}" onclick="toggleTask(${index})"><i class="fas fa-check"></i> ${task.completed ? 'Отменить' : 'Завершить'}</button>
+                            <button class="secondary" data-text="Удалить" onclick="deleteTask(${index})"><i class="fas fa-trash"></i> Удалить</button>
                         </div>
                     `;
                     li.draggable = true;
-                    li.addEventListener('dragstart', (e) => e.dataTransfer.setData('index', index));
-                    li.addEventListener('dragover', (e) => e.preventDefault());
+                    li.addEventListener('dragstart', (e) => {
+                        e.dataTransfer.setData('index', index);
+                        li.classList.add('dragging');
+                    });
+                    li.addEventListener('dragend', () => li.classList.remove('dragging'));
+                    li.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        li.classList.add('drop-target');
+                    });
+                    li.addEventListener('dragleave', () => li.classList.remove('drop-target'));
                     li.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        li.classList.remove('drop-target');
                         const fromIndex = e.dataTransfer.getData('index');
                         const toIndex = index;
                         [tasks[fromIndex], tasks[toIndex]] = [tasks[toIndex], tasks[fromIndex]];
@@ -1303,8 +1417,8 @@
                             <div class="tags">${note.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>
                             <small>${note.date}</small>
                             <div class="actions">
-                                <button class="secondary" data-text="Редактировать" onclick="openNoteModal('edit', ${index})">Редактировать</button>
-                                <button class="secondary" data-text="Удалить" onclick="deleteNote(${index})">Удалить</button>
+                                <button class="secondary" data-text="Редактировать" onclick="openNoteModal('edit', ${index})"><i class="fas fa-edit"></i> Редактировать</button>
+                                <button class="secondary" data-text="Удалить" onclick="deleteNote(${index})"><i class="fas fa-trash"></i> Удалить</button>
                             </div>
                         `;
                         notesList.appendChild(card);
@@ -1673,22 +1787,63 @@
             }
         }
 
-        // Горячие клавиши
-        document.addEventListener('keydown', (e) => {
+        // Таймер перерыва
+        let breakTimeLeft = 60 * 60;
+        function updateBreakTimer() {
             try {
-                if (e.code === 'Space' && document.getElementById('work-stage').classList.contains('active')) {
-                    e.preventDefault();
-                    startPomodoro();
+                const [hours, minutes] = (breakInterval || '01:00').split(':');
+                const intervalSeconds = (parseInt(hours) * 60 + parseInt(minutes)) * 60;
+                breakTimeLeft -= 10;
+                if (breakTimeLeft <= 0) {
+                    breakTimeLeft = intervalSeconds;
+                    showBreakNotification();
                 }
-                if (e.ctrlKey && e.key === 'Enter') {
-                    addTask();
+                const minutes = Math.floor(breakTimeLeft / 60);
+                const seconds = breakTimeLeft % 60;
+                document.getElementById('break-timer').textContent = `До перерыва: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+            } catch (error) {
+                showError(`Ошибка обновления таймера перерыва: ${error.message}`);
+            }
+        }
+
+        // Уведомления
+        function requestNotifications() {
+            try {
+                if (Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+                    Notification.requestPermission().then(permission => {
+                        if (permission === 'granted') alert('Уведомления разрешены!');
+                    });
                 }
             } catch (error) {
-                showError(`Ошибка обработки горячих клавиш: ${error.message}`);
+                showError(`Ошибка запроса уведомлений: ${error.message}`);
             }
+        }
+
+        function closeBreakNotification() {
+            try {
+                const modal = document.getElementById('break-notification-modal');
+                modal.style.display = 'none';
+                showStage('break');
+            } catch (error) {
+                showError(`Ошибка закрытия уведомления: ${error.message}`);
+            }
+        }
+
+        // Обработчики событий для задач
+        document.querySelectorAll('.priority-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.priority-btn').forEach(b => b.style.opacity = '0.6');
+                btn.style.opacity = '1';
+                currentPriority = btn.dataset.priority;
+            });
         });
 
-        // Инициализация
+        document.getElementById('task').addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') addTask();
+            if (e.key === 'Escape') e.target.value = '';
+        });
+
+        // Инициализация приложения
         window.onload = function() {
             try {
                 // Проверка Font Awesome
@@ -1709,7 +1864,12 @@
                     workEnd = timeSettings.end;
                     breakInterval = timeSettings.break;
                     updateTimeRemaining();
+                    const [hours, minutes] = breakInterval.split(':');
+                    breakTimeLeft = (parseInt(hours) * 60 + parseInt(minutes)) * 60;
                 }
+
+                // Инициализация автодополнения
+                updateSuggestions();
 
                 // Рендеринг данных
                 renderKeyTasks();
@@ -1720,14 +1880,15 @@
                 // Слушатели событий
                 document.getElementById('note-search').addEventListener('input', renderNotes);
                 document.getElementById('stats-filter').addEventListener('change', updateProgressStats);
-                document.getElementById('task').addEventListener('keydown', (e) => {
-                    if (e.ctrlKey && e.key === 'Enter') addTask();
-                });
+                document.getElementById('add-task-btn').addEventListener('click', addTask);
 
                 // Навигатор этапов
                 document.querySelectorAll('.stage-nav span').forEach(span => {
                     span.addEventListener('click', () => showStage(span.id.replace('nav-', '')));
                 });
+
+                // Запуск таймера перерыва
+                setInterval(updateBreakTimer, 10000);
 
                 console.log('CalmFlow успешно инициализирован');
             } catch (error) {
@@ -1736,4 +1897,4 @@
         };
     </script>
 </body>
-        </html>
+</html>
